@@ -1,3 +1,5 @@
+import defaultFindStrategies from "./find-strategies/default"
+
 export default function(selector, customLabels, multiple) {
 	customLabels = customLabels || {};
 
@@ -17,53 +19,6 @@ export default function(selector, customLabels, multiple) {
 			node = node.parentNode;
 		}
 		return false;
-	};
-
-	var contentMatch = function(origin, target) {
-		try {
-			//
-			// Exact match
-			//
-			var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + target + "']", origin, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-			var results = [];
-			for (var i = 0; i < xpathResult.snapshotLength; i++) {
-				results.push(xpathResult.snapshotItem(i));
-			}
-
-			if (results.length == 0) {
-				//
-				// Contains match
-				//
-				var xpathResult = document.evaluate(".//*[not(self::script) and contains(text(),'" + target + "')]", origin, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-				for (var i = 0; i < xpathResult.snapshotLength; i++) {
-					results.push(xpathResult.snapshotItem(i));
-				}
-
-				if (results.length == 0) {
-					return false;
-				}
-			}
-
-			return results;
-		}
-		catch (e) {
-			return false;
-		}
-	};
-
-	var cssQuery = function(origin, target) {
-		try {
-			var results = origin.querySelectorAll(target);
-			if (results.length == 0) {
-				return false;
-			}
-
-			return results;
-		}
-		catch (e) {
-			return false;
-		}
 	};
 
 	function customLabelMatch(container, customLabel) {
@@ -98,18 +53,6 @@ export default function(selector, customLabels, multiple) {
 			if (!elementsXPath) return false;
 
 			return customLabelMatch(container, elementsXPath);
-		},
-		searchTextExactMatch: function(container, text) {
-			return contentMatch(container, text)
-		},
-		searchID: function(container, text) {
-			return cssQuery(container, "#" + text);
-		},
-		searchClass: function(container, text) {
-			return cssQuery(container, "." + text);
-		},
-		searchType: function(container, text) {
-			return cssQuery(container, text);
 		}
 	};
 
@@ -122,17 +65,8 @@ export default function(selector, customLabels, multiple) {
 			var e = Strategies.getByCustomLabel(parent, l);
 			if (e && e.length > 0) return e;
 
-			e = Strategies.searchTextExactMatch(parent, l);
-			if (e && e.length > 0) return e;
-
-			e = Strategies.searchID(parent, l);
-			if (e && e.length > 0) return e;
-
-			e = Strategies.searchClass(parent, l);
-			if (e && e.length > 0) return e;
-
-			e = Strategies.searchType(parent, l);
-			if (e && e.length > 0) return e;
+			e = defaultFindStrategies(l, parent);
+			if(e.length > 0) return e;
 
 			parent = parent.parentNode;
 		}
@@ -305,5 +239,6 @@ export default function(selector, customLabels, multiple) {
 		return {ids: elementIDs};
 	};
 
+	console.log(document.title)
 	return search();
 }

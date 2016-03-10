@@ -1,10 +1,4 @@
-var chai = require('chai');
-var chaiAsPromised = require('chai-as-promised');
-
-chai.use(chaiAsPromised);
-chai.Should();
-
-parser = require('../lib/glance-parser');
+var parser = require('../src/parser');
 
 describe("Parsing", function() {
     it("should get label", function() {
