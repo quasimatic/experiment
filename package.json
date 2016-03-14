@@ -2,10 +2,10 @@
   "name": "glance-selector",
   "version": "0.0.1",
   "description": "Glance selector library",
-  "main": "lib/glance.js",
+  "main": "lib/glance-selector.js",
   "scripts": {
     "build": "babel src -d lib; node_modules/.bin/pegjs src/glance.pegjs src/parser.js",
-    "test": "npm run build; node_modules/.bin/mocha -R spec"
+    "test": "echo 'Please test using wallaby'"
   },
   "repository": {
     "type": "git",

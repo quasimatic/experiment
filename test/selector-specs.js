@@ -1,4 +1,4 @@
-import glance from '../src/selector';
+import glance from '../src/glance-selector';
 import dom from "./dom";
 
 
