@@ -4,7 +4,7 @@
   "description": "Glance selector library",
   "main": "lib/glance-selector.js",
   "scripts": {
-    "build": "babel src -d lib; node_modules/.bin/pegjs src/glance.pegjs src/parser.js",
+    "build": "node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib",
     "test": "echo 'Please test using wallaby'"
   },
   "repository": {
