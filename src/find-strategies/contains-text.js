@@ -11,6 +11,6 @@ export default function (target, container) {
         return results;
     }
     catch(err) {
-        return false;
+        return [];
     }
 }

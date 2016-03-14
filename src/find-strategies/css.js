@@ -5,6 +5,6 @@ export default function (target, container) {
         return Array.prototype.slice.apply(results);
     }
     catch (e) {
-        return false;
+        return [];
     }
 }

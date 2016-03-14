@@ -5,6 +5,6 @@ export default function (target, container) {
         return findByCSS(`.${target}`, container);
     }
     catch (e) {
-        return false;
+        return [];
     }
 }
