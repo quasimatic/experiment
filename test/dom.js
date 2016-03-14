@@ -1,5 +1,6 @@
 export default {
     create(type, text, options) {
+        text = text || "";
         options = options || {};
 
         options.parent = options.parent || document.body;

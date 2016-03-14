@@ -1,6 +1,10 @@
 import glance from '../src/selector';
 import dom from "./dom";
 
+
+import log from '../src/logger';
+log.setLogLevel('trace');
+
 describe("Glance", function () {
     it("should look by exact text match", function () {
         var div = dom.create("div", "Content Item");
@@ -36,8 +40,8 @@ describe("Glance", function () {
     it("should support an indexer", function () {
         var header1 = dom.create("h2");
         var header2 = dom.create("h2");
-        var div1 = dom.create("div", "Shared Title", {parent: header1})
-        var div2 = dom.create("div", "Shared Title", {parent: header2})
+        var div1 = dom.create("div", "Shared Title", {parent: header1});
+        var div2 = dom.create("div", "Shared Title", {parent: header2});
 
         return glance("h2#2>Shared Title").should.deep.equal(div2);
     });
@@ -61,7 +65,7 @@ describe("Glance", function () {
         dom.create("div", "Copy Exact Match Not");
 
         return glance("Copy Exact Match").should.deep.equal([div1, div2]);
-    })
+    });
 
     it("should show an error if element not found", function () {
         return glance("item-not-found").should.deep.equal([]);
@@ -70,7 +74,7 @@ describe("Glance", function () {
     it.skip("should look by custom labels", function () {
         glance.addLabel("customlabel", function (selector) {
             return this.convertGlanceSelector(".random>div#2").then((wdioSelector)=> this.webdriverio.element(wdioSelector))
-        })
+        });
 
         glance.get("customlabel").should.eventually.match(/<div.*>Other Custom Data<\/div>/);
     });

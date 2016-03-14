@@ -1,8 +1,8 @@
 import findByCSS from "./css"
 
-export default function (target, container) {
+export default function (label, container) {
     try {
-        return findByCSS(`.${target}`, container);
+        return findByCSS(`.${label}`, container);
     }
     catch (e) {
         return [];

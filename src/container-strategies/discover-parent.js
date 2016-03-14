@@ -28,7 +28,7 @@ export default class DiscoverParentContainer {
 
             if (i >= 0) {
                 var childContainer = elements[i];
-                var foundItems = this.search(targets, childContainer, labelIndex + 1);;
+                var foundItems = this.search(targets, childContainer, labelIndex + 1);
                 newTargets = newTargets.concat(foundItems);
             }
             else {

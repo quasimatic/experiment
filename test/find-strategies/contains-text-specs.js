@@ -4,7 +4,7 @@ import findContainsText from '../../src/find-strategies/contains-text';
 describe("Find strategy: Exact Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
-    })
+    });
 
     it("should find by exact text match", function() {
         var div = dom.createDiv("contains text");
@@ -23,7 +23,7 @@ describe("Find strategy: Exact Match", function() {
         var div2 = dom.createDiv("this contains text here");
 
         findContainsText("contains text", document).should.deep.equal([div, div2]);
-    })
+    });
 
     it("should not find missing text", function() {
         var div = dom.createDiv("contains text");

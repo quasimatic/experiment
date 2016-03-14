@@ -4,7 +4,7 @@ import findExactText from '../../src/find-strategies/exact-text';
 describe("Find strategy: Exact Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
-    })
+    });
 
     it("should find by exact text match", function() {
         var div = dom.createDiv("exact text");

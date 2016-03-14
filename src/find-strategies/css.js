@@ -1,6 +1,6 @@
-export default function (target, container) {
+export default function (label, container) {
     try {
-        var results = container.querySelectorAll(target);
+        var results = container.querySelectorAll(label);
 
         return Array.prototype.slice.apply(results);
     }

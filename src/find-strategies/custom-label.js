@@ -9,13 +9,13 @@ var isDescendant = function (parent, child) {
     return false;
 };
 
-export default function (text, container, customLabels) {
-    var target = customLabels[text];
-    if (!target) return [];
+export default function (label, container, customLabels) {
+    var customLabel = customLabels[label];
+    if (!customLabel) return [];
 
     try {
         var r = [];
-        var xpathResult = document.evaluate(customLabel, document.querySelector("body"), null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+        var xpathResult = document.evaluate(customLabel, container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
 
         if (xpathResult.snapshotLength > 0) {
             for (var i = 0; i < xpathResult.snapshotLength; ++i) {

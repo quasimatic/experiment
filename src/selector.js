@@ -14,7 +14,7 @@ export class GlanceSelector {
     find(selector, customLabels) {
         var data = parser.parse(selector);
         this.containerStrategy.customLabels = customLabels;
-        var elements = this.containerStrategy.search(data.containers, document, 0)
+        var elements = this.containerStrategy.search(data.containers, document, 0);
 
         if (elements.length === 1)
             return elements[0];
