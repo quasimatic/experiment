@@ -13,7 +13,7 @@ var DiscoverParentContainer = function () {
     function DiscoverParentContainer(searcher) {
         _classCallCheck(this, DiscoverParentContainer);
 
-        this.searcher = searcher;
+        this.findElement = searcher;
     }
 
     _createClass(DiscoverParentContainer, [{
@@ -22,7 +22,14 @@ var DiscoverParentContainer = function () {
             var target = targets[labelIndex];
             var i = target.position - 1;
 
-            var elements = this.searcher(target.label, context, this.customLabels);
+            var elements = [];
+
+            var parent = context;
+
+            while (parent && elements.length == 0) {
+                elements = this.findElement(target.label, parent, this.customLabels);
+                parent = parent.parentNode;
+            }
 
             elements = this._limitToReferences(elements, context);
 

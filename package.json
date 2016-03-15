@@ -4,6 +4,7 @@
   "description": "Glance selector library",
   "main": "lib/glance-selector.js",
   "scripts": {
+    "browserify": "./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector.js -t [ babelify --presets [ es2015 ] ]",
     "build": "node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib",
     "test": "echo 'Please test using wallaby'"
   },

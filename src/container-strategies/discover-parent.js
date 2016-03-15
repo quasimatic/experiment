@@ -1,13 +1,20 @@
 export default class DiscoverParentContainer {
     constructor(searcher) {
-        this.searcher = searcher;
+        this.findElement = searcher;
     }
 
     search(targets, context, labelIndex) {
         var target = targets[labelIndex];
         var i = target.position - 1;
 
-        var elements = this.searcher(target.label, context, this.customLabels);
+        var elements = [];
+
+        var parent = context;
+
+        while (parent && elements.length == 0) {
+            elements = this.findElement(target.label, parent, this.customLabels);
+            parent = parent.parentNode;
+        }
 
         elements = this._limitToReferences(elements, context);
 
