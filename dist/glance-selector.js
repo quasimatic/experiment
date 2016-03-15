@@ -19,6 +19,7 @@ var DiscoverParentContainer = function () {
     _createClass(DiscoverParentContainer, [{
         key: "search",
         value: function search(targets, context, labelIndex) {
+            labelIndex = labelIndex || 0;
             var target = targets[labelIndex];
             var i = target.position - 1;
 
@@ -35,10 +36,10 @@ var DiscoverParentContainer = function () {
 
             var lastItem = labelIndex + 1 === targets.length;
             if (lastItem) {
-                if (i > 0) {
+                if (i >= 0) {
                     if (!elements[i]) return [];
 
-                    return [elements[i]];
+                    return [].concat(elements[i]);
                 }
 
                 return elements;
@@ -1111,7 +1112,7 @@ var GlanceSelector = exports.GlanceSelector = function () {
         value: function find(selector, customLabels) {
             var data = _parser2.default.parse(selector);
             this.containerStrategy.customLabels = customLabels;
-            var elements = this.containerStrategy.search(data.containers, document, 0);
+            var elements = this.containerStrategy.search(data.containers, document);
 
             if (elements.length === 1) return elements[0];else return elements;
         }

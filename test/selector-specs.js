@@ -6,6 +6,10 @@ import log from '../src/logger';
 log.setLogLevel('trace');
 
 describe("Glance", function () {
+    beforeEach(function() {
+        document.body.innerHTML = "";
+    });
+
     it("should look by exact text match", function () {
         var div = dom.create("div", "Content Item");
         return glance("Content Item").should.deep.equal(div);
@@ -38,6 +42,13 @@ describe("Glance", function () {
     });
 
     it("should support an indexer", function () {
+        var div = dom.create("div", "foo");
+        var div2 = dom.create("div", "foo");
+
+        return glance("div#2").should.deep.equal(div2)
+    });
+
+    it("should support a parent indexer", function () {
         var header1 = dom.create("h2");
         var header2 = dom.create("h2");
         var div1 = dom.create("div", "Shared Title", {parent: header1});

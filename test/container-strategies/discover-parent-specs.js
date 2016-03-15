@@ -17,7 +17,7 @@ describe("Container strategy: Discover Parent", function() {
         var divParent = dom.create("div", "", {class: "parent"})
         var divChild = dom.create("div", "child", { parent: divParent});
 
-        containerSearcher.search(parser.parse("parent>child").containers, document, 0).should.deep.equal([divChild]);
+        containerSearcher.search(parser.parse("parent>child").containers, document).should.deep.equal([divChild]);
     });
 
     it("should find next to", function() {
@@ -25,6 +25,6 @@ describe("Container strategy: Discover Parent", function() {
         var divChild = dom.create("div", "sibling 1", { parent: divParent});
         var divChild2 = dom.create("div", "sibling 2", { parent: divParent});
 
-        containerSearcher.search(parser.parse("sibling 1>sibling 2").containers, document, 0).should.deep.equal([divChild2]);
+        containerSearcher.search(parser.parse("sibling 1>sibling 2").containers, document).should.deep.equal([divChild2]);
     });
 });

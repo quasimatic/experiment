@@ -4,6 +4,7 @@ export default class DiscoverParentContainer {
     }
 
     search(targets, context, labelIndex) {
+        labelIndex = labelIndex || 0;
         var target = targets[labelIndex];
         var i = target.position - 1;
 
@@ -20,11 +21,11 @@ export default class DiscoverParentContainer {
 
         var lastItem = labelIndex + 1 === targets.length;
         if (lastItem) {
-            if(i > 0) {
+            if(i >= 0) {
                 if(!elements[i])
                     return [];
 
-                return [elements[i]];
+                return [].concat(elements[i]);
             }
 
             return elements;
