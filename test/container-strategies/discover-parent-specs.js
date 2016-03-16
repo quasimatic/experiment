@@ -3,8 +3,6 @@ import defaultFinder from "../../src/find-strategies/default";
 import DiscoverParentContainer from '../../src/container-strategies/discover-parent';
 import parser from "../../src/parser"
 
-import log from "../../src/logger"
-
 var containerSearcher;
 
 describe("Container strategy: Discover Parent", function() {
@@ -16,6 +14,7 @@ describe("Container strategy: Discover Parent", function() {
     it("should find within a container", function() {
         var divParent = dom.create("div", "", {class: "parent"})
         var divChild = dom.create("div", "child", { parent: divParent});
+        var divChild2 = dom.create("div", "another one", { parent: divParent});
 
         containerSearcher.search(parser.parse("parent>child").containers, document).should.deep.equal([divChild]);
     });

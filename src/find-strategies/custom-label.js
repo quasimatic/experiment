@@ -1,5 +1,5 @@
 var isDescendant = function (parent, child) {
-    var node = child.parentNode;
+    let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
             return true;
@@ -10,22 +10,25 @@ var isDescendant = function (parent, child) {
 };
 
 export default function (label, container, customLabels) {
-    var customLabel = customLabels[label];
-    if (!customLabel) return [];
+    customLabels = customLabels || {};
+    let resolver = customLabels[label];
+
+    let elements = resolver;
+    if(typeof(elements) == 'function') {
+       elements = resolver();
+    }
+
+    if (!elements) return [];
+
+    elements = [].concat(elements);
 
     try {
         var r = [];
-        var xpathResult = document.evaluate(customLabel, container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-        if (xpathResult.snapshotLength > 0) {
-            for (var i = 0; i < xpathResult.snapshotLength; ++i) {
-                var e = xpathResult.snapshotItem(i);
-
-                if (isDescendant(container, e)) {
-                    r.push(e)
-                }
+        elements.forEach(function(e){
+            if (isDescendant(container, e)) {
+                r.push(e)
             }
-        }
+        });
 
         return r;
     }

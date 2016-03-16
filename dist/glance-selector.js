@@ -54,6 +54,7 @@ var DiscoverParentContainer = function () {
                 } else {
                     for (var c = 0; c < elements.length; c++) {
                         var childContainer = elements[c];
+                        console.log(childContainer);
                         var foundItems = this.search(targets, childContainer, labelIndex + 1);
                         newTargets = newTargets.concat(foundItems);
                     }
@@ -173,29 +174,32 @@ exports.default = function (label, container) {
 };
 
 },{}],5:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
 exports.default = function (label, container, customLabels) {
-    var customLabel = customLabels[label];
-    if (!customLabel) return [];
+    customLabels = customLabels || {};
+    var resolver = customLabels[label];
+
+    var elements = resolver;
+    if (typeof elements == 'function') {
+        elements = resolver();
+    }
+
+    if (!elements) return [];
+
+    elements = [].concat(elements);
 
     try {
         var r = [];
-        var xpathResult = document.evaluate(customLabel, container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-        if (xpathResult.snapshotLength > 0) {
-            for (var i = 0; i < xpathResult.snapshotLength; ++i) {
-                var e = xpathResult.snapshotItem(i);
-
-                if (isDescendant(container, e)) {
-                    r.push(e);
-                }
+        elements.forEach(function (e) {
+            if (isDescendant(container, e)) {
+                r.push(e);
             }
-        }
+        });
 
         return r;
     } catch (e) {

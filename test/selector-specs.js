@@ -3,7 +3,6 @@ import dom from "./dom";
 
 
 import log from '../src/logger';
-log.setLogLevel('trace');
 
 describe("Glance", function () {
     beforeEach(function() {

@@ -42,6 +42,7 @@ export default class DiscoverParentContainer {
             else {
                 for (var c = 0; c < elements.length; c++) {
                     var childContainer = elements[c];
+                    console.log(childContainer)
                     var foundItems = this.search(targets, childContainer, labelIndex + 1);
                     newTargets = newTargets.concat(foundItems);
                 }
