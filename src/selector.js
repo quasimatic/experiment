@@ -1,6 +1,7 @@
 import DefaultContainerStrategy from "./container-strategies/discover-parent"
 import defaultFindStrategies from "./find-strategies/default"
 import parser from "./parser";
+import log from "./logger";
 
 var defaultContainerStrategy = new DefaultContainerStrategy(defaultFindStrategies);
 
@@ -23,9 +24,15 @@ export class GlanceSelector {
     }
 }
 
-export default function(selector, customLabels) {
+var selector = function(selector, customLabels) {
     return new GlanceSelector({
         containerStrategy: defaultContainerStrategy,
         findStrategy: defaultFindStrategies
     }).find(selector, customLabels);
+};
+
+selector.setLogLevel = function(level) {
+    log.setLogLevel(level)
 }
+
+export default selector;

@@ -26,4 +26,12 @@ describe("Container strategy: Discover Parent", function() {
 
         containerSearcher.search(parser.parse("sibling 1>sibling 2").containers, document).should.deep.equal([divChild2]);
     });
+
+    it("should find all children within a container", function() {
+        var divParent = dom.create("div", "", {class: "parent"})
+        var divChild = dom.create("div", "child", { parent: divParent});
+        var divChild2 = dom.create("div", "another one", { parent: divParent});
+
+        containerSearcher.search(parser.parse("parent>div").containers, document).should.deep.equal([divChild, divChild2]);
+    });
 });

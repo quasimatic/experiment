@@ -46,7 +46,12 @@ export default class DiscoverParentContainer {
                     var foundItems = this.search(targets, childContainer, labelIndex + 1);
                     newTargets = newTargets.concat(foundItems);
                 }
+
+                console.log(newTargets.length)
             }
+
+            console.log('here')
+            console.log(this._unique(newTargets).length)
 
             return this._unique(newTargets);
         }
@@ -69,15 +74,9 @@ export default class DiscoverParentContainer {
     }
 
     _unique(array) {
-        var u = {}, a = [];
-        for(var i = 0, l = array.length; i < l; ++i){
-            if(u.hasOwnProperty(array[i])) {
-                continue;
-            }
-            a.push(array[i]);
-            u[array[i]] = 1;
-        }
-        return a;
+        return array.filter(function(x, i) {
+            return array.indexOf(x) === i
+        })
     }
 
     _isDescendant(parent, child) {

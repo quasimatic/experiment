@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-"use strict";
+'use strict';
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -17,7 +17,7 @@ var DiscoverParentContainer = function () {
     }
 
     _createClass(DiscoverParentContainer, [{
-        key: "search",
+        key: 'search',
         value: function search(targets, context, labelIndex) {
             labelIndex = labelIndex || 0;
             var target = targets[labelIndex];
@@ -58,13 +58,18 @@ var DiscoverParentContainer = function () {
                         var foundItems = this.search(targets, childContainer, labelIndex + 1);
                         newTargets = newTargets.concat(foundItems);
                     }
+
+                    console.log(newTargets.length);
                 }
+
+                console.log('here');
+                console.log(this._unique(newTargets).length);
 
                 return this._unique(newTargets);
             }
         }
     }, {
-        key: "_limitToReferences",
+        key: '_limitToReferences',
         value: function _limitToReferences(elements, container) {
             var elementContainsContainer = false;
             var parentsContainingReference = [];
@@ -80,21 +85,14 @@ var DiscoverParentContainer = function () {
             return elements;
         }
     }, {
-        key: "_unique",
+        key: '_unique',
         value: function _unique(array) {
-            var u = {},
-                a = [];
-            for (var i = 0, l = array.length; i < l; ++i) {
-                if (u.hasOwnProperty(array[i])) {
-                    continue;
-                }
-                a.push(array[i]);
-                u[array[i]] = 1;
-            }
-            return a;
+            return array.filter(function (x, i) {
+                return array.indexOf(x) === i;
+            });
         }
     }, {
-        key: "_isDescendant",
+        key: '_isDescendant',
         value: function _isDescendant(parent, child) {
             var node = child.parentNode;
             while (node != null) {
@@ -1077,13 +1075,6 @@ exports.GlanceSelector = undefined;
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-exports.default = function (selector, customLabels) {
-    return new GlanceSelector({
-        containerStrategy: defaultContainerStrategy,
-        findStrategy: _default2.default
-    }).find(selector, customLabels);
-};
-
 var _discoverParent = require("./container-strategies/discover-parent");
 
 var _discoverParent2 = _interopRequireDefault(_discoverParent);
@@ -1095,6 +1086,10 @@ var _default2 = _interopRequireDefault(_default);
 var _parser = require("./parser");
 
 var _parser2 = _interopRequireDefault(_parser);
+
+var _logger = require("./logger");
+
+var _logger2 = _interopRequireDefault(_logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1125,4 +1120,17 @@ var GlanceSelector = exports.GlanceSelector = function () {
     return GlanceSelector;
 }();
 
-},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./parser":12}]},{},[10]);
+var selector = function selector(_selector, customLabels) {
+    return new GlanceSelector({
+        containerStrategy: defaultContainerStrategy,
+        findStrategy: _default2.default
+    }).find(_selector, customLabels);
+};
+
+selector.setLogLevel = function (level) {
+    _logger2.default.setLogLevel(level);
+};
+
+exports.default = selector;
+
+},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":11,"./parser":12}]},{},[10]);
