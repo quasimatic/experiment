@@ -3,36 +3,65 @@ import defaultFindStrategies from "./find-strategies/default"
 import parser from "./parser";
 import log from "./logger";
 
-var defaultContainerStrategy = new DefaultContainerStrategy(defaultFindStrategies);
-
-export class GlanceSelector {
-    constructor(options) {
-        this.containerStrategy = options.containerStrategy;
-        this.findStrategy = options.findStrategy;
-        this.customLabels = options.customLabels;
+function mergeOptions(obj1, obj2) {
+    var obj3 = {};
+    for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
     }
+    for (var attrname in obj2) {
+        obj3[attrname] = obj2[attrname];
+    }
+    return obj3;
+}
 
-    find(selector, customLabels) {
-        var data = parser.parse(selector);
-        this.containerStrategy.customLabels = customLabels;
-        var elements = this.containerStrategy.search(data.containers, document);
+function GlanceSelector(options) {
+    var _selector = {};
+    _selector.customLabels = options.customLabels || {};
+    _selector.containerStrategy = options.containerStrategy;
+
+    var selector = function (reference) {
+        var data = parser.parse(reference);
+
+        var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
+        var elements = _selector.containerStrategy.search(data.containers, document, 0, resolvedLabels);
 
         if (elements.length === 1)
             return elements[0];
         else
             return elements;
     }
+
+    selector.addCustomLabels = function (customLabels) {
+        console.log(customLabels)
+        _selector.customLabels = mergeOptions(_selector.customLabels, customLabels);
+    }
+
+    selector.setLogLevel = function (level) {
+        log.setLogLevel(level)
+    }
+
+    return selector;
 }
 
-var selector = function(selector, customLabels) {
-    return new GlanceSelector({
-        containerStrategy: defaultContainerStrategy,
-        findStrategy: defaultFindStrategies
-    }).find(selector, customLabels);
-};
+function resolveCustomLabels(data, customLabels, selector) {
+    var newCustomLabels = {};
+    data.containers.forEach(function (reference) {
+        var customLabel = customLabels[reference.label];
+        if (typeof(customLabel) == 'function') {
 
-selector.setLogLevel = function(level) {
-    log.setLogLevel(level)
+            newCustomLabels[reference.label] = customLabel(GlanceSelector({
+                containerStrategy: selector.containerStrategy,
+                customLabels: mergeOptions(customLabels, newCustomLabels)
+            }), reference);
+        }
+        else {
+            newCustomLabels[reference.label] = customLabels[reference.label]
+        }
+    });
+
+    return newCustomLabels;
 }
 
-export default selector;
+var defaultContainerStrategy = new DefaultContainerStrategy(defaultFindStrategies);
+
+export default GlanceSelector({containerStrategy: defaultContainerStrategy});

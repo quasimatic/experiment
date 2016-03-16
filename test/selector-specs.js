@@ -81,11 +81,16 @@ describe("Glance", function () {
         return glance("item-not-found").should.deep.equal([]);
     });
 
-    it.skip("should look by custom labels", function () {
-        glance.addLabel("customlabel", function (selector) {
-            return this.convertGlanceSelector(".random>div#2").then((wdioSelector)=> this.webdriverio.element(wdioSelector))
-        });
+    it("should look by custom labels", function () {
+        var random = dom.createDiv("", {class: "random"});
+        var div1 = dom.createDiv("one", {parent: random});
+        var div2 = dom.createDiv("two", {parent: random});
 
-        glance.get("customlabel").should.eventually.match(/<div.*>Other Custom Data<\/div>/);
+        glance.addCustomLabels({
+            "customlabel": function(g, selector) {
+                return g("random>div#2");
+            }
+        });
+        glance("customlabel").should.deep.equal(div2);
     });
 });

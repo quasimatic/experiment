@@ -1,9 +1,10 @@
 export default class DiscoverParentContainer {
     constructor(searcher) {
         this.findElement = searcher;
+        this.customLabels = {};
     }
 
-    search(targets, context, labelIndex) {
+    search(targets, context, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
         var target = targets[labelIndex];
         var i = target.position - 1;
@@ -11,9 +12,9 @@ export default class DiscoverParentContainer {
         var elements = [];
 
         var parent = context;
-
+        
         while (parent && elements.length == 0) {
-            elements = this.findElement(target.label, parent, this.customLabels);
+            elements = this.findElement(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 
@@ -36,22 +37,16 @@ export default class DiscoverParentContainer {
 
             if (i >= 0) {
                 var childContainer = elements[i];
-                var foundItems = this.search(targets, childContainer, labelIndex + 1);
+                var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                 newTargets = newTargets.concat(foundItems);
             }
             else {
                 for (var c = 0; c < elements.length; c++) {
                     var childContainer = elements[c];
-                    console.log(childContainer)
-                    var foundItems = this.search(targets, childContainer, labelIndex + 1);
+                    var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                     newTargets = newTargets.concat(foundItems);
                 }
-
-                console.log(newTargets.length)
             }
-
-            console.log('here')
-            console.log(this._unique(newTargets).length)
 
             return this._unique(newTargets);
         }

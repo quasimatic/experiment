@@ -1,5 +1,5 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
     value: true
@@ -14,11 +14,12 @@ var DiscoverParentContainer = function () {
         _classCallCheck(this, DiscoverParentContainer);
 
         this.findElement = searcher;
+        this.customLabels = {};
     }
 
     _createClass(DiscoverParentContainer, [{
-        key: 'search',
-        value: function search(targets, context, labelIndex) {
+        key: "search",
+        value: function search(targets, context, labelIndex, customLabels) {
             labelIndex = labelIndex || 0;
             var target = targets[labelIndex];
             var i = target.position - 1;
@@ -28,7 +29,7 @@ var DiscoverParentContainer = function () {
             var parent = context;
 
             while (parent && elements.length == 0) {
-                elements = this.findElement(target.label, parent, this.customLabels);
+                elements = this.findElement(target.label, parent, customLabels);
                 parent = parent.parentNode;
             }
 
@@ -49,27 +50,21 @@ var DiscoverParentContainer = function () {
 
                 if (i >= 0) {
                     var childContainer = elements[i];
-                    var foundItems = this.search(targets, childContainer, labelIndex + 1);
+                    var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                     newTargets = newTargets.concat(foundItems);
                 } else {
                     for (var c = 0; c < elements.length; c++) {
                         var childContainer = elements[c];
-                        console.log(childContainer);
-                        var foundItems = this.search(targets, childContainer, labelIndex + 1);
+                        var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                         newTargets = newTargets.concat(foundItems);
                     }
-
-                    console.log(newTargets.length);
                 }
-
-                console.log('here');
-                console.log(this._unique(newTargets).length);
 
                 return this._unique(newTargets);
             }
         }
     }, {
-        key: '_limitToReferences',
+        key: "_limitToReferences",
         value: function _limitToReferences(elements, container) {
             var elementContainsContainer = false;
             var parentsContainingReference = [];
@@ -85,14 +80,14 @@ var DiscoverParentContainer = function () {
             return elements;
         }
     }, {
-        key: '_unique',
+        key: "_unique",
         value: function _unique(array) {
             return array.filter(function (x, i) {
                 return array.indexOf(x) === i;
             });
         }
     }, {
-        key: '_isDescendant',
+        key: "_isDescendant",
         value: function _isDescendant(parent, child) {
             var node = child.parentNode;
             while (node != null) {
@@ -1071,9 +1066,6 @@ module.exports = function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.GlanceSelector = undefined;
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _discoverParent = require("./container-strategies/discover-parent");
 
@@ -1093,44 +1085,63 @@ var _logger2 = _interopRequireDefault(_logger);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+function mergeOptions(obj1, obj2) {
+    var obj3 = {};
+    for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
+    }
+    for (var attrname in obj2) {
+        obj3[attrname] = obj2[attrname];
+    }
+    return obj3;
+}
+
+function GlanceSelector(options) {
+    var _selector = {};
+    _selector.customLabels = options.customLabels || {};
+    _selector.containerStrategy = options.containerStrategy;
+
+    var selector = function selector(reference) {
+        var data = _parser2.default.parse(reference);
+
+        var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
+        var elements = _selector.containerStrategy.search(data.containers, document, 0, resolvedLabels);
+
+        if (elements.length === 1) return elements[0];else return elements;
+    };
+
+    selector.addCustomLabels = function (customLabels) {
+        console.log(customLabels);
+        _selector.customLabels = mergeOptions(_selector.customLabels, customLabels);
+    };
+
+    selector.setLogLevel = function (level) {
+        _logger2.default.setLogLevel(level);
+    };
+
+    return selector;
+}
+
+function resolveCustomLabels(data, customLabels, selector) {
+    var newCustomLabels = {};
+    data.containers.forEach(function (reference) {
+        var customLabel = customLabels[reference.label];
+        if (typeof customLabel == 'function') {
+
+            newCustomLabels[reference.label] = customLabel(GlanceSelector({
+                containerStrategy: selector.containerStrategy,
+                customLabels: mergeOptions(customLabels, newCustomLabels)
+            }), reference);
+        } else {
+            newCustomLabels[reference.label] = customLabels[reference.label];
+        }
+    });
+
+    return newCustomLabels;
+}
 
 var defaultContainerStrategy = new _discoverParent2.default(_default2.default);
 
-var GlanceSelector = exports.GlanceSelector = function () {
-    function GlanceSelector(options) {
-        _classCallCheck(this, GlanceSelector);
-
-        this.containerStrategy = options.containerStrategy;
-        this.findStrategy = options.findStrategy;
-        this.customLabels = options.customLabels;
-    }
-
-    _createClass(GlanceSelector, [{
-        key: "find",
-        value: function find(selector, customLabels) {
-            var data = _parser2.default.parse(selector);
-            this.containerStrategy.customLabels = customLabels;
-            var elements = this.containerStrategy.search(data.containers, document);
-
-            if (elements.length === 1) return elements[0];else return elements;
-        }
-    }]);
-
-    return GlanceSelector;
-}();
-
-var selector = function selector(_selector, customLabels) {
-    return new GlanceSelector({
-        containerStrategy: defaultContainerStrategy,
-        findStrategy: _default2.default
-    }).find(_selector, customLabels);
-};
-
-selector.setLogLevel = function (level) {
-    _logger2.default.setLogLevel(level);
-};
-
-exports.default = selector;
+exports.default = GlanceSelector({ containerStrategy: defaultContainerStrategy });
 
 },{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":11,"./parser":12}]},{},[10]);
