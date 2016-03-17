@@ -143,7 +143,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":10}],4:[function(require,module,exports){
+},{"./xpath":12}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -241,6 +241,27 @@ exports.default = function (label, container, customLabels) {
         return e;
     }
 
+    _logger2.default.debug("Searching in name:", label);
+    e = (0, _name2.default)(label, container);
+    if (e.length > 0) {
+        _logger2.default.info("Matched using name:", label);
+        return e;
+    }
+
+    _logger2.default.debug("Searching in value:", label);
+    e = (0, _value2.default)(label, container);
+    if (e.length > 0) {
+        _logger2.default.info("Matched using value:", label);
+        return e;
+    }
+
+    _logger2.default.debug("Searching in placeholder:", label);
+    e = (0, _placeholder2.default)(label, container);
+    if (e.length > 0) {
+        _logger2.default.info("Matched using placeholder:", label);
+        return e;
+    }
+
     _logger2.default.debug("Searching by node type:", label);
     e = (0, _nodeType2.default)(label, container);
     if (e.length > 0) {
@@ -259,10 +280,6 @@ var _customLabel = require("./custom-label");
 
 var _customLabel2 = _interopRequireDefault(_customLabel);
 
-var _exactText = require("./exact-text");
-
-var _exactText2 = _interopRequireDefault(_exactText);
-
 var _containsText = require("./contains-text");
 
 var _containsText2 = _interopRequireDefault(_containsText);
@@ -275,35 +292,25 @@ var _className = require("./class-name");
 
 var _className2 = _interopRequireDefault(_className);
 
+var _name = require("./name");
+
+var _name2 = _interopRequireDefault(_name);
+
+var _value = require("./value");
+
+var _value2 = _interopRequireDefault(_value);
+
+var _placeholder = require("./placeholder");
+
+var _placeholder2 = _interopRequireDefault(_placeholder);
+
 var _nodeType = require("./node-type");
 
 var _nodeType2 = _interopRequireDefault(_nodeType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../logger":12,"./class-name":2,"./contains-text":3,"./custom-label":5,"./exact-text":7,"./id":8,"./node-type":9}],7:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-exports.default = function (label, container) {
-    try {
-        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-        var results = [];
-
-        for (var i = 0; i < xpathResult.snapshotLength; i++) {
-            results.push(xpathResult.snapshotItem(i));
-        }
-
-        return results;
-    } catch (err) {
-        return [];
-    }
-};
-
-},{}],8:[function(require,module,exports){
+},{"../logger":14,"./class-name":2,"./contains-text":3,"./custom-label":5,"./id":7,"./name":8,"./node-type":9,"./placeholder":10,"./value":11}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -324,7 +331,24 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":4}],9:[function(require,module,exports){
+},{"./css":4}],8:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (label, container) {
+    return (0, _xpath2.default)(".//*[contains(translate(@name, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", container);
+};
+
+var _xpath = require("./xpath");
+
+var _xpath2 = _interopRequireDefault(_xpath);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"./xpath":12}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -353,6 +377,40 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (label, container) {
+    return (0, _xpath2.default)(".//*[contains(translate(@placeholder, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", container);
+};
+
+var _xpath = require("./xpath");
+
+var _xpath2 = _interopRequireDefault(_xpath);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"./xpath":12}],11:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (label, container) {
+    return (0, _xpath2.default)(".//*[contains(translate(@value, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", container);
+};
+
+var _xpath = require("./xpath");
+
+var _xpath2 = _interopRequireDefault(_xpath);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"./xpath":12}],12:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (label, container) {
     try {
         var results = [];
 
@@ -368,7 +426,7 @@ exports.default = function (label, container) {
     }
 };
 
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 var _selector = require("./selector");
@@ -379,7 +437,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.glanceSelector = _selector2.default;
 
-},{"./selector":14}],12:[function(require,module,exports){
+},{"./selector":16}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -443,7 +501,7 @@ exports.default = {
     }
 };
 
-},{}],13:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -1070,7 +1128,7 @@ module.exports = function () {
   };
 }();
 
-},{}],14:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1153,4 +1211,4 @@ var defaultContainerStrategy = new _discoverParent2.default(_default2.default);
 
 exports.default = GlanceSelector({ containerStrategy: defaultContainerStrategy });
 
-},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":12,"./parser":13}]},{},[11]);
+},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":14,"./parser":15}]},{},[13]);
