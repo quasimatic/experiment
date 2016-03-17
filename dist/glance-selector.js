@@ -134,22 +134,16 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (label, container) {
-    try {
-        var results = [];
-
-        var xpathResult = document.evaluate(".//*[not(self::script) and contains(text(),'" + label + "')]", container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
-
-        for (var i = 0; i < xpathResult.snapshotLength; i++) {
-            results.push(xpathResult.snapshotItem(i));
-        }
-
-        return results;
-    } catch (err) {
-        return [];
-    }
+    return (0, _xpath2.default)(".//*[not(self::script) and not(self::noscript) and not(self::style) and text()[contains(translate(., 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'),translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]]", container);
 };
 
-},{}],4:[function(require,module,exports){
+var _xpath = require("./xpath");
+
+var _xpath2 = _interopRequireDefault(_xpath);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"./xpath":10}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -226,13 +220,6 @@ exports.default = function (label, container, customLabels) {
         return e;
     }
 
-    _logger2.default.debug("Searching for exact text:", label);
-    e = (0, _exactText2.default)(label, container);
-    if (e.length > 0) {
-        _logger2.default.info("Matched using exact text:", label);
-        return e;
-    }
-
     _logger2.default.debug("Searching for text that contains:", label);
     e = (0, _containsText2.default)(label, container);
     if (e.length > 0) {
@@ -294,7 +281,7 @@ var _nodeType2 = _interopRequireDefault(_nodeType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../logger":11,"./class-name":2,"./contains-text":3,"./custom-label":5,"./exact-text":7,"./id":8,"./node-type":9}],7:[function(require,module,exports){
+},{"../logger":12,"./class-name":2,"./contains-text":3,"./custom-label":5,"./exact-text":7,"./id":8,"./node-type":9}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -361,6 +348,29 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 },{"./css":4}],10:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (label, container) {
+    try {
+        var results = [];
+
+        var xpathResult = document.evaluate(label, container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        for (var i = 0; i < xpathResult.snapshotLength; i++) {
+            results.push(xpathResult.snapshotItem(i));
+        }
+
+        return results;
+    } catch (err) {
+        return [];
+    }
+};
+
+},{}],11:[function(require,module,exports){
+"use strict";
+
 var _selector = require("./selector");
 
 var _selector2 = _interopRequireDefault(_selector);
@@ -369,7 +379,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.glanceSelector = _selector2.default;
 
-},{"./selector":13}],11:[function(require,module,exports){
+},{"./selector":14}],12:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -433,7 +443,7 @@ exports.default = {
     }
 };
 
-},{}],12:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -1060,7 +1070,7 @@ module.exports = function () {
   };
 }();
 
-},{}],13:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1143,4 +1153,4 @@ var defaultContainerStrategy = new _discoverParent2.default(_default2.default);
 
 exports.default = GlanceSelector({ containerStrategy: defaultContainerStrategy });
 
-},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":11,"./parser":12}]},{},[10]);
+},{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":12,"./parser":13}]},{},[11]);
