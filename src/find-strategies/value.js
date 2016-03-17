@@ -5,7 +5,7 @@ import findByCss from '../../src/find-strategies/css';
     xpath and css won't find. The meathod is used to get search those dynamic values as well.
  */
 export default function (label, container) {
-    return findByCss("input", container).filter(function(input){
-        return input.value && input.value.toLowerCase() === label.toLowerCase();
+    return findByCss("button,input,option,param", container).filter(function(input){
+        return input.value && input.value.toLowerCase().indexOf(label.toLowerCase()) != -1;
     })
 }

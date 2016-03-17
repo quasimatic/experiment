@@ -19,7 +19,7 @@
 },{"./css":4}],10:[function(require,module,exports){
 "use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports["default"]=function(e,t){return(0,_xpath2["default"])(".//*[contains(translate(@placeholder, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('"+e+"', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]",t)};var _xpath=require("./xpath"),_xpath2=_interopRequireDefault(_xpath);
 },{"./xpath":12}],11:[function(require,module,exports){
-"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports["default"]=function(e,t){return(0,_css2["default"])("input",t).filter(function(t){return t.value&&t.value.toLowerCase()===e.toLowerCase()})};var _css=require("../../src/find-strategies/css"),_css2=_interopRequireDefault(_css);
+"use strict";function _interopRequireDefault(e){return e&&e.__esModule?e:{"default":e}}Object.defineProperty(exports,"__esModule",{value:!0}),exports["default"]=function(e,t){return(0,_css2["default"])("button,input,option,param",t).filter(function(t){return t.value&&-1!=t.value.toLowerCase().indexOf(e.toLowerCase())})};var _css=require("../../src/find-strategies/css"),_css2=_interopRequireDefault(_css);
 },{"../../src/find-strategies/css":4}],12:[function(require,module,exports){
 "use strict";Object.defineProperty(exports,"__esModule",{value:!0}),exports["default"]=function(t,e){try{for(var u=[],r=document.evaluate(t,e,null,XPathResult.ORDERED_NODE_SNAPSHOT_TYPE,null),n=0;n<r.snapshotLength;n++)u.push(r.snapshotItem(n));return u}catch(s){return[]}};
 },{}],13:[function(require,module,exports){

@@ -16,9 +16,35 @@ describe("Find strategy: Value Match", function() {
         findByValue("enteR naMe", document).should.deep.equal([input]);
     });
 
+    it("should find by contains", function() {
+        var input = dom.create("input", "", {});
+        input.value = "this name is unique"
+        findByValue("name", document).should.deep.equal([input]);
+    });
+
     it("should find dynamically set value", function() {
         var input = dom.create("input", "", {});
         input.value = "name"
         findByValue("name", document).should.deep.equal([input]);
     });
+
+    it("should find for button", function() {
+        var element = dom.create("button", "", {});
+        element.value = "name"
+        findByValue("name", document).should.deep.equal([element]);
+    });
+
+    it("should find for option", function() {
+        var element = dom.create("option", "", {});
+        element.value = "name"
+        findByValue("name", document).should.deep.equal([element]);
+    });
+    
+    it("should find for param", function() {
+        var element = dom.create("param", "", {});
+        element.value = "name"
+        findByValue("name", document).should.deep.equal([element]);
+    });
 });
+
+

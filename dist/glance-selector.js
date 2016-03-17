@@ -394,8 +394,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (label, container) {
-    return (0, _css2.default)("input", container).filter(function (input) {
-        return input.value && input.value.toLowerCase() === label.toLowerCase();
+    return (0, _css2.default)("button,input,option,param", container).filter(function (input) {
+        return input.value && input.value.toLowerCase().indexOf(label.toLowerCase()) != -1;
     });
 };
 
