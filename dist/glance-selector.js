@@ -394,16 +394,18 @@ Object.defineProperty(exports, "__esModule", {
 });
 
 exports.default = function (label, container) {
-    return (0, _xpath2.default)(".//*[contains(translate(@value, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", container);
+    return (0, _css2.default)("input", container).filter(function (input) {
+        return input.value && input.value.toLowerCase() === label.toLowerCase();
+    });
 };
 
-var _xpath = require("./xpath");
+var _css = require("../../src/find-strategies/css");
 
-var _xpath2 = _interopRequireDefault(_xpath);
+var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":12}],12:[function(require,module,exports){
+},{"../../src/find-strategies/css":4}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

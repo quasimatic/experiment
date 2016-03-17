@@ -15,4 +15,10 @@ describe("Find strategy: Value Match", function() {
         var input = dom.create("input", "", {vAlUe: "eNter namE"});
         findByValue("enteR naMe", document).should.deep.equal([input]);
     });
+
+    it("should find dynamically set value", function() {
+        var input = dom.create("input", "", {});
+        input.value = "name"
+        findByValue("name", document).should.deep.equal([input]);
+    });
 });
