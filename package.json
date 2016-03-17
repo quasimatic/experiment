@@ -4,7 +4,7 @@
   "description": "Glance selector library",
   "main": "lib/glance-selector.js",
   "scripts": {
-    "browserify": "./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector.js -t [ babelify --presets [ es2015 ] ]",
+    "browserify": "./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector.js -t [ babelify --presets [ es2015 ] ] && ./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector-min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map bundle.js.map --output bundle.js.map]",
     "build": "node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib && npm run browserify",
     "test": "echo 'Please test using wallaby'"
   },
@@ -30,6 +30,7 @@
     "babelify": "^7.2.0",
     "browserify": "^13.0.0",
     "chai": "^3.5.0",
+    "minifyify": "^7.3.2",
     "mocha": "^2.4.5",
     "pegjs": "^0.9.0",
     "phantomjs-polyfill": "0.0.2",

@@ -19,12 +19,6 @@ describe("Glance", function () {
         return glance("Item Contains").should.deep.equal(div);
     });
 
-    it("should look by exact match first then contains", function () {
-        var div1 = dom.create("div", "Item Exact Match");
-        var div2 = dom.create("div", "Item Exact Match Sorta");
-        return glance("Item Exact Match").should.deep.equal(div1);
-    });
-
     it('will look by id', function () {
         var div = dom.create("div", "", {id: "label-id"});
         return glance("label-id").should.deep.equal(div)
@@ -57,8 +51,10 @@ describe("Glance", function () {
     });
 
     it("should look for text in a node that contains text and a node", function () {
-        var div = dom.create("div");
+        var div = dom.createDiv("");
         var text = dom.createText("text and nodes", {parent: div});
+        var div2 = dom.createDiv("this is something", {parent: div});
+        glance.setLogLevel('trace')
         return glance("text and nodes").should.deep.equal(div)
     });
 
@@ -69,12 +65,12 @@ describe("Glance", function () {
     });
 
     it("should get duplicates for first type of match", function () {
-        var div1 = dom.create("div", "Copy Exact Match");
-        var div2 = dom.create("div", "Copy Exact Match");
-        dom.create("div", "Not Copy Exact Match");
-        dom.create("div", "Copy Exact Match Not");
+        var div1 = dom.createDiv("", {class:'item'});
+        var div2 = dom.createDiv("", {class:'item'});
+        var div3 = dom.createDiv("item");
+        var div4 = dom.createDiv("this is an item");
 
-        return glance("Copy Exact Match").should.deep.equal([div1, div2]);
+        return glance("item").should.deep.equal([div3, div4]);
     });
 
     it("should show an error if element not found", function () {

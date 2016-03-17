@@ -32,7 +32,6 @@ function GlanceSelector(options) {
     }
 
     selector.addCustomLabels = function (customLabels) {
-        console.log(customLabels)
         _selector.customLabels = mergeOptions(_selector.customLabels, customLabels);
     }
 

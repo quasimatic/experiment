@@ -15,13 +15,6 @@ export default function (label, container, customLabels) {
         return e;
     }
     
-    log.debug("Searching for exact text:", label);
-    e = findByExactText(label, container);
-    if (e.length > 0) {
-        log.info("Matched using exact text:", label);
-        return e;
-    }
-
     log.debug("Searching for text that contains:", label);
     e = findByContainsText(label, container);
     if (e.length > 0) {

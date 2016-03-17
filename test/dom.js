@@ -26,9 +26,9 @@ export default {
     createText(text, options) {
         options.parent = options.parent || document.body;
 
-        var text = document.createTextNode(text);
-        options.parent.appendChild(text);
+        var textNode = document.createTextNode(text);
+        options.parent.appendChild(textNode);
 
-        return text;
+        return textNode;
     }
 }
