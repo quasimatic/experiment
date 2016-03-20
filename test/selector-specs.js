@@ -13,7 +13,7 @@ describe("Glance", function () {
         var div = dom.create("div", "Content Item");
         return glance("Content Item").should.deep.equal(div);
     });
-
+    
     it("should look by content as contains", function () {
         var div = dom.create("div", "Item Contains stuff");
         return glance("Item Contains").should.deep.equal(div);

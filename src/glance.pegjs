@@ -1,42 +1,44 @@
-Start
- = containers:Container* { return {containers:containers}; }
+Start = scopes:Scope* { return scopes }
 
-Container
- = section:Section ContainerChar? { return section; }
+ScopeChar = ">"
+ModifierChar = ":"
+ModifierSeparator = ","
+IndexChar = "#"
+EscapeChar = "\\"
 
-Section
- = label:Label position:Index? modifier:Modifier? { return { label: label, position: position, modifier:modifier } }
+Scope
+ = reference:Reference ScopeChar? { return reference; }
 
-ContainerChar
- = ">"
+Reference
+ = label:Label position:Index? modifiers:Modifiers? { return { label: label, position: position, modifiers:modifiers } }
 
 Label
  = chars:LabelCharacter+ { return chars.join('') }
 
 LabelCharacter
-   = !(EscapeChar / ContainerChar / IndexChar / ModifierChar) c:Character { return c }
+   = !(EscapeChar / ScopeChar / IndexChar / ModifierChar) c:Character { return c }
    / c:EscapedSequence { return c }
 
 Character
  = .
 
 EscapedSequence
- = EscapeChar c:(EscapeChar / IndexChar / ContainerChar / ModifierChar) { return c; }
-
-EscapeChar
- = "\\"
+ = EscapeChar c:(EscapeChar / IndexChar / ScopeChar / ModifierChar) { return c; }
 
 Index
  = IndexChar position:Position { return position; }
 
-IndexChar
- = "#"
-
 Position
  = [0-9]+ { return parseInt(text(), 10); }
 
-Modifier
- = ModifierChar name:Character+ { return name.join(''); }
+Modifiers
+ = ModifierChar modifiers:ModifierName* { return modifiers; }
 
-ModifierChar
- = ":"
+ModifierName
+ = name:ModifierThing ModifierSeparator? { return name }
+
+ModifierThing
+ = thing:ModifierCharacter+ { return thing.join("") }
+
+ModifierCharacter
+  = !(ScopeChar / ModifierSeparator) c:Character { return c }
