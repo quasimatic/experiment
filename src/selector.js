@@ -1,6 +1,6 @@
 import DefaultContainerStrategy from "./container-strategies/discover-parent"
 import defaultFindStrategies from "./find-strategies/default"
-import parser from "./parser";
+import * as Parser from "./parser";
 import log from "./logger";
 
 function mergeOptions(obj1, obj2) {
@@ -20,7 +20,7 @@ function GlanceSelector(options) {
     _selector.containerStrategy = options.containerStrategy;
 
     var selector = function (reference) {
-        var data = parser.parse(reference);
+        var data = Parser.parse(reference);
         
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
         var elements = _selector.containerStrategy.search(data, document, 0, resolvedLabels);
@@ -61,5 +61,7 @@ function resolveCustomLabels(data, customLabels, selector) {
 }
 
 var defaultContainerStrategy = new DefaultContainerStrategy(defaultFindStrategies);
+
+export {Parser};
 
 export default GlanceSelector({containerStrategy: defaultContainerStrategy});

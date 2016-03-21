@@ -1284,6 +1284,7 @@ module.exports = function () {
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
+exports.Parser = undefined;
 
 var _discoverParent = require("./container-strategies/discover-parent");
 
@@ -1295,11 +1296,13 @@ var _default2 = _interopRequireDefault(_default);
 
 var _parser = require("./parser");
 
-var _parser2 = _interopRequireDefault(_parser);
+var Parser = _interopRequireWildcard(_parser);
 
 var _logger = require("./logger");
 
 var _logger2 = _interopRequireDefault(_logger);
+
+function _interopRequireWildcard(obj) { if (obj && obj.__esModule) { return obj; } else { var newObj = {}; if (obj != null) { for (var key in obj) { if (Object.prototype.hasOwnProperty.call(obj, key)) newObj[key] = obj[key]; } } newObj.default = obj; return newObj; } }
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -1320,7 +1323,7 @@ function GlanceSelector(options) {
     _selector.containerStrategy = options.containerStrategy;
 
     var selector = function selector(reference) {
-        var data = _parser2.default.parse(reference);
+        var data = Parser.parse(reference);
 
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
         var elements = _selector.containerStrategy.search(data, document, 0, resolvedLabels);
@@ -1358,6 +1361,7 @@ function resolveCustomLabels(data, customLabels, selector) {
 
 var defaultContainerStrategy = new _discoverParent2.default(_default2.default);
 
+exports.Parser = Parser;
 exports.default = GlanceSelector({ containerStrategy: defaultContainerStrategy });
 
 },{"./container-strategies/discover-parent":1,"./find-strategies/default":6,"./logger":14,"./parser":15}]},{},[13]);
