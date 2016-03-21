@@ -10,7 +10,7 @@ Scope
  = reference:Reference ScopeChar? { return reference; }
 
 Reference
- = label:Label position:Index? modifiers:Modifiers? { return { label: label, position: position, modifiers:modifiers } }
+ = label:Label position:Index? modifiers:Modifiers? Whitespace? { return { label: label.trim(), position: position, modifiers:modifiers } }
 
 Label
  = chars:LabelCharacter+ { return chars.join('') }
@@ -21,6 +21,9 @@ LabelCharacter
 
 Character
  = .
+
+Whitespace
+ = [ \t\r\n]+
 
 EscapedSequence
  = EscapeChar c:(EscapeChar / IndexChar / ScopeChar / ModifierChar) { return c; }
@@ -35,7 +38,7 @@ Modifiers
  = ModifierChar modifiers:ModifierName* { return modifiers; }
 
 ModifierName
- = name:ModifierThing ModifierSeparator? { return name }
+ = name:ModifierThing ModifierSeparator? { return name.trim() }
 
 ModifierThing
  = thing:ModifierCharacter+ { return thing.join("") }

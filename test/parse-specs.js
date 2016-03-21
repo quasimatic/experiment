@@ -94,4 +94,51 @@ describe("Parsing", function() {
             ]
         );
     });
+
+    it("should support spaces before and after a label", function() {
+        parser.parse(" label ").should.deep.equal([
+            {
+                label: "label",
+                position: null,
+                modifiers: null
+            }
+        ])
+    })
+
+    it("should support spaces before and after a label", function() {
+        parser.parse(" label > label2 ").should.deep.equal([
+            {
+                label: "label",
+                position: null,
+                modifiers: null
+            },
+            {
+                label: "label2",
+                position: null,
+                modifiers: null
+            }
+        ])
+    })
+
+    it("should support spaces before and after a label", function() {
+        parser.parse(" label#1 ").should.deep.equal([
+            {
+                label: "label",
+                position: 1,
+                modifiers: null
+            },
+        ])
+    })
+
+    it("should support spaces before and after a label", function() {
+        parser.parse(" label:modifier ").should.deep.equal([
+            {
+                label: "label",
+                position: null,
+                modifiers: [
+                    "modifier"
+                ]
+            },
+        ])
+    })
 });
