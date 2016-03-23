@@ -55,7 +55,7 @@ export default class DiscoverParentContainer {
     }
 
     _limitToVisible(elements) {
-        return elements.filter(e => e.offsetParent);
+        return elements.filter(e => e.tagName.toLowerCase() == "option" || e.offsetParent);
     }
 
 

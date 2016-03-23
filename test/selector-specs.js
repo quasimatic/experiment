@@ -112,4 +112,11 @@ describe("Glance", function () {
 
         return glance("label>input").should.deep.equal([input1, input3]);
     });
+
+    it("should find text in select option", function () {
+        var select = dom.create("select", "", {id: "select-1"});
+        var text1 = dom.create("option", "text1", {value: "value1", parent: select});
+        dom.create("option", "text2", {value: "value2", parent: select});
+        return glance("select-1>text1").should.deep.equal(text1);
+    })
 });
