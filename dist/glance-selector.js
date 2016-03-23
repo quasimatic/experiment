@@ -33,7 +33,9 @@ var DiscoverParentContainer = function () {
                 parent = parent.parentNode;
             }
 
-            elements = this._limitToReferences(elements, context);
+            elements = this._limitToVisible(elements);
+            elements = this._limitToScope(elements, context);
+            elements = this._limitToNextSibling(elements, context);
 
             var lastItem = labelIndex + 1 === targets.length;
             if (lastItem) {
@@ -64,12 +66,19 @@ var DiscoverParentContainer = function () {
             }
         }
     }, {
-        key: "_limitToReferences",
-        value: function _limitToReferences(elements, container) {
+        key: "_limitToVisible",
+        value: function _limitToVisible(elements) {
+            return elements.filter(function (e) {
+                return e.offsetParent;
+            });
+        }
+    }, {
+        key: "_limitToScope",
+        value: function _limitToScope(elements, scope) {
             var elementContainsContainer = false;
             var parentsContainingReference = [];
             for (var e = 0; e < elements.length; ++e) {
-                if (this._isDescendant(elements[e], container)) {
+                if (this._isDescendant(elements[e], scope)) {
                     elementContainsContainer = true;
                     parentsContainingReference.push(elements[e]);
                 }
@@ -78,6 +87,15 @@ var DiscoverParentContainer = function () {
             if (elementContainsContainer) return parentsContainingReference;
 
             return elements;
+        }
+    }, {
+        key: "_limitToNextSibling",
+        value: function _limitToNextSibling(elements, scope) {
+            var siblings = elements.filter(function (e) {
+                return scope && scope.nextElementSibling == e;
+            });
+
+            return siblings.length == 0 ? elements : siblings;
         }
     }, {
         key: "_unique",

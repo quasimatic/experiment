@@ -12,18 +12,20 @@ export default class DiscoverParentContainer {
         var elements = [];
 
         var parent = context;
-        
+
         while (parent && elements.length == 0) {
             elements = this.findElement(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 
-        elements = this._limitToReferences(elements, context);
+        elements = this._limitToVisible(elements);
+        elements = this._limitToScope(elements, context);
+        elements = this._limitToNextSibling(elements, context);
 
         var lastItem = labelIndex + 1 === targets.length;
         if (lastItem) {
-            if(i >= 0) {
-                if(!elements[i])
+            if (i >= 0) {
+                if (!elements[i])
                     return [];
 
                 return [].concat(elements[i]);
@@ -52,11 +54,16 @@ export default class DiscoverParentContainer {
         }
     }
 
-    _limitToReferences(elements, container) {
+    _limitToVisible(elements) {
+        return elements.filter(e => e.offsetParent);
+    }
+
+
+    _limitToScope(elements, scope) {
         var elementContainsContainer = false;
         var parentsContainingReference = [];
         for (var e = 0; e < elements.length; ++e) {
-            if (this._isDescendant(elements[e], container)) {
+            if (this._isDescendant(elements[e], scope)) {
                 elementContainsContainer = true;
                 parentsContainingReference.push(elements[e]);
             }
@@ -68,8 +75,16 @@ export default class DiscoverParentContainer {
         return elements;
     }
 
+    _limitToNextSibling(elements, scope) {
+        var siblings = elements.filter(function(e){
+            return scope && scope.nextElementSibling == e;
+        });
+
+        return siblings.length == 0? elements : siblings;
+    }
+
     _unique(array) {
-        return array.filter(function(x, i) {
+        return array.filter(function (x, i) {
             return array.indexOf(x) === i
         })
     }

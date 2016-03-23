@@ -5,7 +5,7 @@ import dom from "./dom";
 import log from '../src/logger';
 
 describe("Glance", function () {
-    beforeEach(function() {
+    beforeEach(function () {
         document.body.innerHTML = "";
     });
 
@@ -13,7 +13,7 @@ describe("Glance", function () {
         var div = dom.create("div", "Content Item");
         return glance("Content Item").should.deep.equal(div);
     });
-    
+
     it("should look by content as contains", function () {
         var div = dom.create("div", "Item Contains stuff");
         return glance("Item Contains").should.deep.equal(div);
@@ -65,8 +65,8 @@ describe("Glance", function () {
     });
 
     it("should get duplicates for first type of match", function () {
-        var div1 = dom.createDiv("", {class:'item'});
-        var div2 = dom.createDiv("", {class:'item'});
+        var div1 = dom.createDiv("", {class: 'item'});
+        var div2 = dom.createDiv("", {class: 'item'});
         var div3 = dom.createDiv("item");
         var div4 = dom.createDiv("this is an item");
 
@@ -83,10 +83,33 @@ describe("Glance", function () {
         var div2 = dom.createDiv("two", {parent: random});
 
         glance.addCustomLabels({
-            "customlabel": function(g, selector) {
+            "customlabel": function (g, selector) {
                 return g("random>div#2");
             }
         });
         glance("customlabel").should.deep.equal(div2);
+    });
+
+    it("should only search visible elements", function () {
+        var div1 = dom.create("div", "Duplicate");
+        var div2 = dom.create("div", "Duplicate", {style: "display: none;"});
+        return glance("Duplicate").should.deep.equal(div1);
+    })
+
+    it("should limit to next sibling", function () {
+        var wrapper1 = dom.create("div");
+        var wrapper2 = dom.create("div");
+
+        var label1 = dom.create("label", "label", {parent: wrapper1});
+        var input1 = dom.create("input", "", {parent: wrapper1})
+        var label2 = dom.create("label", "another", {parent: wrapper1});
+        var input2 = dom.create("input", "", {parent: wrapper1})
+
+        var label3 = dom.create("label", "label", {parent: wrapper2});
+        var input3 = dom.create("input", "", {parent: wrapper2})
+        var label4 = dom.create("label", "another", {parent: wrapper2});
+        var input4 = dom.create("input", "", {parent: wrapper2})
+
+        return glance("label>input").should.deep.equal([input1, input3]);
     });
 });
