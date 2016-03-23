@@ -417,13 +417,13 @@ exports.default = function (label, container) {
     });
 };
 
-var _css = require("../../src/find-strategies/css");
+var _css = require("./css");
 
 var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../../src/find-strategies/css":4}],12:[function(require,module,exports){
+},{"./css":4}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

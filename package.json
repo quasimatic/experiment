@@ -1,6 +1,6 @@
 {
   "name": "@quasimatic/glance-selector",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Glance selector library",
   "main": "lib/selector.js",
   "scripts": {

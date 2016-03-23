@@ -1,4 +1,4 @@
-import findByCss from '../../src/find-strategies/css';
+import findByCss from './css';
 
 /*
     Searching the dom by xpath or css for value only gets the default. Inputs dynamically set don't update the dom which
