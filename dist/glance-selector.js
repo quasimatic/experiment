@@ -92,6 +92,7 @@ var DiscoverParentContainer = function () {
         key: "_limitToNextSibling",
         value: function _limitToNextSibling(elements, scope) {
             var siblings = elements.filter(function (e) {
+                console.log("sibcheck:", scope, scope.nextElementSibling, scope.nextElementSibling == e);
                 return scope && scope.nextElementSibling == e;
             });
 

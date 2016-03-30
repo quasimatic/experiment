@@ -77,6 +77,7 @@ export default class DiscoverParentContainer {
 
     _limitToNextSibling(elements, scope) {
         var siblings = elements.filter(function(e){
+            console.log("sibcheck:", scope, scope.nextElementSibling, scope.nextElementSibling == e)
             return scope && scope.nextElementSibling == e;
         });
 

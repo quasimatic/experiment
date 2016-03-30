@@ -1,3 +1,5 @@
+import ReactDOM from 'react-dom';
+
 export default {
     create(type, text, options) {
         text = text || "";
@@ -30,5 +32,17 @@ export default {
         options.parent.appendChild(textNode);
 
         return textNode;
+    },
+
+    get(...ids) {
+        var result = ids.map(function(id) {
+            return document.getElementById(id)
+        });
+
+        return result.length == 1? result[0] : result;
+    },
+
+    render(jsx) {
+        return ReactDOM.render(jsx, document.body);
     }
 }
