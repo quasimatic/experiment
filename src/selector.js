@@ -1,4 +1,4 @@
-import DefaultContainerStrategy from "./container-strategies/discover-parent"
+import DefaultContainerStrategy from "./scope-strategies/discover-parent"
 import defaultFindStrategies from "./find-strategies/default"
 import * as Parser from "./parser";
 import log from "./logger";

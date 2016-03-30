@@ -1,3 +1,5 @@
+import nthFilter from "../position-filters/nth-filter";
+
 export default class DiscoverParentContainer {
     constructor(searcher) {
         this.findElement = searcher;
@@ -7,8 +9,7 @@ export default class DiscoverParentContainer {
     search(targets, context, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
         var target = targets[labelIndex];
-        var i = target.position - 1;
-
+        
         var elements = [];
 
         var parent = context;
@@ -23,31 +24,19 @@ export default class DiscoverParentContainer {
         elements = this._limitToNextSibling(elements, context);
 
         var lastItem = labelIndex + 1 === targets.length;
+
+        var filteredElements = nthFilter(elements, target.position);
         if (lastItem) {
-            if (i >= 0) {
-                if (!elements[i])
-                    return [];
-
-                return [].concat(elements[i]);
-            }
-
-            return elements;
+            return filteredElements;
         }
         else {
             // IS a container
             var newTargets = [];
 
-            if (i >= 0) {
-                var childContainer = elements[i];
+            for (var c = 0; c < filteredElements.length; c++) {
+                var childContainer = filteredElements[c];
                 var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                 newTargets = newTargets.concat(foundItems);
-            }
-            else {
-                for (var c = 0; c < elements.length; c++) {
-                    var childContainer = elements[c];
-                    var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
-                    newTargets = newTargets.concat(foundItems);
-                }
             }
 
             return this._unique(newTargets);
@@ -76,12 +65,11 @@ export default class DiscoverParentContainer {
     }
 
     _limitToNextSibling(elements, scope) {
-        var siblings = elements.filter(function(e){
-            console.log("sibcheck:", scope, scope.nextElementSibling, scope.nextElementSibling == e)
+        var siblings = elements.filter(function (e) {
             return scope && scope.nextElementSibling == e;
         });
 
-        return siblings.length == 0? elements : siblings;
+        return siblings.length == 0 ? elements : siblings;
     }
 
     _unique(array) {

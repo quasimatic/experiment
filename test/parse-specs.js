@@ -24,10 +24,10 @@ describe("Parsing", function() {
         );
     });
 
-    it("should support containers", function() {
-        parser.parse("container>label").should.deep.equal([
+    it("should support scopes", function() {
+        parser.parse("scope>label").should.deep.equal([
                 {
-                    label: "container",
+                    label: "scope",
                     position: null,
                     modifiers: null
                 },
@@ -62,7 +62,7 @@ describe("Parsing", function() {
         );
     });
 
-    it("should escape container character", function() {
+    it("should escape scope character", function() {
         parser.parse("label\\>test").should.deep.equal([
                 {
                     label: "label>test",
