@@ -33,6 +33,11 @@ module.exports = function (wallaby) {
             var should = chai.should();
 
             window.__moduleBundler.loadTests();
+        },
+
+        workers: {
+            initial: 6,
+            regular: 6
         }
     };
 };

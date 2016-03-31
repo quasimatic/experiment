@@ -155,3 +155,39 @@ describe("Glance", function () {
         return glance("select-1>text1").should.deep.equal(dom.get("target-1"));
     })
 });
+
+describe('Selector Nth', function () {
+    beforeEach(function () {
+        document.body.innerHTML = "";
+    });
+
+    it("should get the nth item", function() {
+        dom.render(
+            <div className="box1">
+                <div className="item-1">Item A</div>
+                <div id="target" className="item-2">Item A</div>
+                <div className="item-3">Item A</div>
+            </div>
+        )
+
+        return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
+    });
+
+    it("should get the nth container for an item", function() {
+        dom.render(
+            <div className="box2">
+                <div className="inner-box">
+                    <div className="item-1">Item A</div>
+                </div>
+                <div className="inner-box">
+                    <div id="target" className="item-2">Item A</div>
+                </div>
+                <div className="inner-box">
+                    <div className="item-3">Item A</div>
+                </div>
+            </div>
+        )
+
+        return glance("box2>inner-box#2>Item A").should.deep.equal(dom.get("target"));
+    });
+});
