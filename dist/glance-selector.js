@@ -332,7 +332,7 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 window.glanceSelector = _selector2.default;
 
-},{"./selector":17}],13:[function(require,module,exports){
+},{"./selector":18}],13:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -399,6 +399,23 @@ exports.default = {
 },{}],14:[function(require,module,exports){
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+    "visible": {
+        implicit: true,
+        filter: function filter(elements) {
+            return elements.filter(function (e) {
+                return e.tagName.toLowerCase() == "option" || e.offsetParent;
+            });
+        }
+    }
+};
+
+},{}],15:[function(require,module,exports){
+"use strict";
+
 module.exports = function () {
   "use strict";
 
@@ -453,7 +470,7 @@ module.exports = function () {
       return reference;
     },
         peg$c12 = function peg$c12(label, position, modifiers) {
-      return { label: label.trim(), position: position, modifiers: modifiers };
+      return { label: label.trim(), position: position, modifiers: modifiers || [] };
     },
         peg$c13 = function peg$c13(chars) {
       return chars.join('');
@@ -1171,7 +1188,7 @@ module.exports = function () {
   };
 }();
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1191,7 +1208,7 @@ exports.default = function (elements, position) {
     return [elements[i]];
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1204,21 +1221,42 @@ var _nthFilter = require("../position-filters/nth-filter");
 
 var _nthFilter2 = _interopRequireDefault(_nthFilter);
 
+var _visible = require("../modifiers/visible");
+
+var _visible2 = _interopRequireDefault(_visible);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+function mergeOptions(obj1, obj2) {
+    var obj3 = {};
+    for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
+    }
+    for (var attrname in obj2) {
+        obj3[attrname] = obj2[attrname];
+    }
+    return obj3;
+}
+
 var DiscoverParentContainer = function () {
-    function DiscoverParentContainer(searcher) {
+    function DiscoverParentContainer(config) {
         _classCallCheck(this, DiscoverParentContainer);
 
-        this.findElement = searcher;
+        this.findStrategy = config.findStrategy;
+        this.modifiers = config.modifiers || {};
+
+        this.modifiers = mergeOptions(this.modifiers, _visible2.default);
+
         this.customLabels = {};
     }
 
     _createClass(DiscoverParentContainer, [{
         key: "search",
         value: function search(targets, context, labelIndex, customLabels) {
+            var _this = this;
+
             labelIndex = labelIndex || 0;
             var target = targets[labelIndex];
 
@@ -1227,18 +1265,41 @@ var DiscoverParentContainer = function () {
             var parent = context;
 
             while (parent && elements.length == 0) {
-                elements = this.findElement(target.label, parent, customLabels);
+                elements = this.findStrategy(target.label, parent, customLabels);
                 parent = parent.parentNode;
             }
 
-            elements = this._limitToVisible(elements);
             elements = this._limitToScope(elements, context);
             elements = this._limitToNextSibling(elements, context);
 
-            var lastItem = labelIndex + 1 === targets.length;
+            elements = Object.keys(this.modifiers).reduce(function (previousValue, modifierName) {
+                var modifier = _this.modifiers[modifierName];
+                if (typeof modifier != 'undefined' && modifier.implicit) {
+                    if (Object.keys(_this.modifiers).filter(function (k) {
+                        return _this.modifiers[k].override == modifierName;
+                    }).length == 0) {
+                        return modifier.filter(previousValue);
+                    }
+                }
+
+                return previousValue;
+            }, elements);
+
+            elements = target.modifiers.reduce(function (previousValue, modifierName) {
+                var modifier = _this.modifiers[modifierName];
+                if (typeof modifier != 'undefined') {
+                    if (Object.keys(_this.modifiers).filter(function (k) {
+                        return _this.modifiers[k].override == modifierName;
+                    }).length == 0) {
+                        return modifier.filter(previousValue);
+                    }
+
+                    return previousValue;
+                }
+            }, elements);
 
             var filteredElements = (0, _nthFilter2.default)(elements, target.position);
-            if (lastItem) {
+            if (this._lastItem(targets, labelIndex)) {
                 return filteredElements;
             } else {
                 // IS a container
@@ -1254,12 +1315,15 @@ var DiscoverParentContainer = function () {
             }
         }
     }, {
-        key: "_limitToVisible",
-        value: function _limitToVisible(elements) {
-            return elements.filter(function (e) {
-                return e.tagName.toLowerCase() == "option" || e.offsetParent;
-            });
+        key: "_lastItem",
+        value: function _lastItem(targets, labelIndex) {
+            return labelIndex + 1 === targets.length;
         }
+
+        // _limitToVisible(elements) {
+        //     return elements.filter(e => e.tagName.toLowerCase() == "option" || e.offsetParent);
+        // }
+
     }, {
         key: "_limitToScope",
         value: function _limitToScope(elements, scope) {
@@ -1311,7 +1375,7 @@ var DiscoverParentContainer = function () {
 
 exports.default = DiscoverParentContainer;
 
-},{"../position-filters/nth-filter":15}],17:[function(require,module,exports){
+},{"../modifiers/visible":14,"../position-filters/nth-filter":16}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1353,19 +1417,25 @@ function mergeOptions(obj1, obj2) {
 function GlanceSelector(options) {
     var _selector = {};
     _selector.customLabels = options.customLabels || {};
-    _selector.containerStrategy = options.containerStrategy;
+    _selector.modifiers = options.modifiers || {};
+
+    _selector.containerStrategyFactory = options.containerStrategyFactory;
 
     var selector = function selector(reference) {
         var data = Parser.parse(reference);
 
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
-        var elements = _selector.containerStrategy.search(data, document, 0, resolvedLabels);
+        var elements = _selector.containerStrategyFactory({ findStrategy: _default2.default, modifiers: _selector.modifiers }).search(data, document, 0, resolvedLabels);
 
         if (elements.length === 1) return elements[0];else return elements;
     };
 
     selector.addCustomLabels = function (customLabels) {
         _selector.customLabels = mergeOptions(_selector.customLabels, customLabels);
+    };
+
+    selector.addModifiers = function (modifiers) {
+        _selector.modifiers = mergeOptions(_selector.modifiers, modifiers);
     };
 
     selector.setLogLevel = function (level) {
@@ -1381,7 +1451,7 @@ function resolveCustomLabels(data, customLabels, selector) {
         var customLabel = customLabels[reference.label];
         if (typeof customLabel == 'function') {
             newCustomLabels[reference.label] = customLabel(GlanceSelector({
-                containerStrategy: selector.containerStrategy,
+                containerStrategyFactory: selector.containerStrategyFactory,
                 customLabels: mergeOptions(customLabels, newCustomLabels)
             }), reference);
         } else {
@@ -1392,9 +1462,9 @@ function resolveCustomLabels(data, customLabels, selector) {
     return newCustomLabels;
 }
 
-var defaultContainerStrategy = new _discoverParent2.default(_default2.default);
-
 exports.Parser = Parser;
-exports.default = GlanceSelector({ containerStrategy: defaultContainerStrategy });
+exports.default = GlanceSelector({ containerStrategyFactory: function containerStrategyFactory(config) {
+        return new _discoverParent2.default(config);
+    } });
 
-},{"./find-strategies/default":5,"./logger":13,"./parser":14,"./scope-strategies/discover-parent":16}]},{},[12]);
+},{"./find-strategies/default":5,"./logger":13,"./parser":15,"./scope-strategies/discover-parent":17}]},{},[12]);

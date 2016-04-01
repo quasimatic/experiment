@@ -8,7 +8,7 @@ var scopeStrategy;
 describe("Scope strategy: Discover container", function () {
     beforeEach(function () {
         document.body.innerHTML = "";
-        scopeStrategy = new DiscoverParentContainer(defaultFinder);
+        scopeStrategy = new DiscoverParentContainer({findStrategy:defaultFinder});
     });
 
     it("should find within a container", function () {
@@ -150,7 +150,6 @@ describe("Scope strategy: Discover container", function () {
     });
 
     it("should find the custom label in container", function () {
-
         dom.render(
             <div className="box10">
                 <div className="custom-class">Outside</div>

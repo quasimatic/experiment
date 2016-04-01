@@ -10,7 +10,7 @@ Scope
  = reference:Reference ScopeChar? { return reference; }
 
 Reference
- = label:Label position:Index? modifiers:Modifiers? Whitespace? { return { label: label.trim(), position: position, modifiers:modifiers } }
+ = label:Label position:Index? modifiers:Modifiers? Whitespace? { return { label: label.trim(), position: position, modifiers: modifiers || [] } }
 
 Label
  = chars:LabelCharacter+ { return chars.join('') }

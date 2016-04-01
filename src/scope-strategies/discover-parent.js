@@ -1,32 +1,67 @@
 import nthFilter from "../position-filters/nth-filter";
+import visibleModifier from "../modifiers/visible";
+
+function mergeOptions(obj1, obj2) {
+    var obj3 = {};
+    for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
+    }
+    for (var attrname in obj2) {
+        obj3[attrname] = obj2[attrname];
+    }
+    return obj3;
+}
 
 export default class DiscoverParentContainer {
-    constructor(searcher) {
-        this.findElement = searcher;
+    constructor(config) {
+        this.findStrategy = config.findStrategy;
+        this.modifiers = config.modifiers || {};
+
+        this.modifiers = mergeOptions(this.modifiers, visibleModifier)
+
         this.customLabels = {};
     }
 
     search(targets, context, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
         var target = targets[labelIndex];
-        
+
         var elements = [];
 
         var parent = context;
 
         while (parent && elements.length == 0) {
-            elements = this.findElement(target.label, parent, customLabels);
+            elements = this.findStrategy(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 
-        elements = this._limitToVisible(elements);
         elements = this._limitToScope(elements, context);
         elements = this._limitToNextSibling(elements, context);
 
-        var lastItem = labelIndex + 1 === targets.length;
+        elements = Object.keys(this.modifiers).reduce((previousValue, modifierName) => {
+            var modifier = this.modifiers[modifierName];
+            if(typeof(modifier) != 'undefined' && modifier.implicit) {
+                if(Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
+                    return modifier.filter(previousValue)
+                }
+            }
+
+            return previousValue;
+        }, elements)
+
+        elements = target.modifiers.reduce((previousValue, modifierName) => {
+                var modifier = this.modifiers[modifierName];
+                if(typeof(modifier) != 'undefined') {
+                    if(Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
+                        return modifier.filter(previousValue)
+                    }
+
+                    return previousValue;
+                }
+            }, elements)
 
         var filteredElements = nthFilter(elements, target.position);
-        if (lastItem) {
+        if (this._lastItem(targets, labelIndex)) {
             return filteredElements;
         }
         else {
@@ -43,9 +78,13 @@ export default class DiscoverParentContainer {
         }
     }
 
-    _limitToVisible(elements) {
-        return elements.filter(e => e.tagName.toLowerCase() == "option" || e.offsetParent);
+    _lastItem(targets, labelIndex) {
+        return labelIndex + 1 === targets.length;
     }
+
+    // _limitToVisible(elements) {
+    //     return elements.filter(e => e.tagName.toLowerCase() == "option" || e.offsetParent);
+    // }
 
 
     _limitToScope(elements, scope) {

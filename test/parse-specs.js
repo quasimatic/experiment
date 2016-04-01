@@ -7,7 +7,7 @@ describe("Parsing", function() {
                     {
                         label: "label",
                         position: null,
-                        modifiers: null
+                        modifiers: []
                     }
                 ]
         );
@@ -18,7 +18,7 @@ describe("Parsing", function() {
                 {
                     label: "label",
                     position: 10,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -29,12 +29,12 @@ describe("Parsing", function() {
                 {
                     label: "scope",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 },
                 {
                     label: "label",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -56,7 +56,7 @@ describe("Parsing", function() {
                 {
                     label: "label#10",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -67,7 +67,7 @@ describe("Parsing", function() {
                 {
                     label: "label>test",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -78,7 +78,7 @@ describe("Parsing", function() {
                 {
                     label: "label:test",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -89,7 +89,7 @@ describe("Parsing", function() {
                 {
                     label: "label\\test",
                     position: null,
-                    modifiers: null
+                    modifiers: []
                 }
             ]
         );
@@ -100,7 +100,7 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: null,
-                modifiers: null
+                modifiers: []
             }
         ])
     })
@@ -110,12 +110,12 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: null,
-                modifiers: null
+                modifiers: []
             },
             {
                 label: "label2",
                 position: null,
-                modifiers: null
+                modifiers: []
             }
         ])
     })
@@ -125,7 +125,7 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: 1,
-                modifiers: null
+                modifiers: []
             },
         ])
     })

@@ -17,13 +17,15 @@ function mergeOptions(obj1, obj2) {
 function GlanceSelector(options) {
     var _selector = {};
     _selector.customLabels = options.customLabels || {};
-    _selector.containerStrategy = options.containerStrategy;
+    _selector.modifiers = options.modifiers || {};
+    
+    _selector.containerStrategyFactory = options.containerStrategyFactory;
 
     var selector = function (reference) {
         var data = Parser.parse(reference);
         
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
-        var elements = _selector.containerStrategy.search(data, document, 0, resolvedLabels);
+        var elements = _selector.containerStrategyFactory({findStrategy: defaultFindStrategies, modifiers:_selector.modifiers}).search(data, document, 0, resolvedLabels);
 
         if (elements.length === 1)
             return elements[0];
@@ -33,6 +35,10 @@ function GlanceSelector(options) {
 
     selector.addCustomLabels = function (customLabels) {
         _selector.customLabels = mergeOptions(_selector.customLabels, customLabels);
+    }
+
+    selector.addModifiers = function (modifiers) {
+        _selector.modifiers = mergeOptions(_selector.modifiers, modifiers);
     }
 
     selector.setLogLevel = function (level) {
@@ -48,7 +54,7 @@ function resolveCustomLabels(data, customLabels, selector) {
         var customLabel = customLabels[reference.label];
         if (typeof(customLabel) == 'function') {
             newCustomLabels[reference.label] = customLabel(GlanceSelector({
-                containerStrategy: selector.containerStrategy,
+                containerStrategyFactory: selector.containerStrategyFactory,
                 customLabels: mergeOptions(customLabels, newCustomLabels)
             }), reference);
         }
@@ -60,8 +66,6 @@ function resolveCustomLabels(data, customLabels, selector) {
     return newCustomLabels;
 }
 
-var defaultContainerStrategy = new DefaultContainerStrategy(defaultFindStrategies);
-
 export {Parser};
 
-export default GlanceSelector({containerStrategy: defaultContainerStrategy});
+export default GlanceSelector({containerStrategyFactory: (config) => new DefaultContainerStrategy(config)});

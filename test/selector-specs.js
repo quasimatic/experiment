@@ -161,7 +161,7 @@ describe('Selector Nth', function () {
         document.body.innerHTML = "";
     });
 
-    it("should get the nth item", function() {
+    it("should get the nth item", function () {
         dom.render(
             <div className="box1">
                 <div className="item-1">Item A</div>
@@ -173,7 +173,7 @@ describe('Selector Nth', function () {
         return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
     });
 
-    it("should get the nth container for an item", function() {
+    it("should get the nth container for an item", function () {
         dom.render(
             <div className="box2">
                 <div className="inner-box">
@@ -189,5 +189,81 @@ describe('Selector Nth', function () {
         )
 
         return glance("box2>inner-box#2>Item A").should.deep.equal(dom.get("target"));
+    });
+});
+
+describe('Selector should apply modifier', function () {
+    beforeEach(function () {
+        document.body.innerHTML = "";
+    });
+
+    it("should filter items for modifier", function () {
+        dom.render(
+            <div>
+                <div id="target-1">1</div>
+                <div id="target-2">12</div>
+                <div>123</div>
+                <div>1234</div>
+            </div>
+        )
+
+        glance.addModifiers(
+            {
+                "lessthan3characters": {
+                    filter: function (filteredElements) {
+                        return filteredElements.filter(e => e.innerHTML.length < 3)
+                    }
+                }
+            }
+        )
+
+        return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
+    });
+
+    it("should support overriding modifiers", function () {
+        dom.render(
+            <div>
+                <div id="target-1">1</div>
+                <div id="target-2">1</div>
+                <div id="target-3" style={{display: "none"}}>1</div>
+                <div id="target-4" style={{display: "none"}}>1</div>
+            </div>
+        )
+
+        glance.addModifiers(
+            {
+                "include-hidden": {
+                    override: "visible",
+                    filter: function (elements) {
+                        return elements;
+                    }
+                }
+            }
+        )
+
+        return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
+    });
+
+    it("should support implicit modifiers", function () {
+        dom.render(
+            <div>
+                <div id="target-1">1</div>
+                <div id="target-2">12</div>
+                <div id="target-3">123</div>
+                <div id="target-4">1234</div>
+            </div>
+        )
+
+        glance.addModifiers(
+            {
+                "lessthan3characters": {
+                    implicit:true,
+                    filter: function (filteredElements) {
+                        return filteredElements.filter(e => e.innerHTML.length < 3)
+                    }
+                }
+            }
+        )
+        return glance("1").should.deep.equal(dom.get("target-1", "target-2"));
     });
 });
