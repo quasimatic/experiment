@@ -220,7 +220,7 @@ describe('Selector should apply modifier', function () {
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should support overriding modifiers", function () {
+    it("should ignore default modifiers", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -233,7 +233,6 @@ describe('Selector should apply modifier', function () {
         glance.addModifiers(
             {
                 "include-hidden": {
-                    override: "visible",
                     filter: function (elements) {
                         return elements;
                     }
@@ -244,7 +243,7 @@ describe('Selector should apply modifier', function () {
         return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
     });
 
-    it("should support implicit modifiers", function () {
+    it("should support default modifiers", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -257,7 +256,7 @@ describe('Selector should apply modifier', function () {
         glance.addModifiers(
             {
                 "lessthan3characters": {
-                    implicit:true,
+                    default:true,
                     filter: function (filteredElements) {
                         return filteredElements.filter(e => e.innerHTML.length < 3)
                     }
@@ -265,5 +264,33 @@ describe('Selector should apply modifier', function () {
             }
         )
         return glance("1").should.deep.equal(dom.get("target-1", "target-2"));
+    });
+    
+    it("should support setting the find strategy", function() {
+        dom.render(
+            <div>
+                <div>abcdef</div>
+                <div id="target">bcd</div>
+                <div>abc def</div>
+                <div>1234</div>
+            </div>
+        )
+
+        glance.addModifiers(
+            {
+                "exact-match": {
+                    find: function (label, scope) {
+                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                        var results = [];
+                        for (var i = 0; i < xpathResult.snapshotLength; i++) {
+                            results.push(xpathResult.snapshotItem(i));
+                        }
+
+                        return results;
+                    }
+                }
+            }
+        )
+        return glance("bcd:exact-match").should.deep.equal(dom.get("target"));
     });
 });

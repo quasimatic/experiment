@@ -30,36 +30,49 @@ export default class DiscoverParentContainer {
 
         var parent = context;
 
+        var findStrategy = this.findStrategy;
+
+        if (target.modifiers.length > 0) {
+            var modifierNames = target.modifiers.filter(m => this.modifiers[m].find);
+            if(modifierNames.length > 0)
+                findStrategy = this.modifiers[modifierNames[0]].find;
+        }
+
         while (parent && elements.length == 0) {
-            elements = this.findStrategy(target.label, parent, customLabels);
+            elements = findStrategy(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 
         elements = this._limitToScope(elements, context);
         elements = this._limitToNextSibling(elements, context);
 
-        elements = Object.keys(this.modifiers).reduce((previousValue, modifierName) => {
-            var modifier = this.modifiers[modifierName];
-            if(typeof(modifier) != 'undefined' && modifier.implicit) {
-                if(Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
-                    return modifier.filter(previousValue)
-                }
-            }
-
-            return previousValue;
-        }, elements)
-
-        elements = target.modifiers.reduce((previousValue, modifierName) => {
+        if (target.modifiers.length > 0) {
+            elements = target.modifiers.reduce((previousValue, modifierName) => {
                 var modifier = this.modifiers[modifierName];
-                if(typeof(modifier) != 'undefined') {
-                    if(Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
-                        return modifier.filter(previousValue)
+                if (typeof(modifier) != 'undefined') {
+                    if (Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
+                        var filter = modifier.filter || (() => previousValue);
+                        return filter(previousValue)
                     }
 
                     return previousValue;
                 }
             }, elements)
+        }
+        else {
+            elements = Object.keys(this.modifiers).reduce((previousValue, modifierName) => {
+                var modifier = this.modifiers[modifierName];
+                if (typeof(modifier) != 'undefined' && modifier.default) {
+                    if (Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
+                        var filter = modifier.filter || (()=> previousValue);
+                        return filter(previousValue)
+                    }
+                }
 
+                return previousValue;
+            }, elements)
+        }
+        
         var filteredElements = nthFilter(elements, target.position);
         if (this._lastItem(targets, labelIndex)) {
             return filteredElements;
@@ -81,12 +94,7 @@ export default class DiscoverParentContainer {
     _lastItem(targets, labelIndex) {
         return labelIndex + 1 === targets.length;
     }
-
-    // _limitToVisible(elements) {
-    //     return elements.filter(e => e.tagName.toLowerCase() == "option" || e.offsetParent);
-    // }
-
-
+    
     _limitToScope(elements, scope) {
         var elementContainsContainer = false;
         var parentsContainingReference = [];
