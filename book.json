@@ -10,7 +10,8 @@
     "-search",
     "codeblock-disable-glossary",
     "collapsible-menu",
-    "anchors"
+    "anchors",
+    "codepen"
   ],
   "pluginsConfig": {
     "edit-link": {
