@@ -7,6 +7,7 @@ import findByClass from "./class-name"
 import findByName from "./name"
 import findByValue from "./value"
 import findByPlaceholder from "./placeholder"
+import findByImage from "./image"
 import findByNodeType from "./node-type"
 
 export default function (label, container, customLabels) {
@@ -56,6 +57,13 @@ export default function (label, container, customLabels) {
     e = findByPlaceholder(label, container);
     if (e.length > 0) {
         log.info("Matched using placeholder:", label);
+        return e;
+    }
+
+    log.debug("Searching for image alt:", label);
+    e = findByImage(label, container);
+    if (e.length > 0) {
+        log.info("Matched using image alt:", label);
         return e;
     }
 
