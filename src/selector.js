@@ -1,5 +1,5 @@
 import DefaultContainerStrategy from "./scope-strategies/discover-parent"
-import defaultFindStrategies from "./find-strategies/default"
+import defaultLocator from "./locators/default"
 import * as Parser from "./parser";
 import log from "./logger";
 
@@ -25,7 +25,7 @@ function GlanceSelector(options) {
         var data = Parser.parse(reference);
         
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
-        var elements = _selector.containerStrategyFactory({findStrategy: defaultFindStrategies, modifiers:_selector.modifiers}).search(data, document, 0, resolvedLabels);
+        var elements = _selector.containerStrategyFactory({locator: defaultLocator, modifiers:_selector.modifiers}).search(data, document, 0, resolvedLabels);
 
         if (elements.length === 1)
             return elements[0];

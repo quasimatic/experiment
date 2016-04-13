@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByNodeType from '../../src/find-strategies/node-type';
+import findByNodeType from '../../src/locators/node-type';
 
-describe("Find strategy: Exact Match", function() {
+describe("Locator: Exact Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

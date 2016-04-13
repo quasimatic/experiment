@@ -14,7 +14,7 @@ function mergeOptions(obj1, obj2) {
 
 export default class DiscoverParentContainer {
     constructor(config) {
-        this.findStrategy = config.findStrategy;
+        this.locator = config.locator;
         this.modifiers = config.modifiers || {};
 
         this.modifiers = mergeOptions(this.modifiers, visibleModifier)
@@ -30,16 +30,16 @@ export default class DiscoverParentContainer {
 
         var parent = context;
 
-        var findStrategy = this.findStrategy;
+        var locator = this.locator;
 
         if (target.modifiers.length > 0) {
             var modifierNames = target.modifiers.filter(m => this.modifiers[m].find);
             if(modifierNames.length > 0)
-                findStrategy = this.modifiers[modifierNames[0]].find;
+                locator = this.modifiers[modifierNames[0]].find;
         }
 
         while (parent && elements.length == 0) {
-            elements = findStrategy(target.label, parent, customLabels);
+            elements = locator(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 

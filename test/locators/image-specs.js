@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByPlaceholder from '../../src/find-strategies/image';
+import findByPlaceholder from '../../src/locators/image';
 
-describe("Find strategy: Image Match", function() {
+describe("Locator: Image Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByValue from '../../src/find-strategies/value';
+import findByValue from '../../src/locators/value';
 
-describe("Find strategy: Value Match", function() {
+describe("Locator: Value Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

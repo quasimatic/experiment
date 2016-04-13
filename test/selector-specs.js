@@ -266,7 +266,7 @@ describe('Selector should apply modifier', function () {
         return glance("1").should.deep.equal(dom.get("target-1", "target-2"));
     });
     
-    it("should support setting the find strategy", function() {
+    it("should support setting the locator", function() {
         dom.render(
             <div>
                 <div>abcdef</div>

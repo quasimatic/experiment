@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByClassName from '../../src/find-strategies/class-name';
+import findByClassName from '../../src/locators/class-name';
 
-describe("Find strategy: Exact Match", function() {
+describe("Locator: Exact Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

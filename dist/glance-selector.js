@@ -1,6 +1,17 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 "use strict";
 
+var _selector = require("./selector");
+
+var _selector2 = _interopRequireDefault(_selector);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+window.glanceSelector = _selector2.default;
+
+},{"./selector":19}],2:[function(require,module,exports){
+"use strict";
+
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
@@ -19,7 +30,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":3}],2:[function(require,module,exports){
+},{"./css":4}],3:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -36,7 +47,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":12}],3:[function(require,module,exports){
+},{"./xpath":13}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -53,7 +64,7 @@ exports.default = function (label, container) {
     }
 };
 
-},{}],4:[function(require,module,exports){
+},{}],5:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -98,7 +109,7 @@ var isDescendant = function isDescendant(parent, child) {
     return false;
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -214,7 +225,7 @@ var _nodeType2 = _interopRequireDefault(_nodeType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../logger":14,"./class-name":1,"./contains-text":2,"./custom-label":4,"./id":6,"./image":7,"./name":8,"./node-type":9,"./placeholder":10,"./value":11}],6:[function(require,module,exports){
+},{"../logger":14,"./class-name":2,"./contains-text":3,"./custom-label":5,"./id":7,"./image":8,"./name":9,"./node-type":10,"./placeholder":11,"./value":12}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -235,7 +246,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":3}],7:[function(require,module,exports){
+},{"./css":4}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -252,7 +263,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":12}],8:[function(require,module,exports){
+},{"./xpath":13}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -269,7 +280,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":12}],9:[function(require,module,exports){
+},{"./xpath":13}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -290,7 +301,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":3}],10:[function(require,module,exports){
+},{"./css":4}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -307,7 +318,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":12}],11:[function(require,module,exports){
+},{"./xpath":13}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -326,7 +337,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":3}],12:[function(require,module,exports){
+},{"./css":4}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -349,18 +360,7 @@ exports.default = function (label, container) {
     }
 };
 
-},{}],13:[function(require,module,exports){
-"use strict";
-
-var _selector = require("./selector");
-
-var _selector2 = _interopRequireDefault(_selector);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-window.glanceSelector = _selector2.default;
-
-},{"./selector":19}],14:[function(require,module,exports){
+},{}],14:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -1272,7 +1272,7 @@ var DiscoverParentContainer = function () {
     function DiscoverParentContainer(config) {
         _classCallCheck(this, DiscoverParentContainer);
 
-        this.findStrategy = config.findStrategy;
+        this.locator = config.locator;
         this.modifiers = config.modifiers || {};
 
         this.modifiers = mergeOptions(this.modifiers, _visible2.default);
@@ -1292,17 +1292,17 @@ var DiscoverParentContainer = function () {
 
             var parent = context;
 
-            var findStrategy = this.findStrategy;
+            var locator = this.locator;
 
             if (target.modifiers.length > 0) {
                 var modifierNames = target.modifiers.filter(function (m) {
                     return _this.modifiers[m].find;
                 });
-                if (modifierNames.length > 0) findStrategy = this.modifiers[modifierNames[0]].find;
+                if (modifierNames.length > 0) locator = this.modifiers[modifierNames[0]].find;
             }
 
             while (parent && elements.length == 0) {
-                elements = findStrategy(target.label, parent, customLabels);
+                elements = locator(target.label, parent, customLabels);
                 parent = parent.parentNode;
             }
 
@@ -1427,7 +1427,7 @@ var _discoverParent = require("./scope-strategies/discover-parent");
 
 var _discoverParent2 = _interopRequireDefault(_discoverParent);
 
-var _default = require("./find-strategies/default");
+var _default = require("./locators/default");
 
 var _default2 = _interopRequireDefault(_default);
 
@@ -1465,7 +1465,7 @@ function GlanceSelector(options) {
         var data = Parser.parse(reference);
 
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
-        var elements = _selector.containerStrategyFactory({ findStrategy: _default2.default, modifiers: _selector.modifiers }).search(data, document, 0, resolvedLabels);
+        var elements = _selector.containerStrategyFactory({ locator: _default2.default, modifiers: _selector.modifiers }).search(data, document, 0, resolvedLabels);
 
         if (elements.length === 1) return elements[0];else return elements;
     };
@@ -1507,4 +1507,4 @@ exports.default = GlanceSelector({ containerStrategyFactory: function containerS
         return new _discoverParent2.default(config);
     } });
 
-},{"./find-strategies/default":5,"./logger":14,"./parser":16,"./scope-strategies/discover-parent":18}]},{},[13]);
+},{"./locators/default":6,"./logger":14,"./parser":16,"./scope-strategies/discover-parent":18}]},{},[1]);

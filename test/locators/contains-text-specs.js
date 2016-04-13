@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findContainsText from '../../src/find-strategies/contains-text';
+import findContainsText from '../../src/locators/contains-text';
 
-describe("Find strategy: Contains Match", function() {
+describe("Locator: Contains Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

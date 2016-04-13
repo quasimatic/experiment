@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByName from '../../src/find-strategies/name';
+import findByName from '../../src/locators/name';
 
-describe("Find strategy: Name Match", function() {
+describe("Locator: Name Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
 

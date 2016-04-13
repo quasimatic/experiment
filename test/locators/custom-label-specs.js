@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByCustomLabel from '../../src/find-strategies/custom-label';
+import findByCustomLabel from '../../src/locators/custom-label';
 
-describe("Find strategy: Custom Label", function () {
+describe("Locator: Custom Label", function () {
     beforeEach(function () {
         document.body.innerHTML = "";
     });

@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByPlaceholder from '../../src/find-strategies/placeholder';
+import findByPlaceholder from '../../src/locators/placeholder';
 
-describe("Find strategy: Placeholder Match", function() {
+describe("Locator: Placeholder Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });

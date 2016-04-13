@@ -1,4 +1,4 @@
-import defaultFinder from "../../src/find-strategies/default";
+import defaultFinder from "../../src/locators/default";
 import DiscoverParentContainer from '../../src/scope-strategies/discover-parent';
 import parser from "../../src/parser";
 import dom from "../dom";
@@ -8,7 +8,7 @@ var scopeStrategy;
 describe("Scope strategy: Discover container", function () {
     beforeEach(function () {
         document.body.innerHTML = "";
-        scopeStrategy = new DiscoverParentContainer({findStrategy:defaultFinder});
+        scopeStrategy = new DiscoverParentContainer({locator:defaultFinder});
     });
 
     it("should find within a container", function () {

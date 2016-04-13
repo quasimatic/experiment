@@ -1,7 +1,7 @@
 import dom from "../dom"
-import findByCSS from '../../src/find-strategies/css';
+import findByCSS from '../../src/locators/css';
 
-describe("Find strategy: Exact Match", function() {
+describe("Locator: Exact Match", function() {
     beforeEach(function(){
         document.body.innerHTML = "";
     });
