@@ -1,13 +1,4 @@
-var isDescendant = function (parent, child) {
-    let node = child.parentNode;
-    while (node != null) {
-        if (node == parent) {
-            return true;
-        }
-        node = node.parentNode;
-    }
-    return false;
-};
+import isDescendant from './../../utils/isDescendant';
 
 export default function (label, container, customLabels) {
     customLabels = customLabels || {};

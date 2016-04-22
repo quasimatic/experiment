@@ -1,5 +1,6 @@
 import nthFilter from "../position-filters/nth-filter";
 import visibleModifier from "../modifiers/visible";
+import _isDescendant from './../../utils/isDescendant';
 
 function mergeOptions(obj1, obj2) {
     var obj3 = {};
@@ -99,7 +100,7 @@ export default class DiscoverParentContainer {
         var elementContainsContainer = false;
         var parentsContainingReference = [];
         for (var e = 0; e < elements.length; ++e) {
-            if (this._isDescendant(elements[e], scope)) {
+            if (_isDescendant(elements[e], scope)) {
                 elementContainsContainer = true;
                 parentsContainingReference.push(elements[e]);
             }
@@ -123,16 +124,5 @@ export default class DiscoverParentContainer {
         return array.filter(function (x, i) {
             return array.indexOf(x) === i
         })
-    }
-
-    _isDescendant(parent, child) {
-        var node = child.parentNode;
-        while (node != null) {
-            if (node == parent) {
-                return true;
-            }
-            node = node.parentNode;
-        }
-        return false;
     }
 }
