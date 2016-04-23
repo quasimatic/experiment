@@ -7,6 +7,7 @@
     "browserify": "./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector.js -t [ babelify --presets [ es2015 ] ] && ./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector-min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map bundle.js.map --output bundle.js.map]",
     "build": "rm -rf lib && node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib && npm run browserify",
     "test": "echo 'Please test using wallaby'",
+    "prepublish": "npm run build",
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",
