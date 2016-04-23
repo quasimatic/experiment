@@ -1,24 +1,14 @@
 import nthFilter from "../position-filters/nth-filter";
 import visibleModifier from "../modifiers/visible";
 import isDescendant from '../utils/isDescendant';
-
-function mergeOptions(obj1, obj2) {
-    var obj3 = {};
-    for (var attrname in obj1) {
-        obj3[attrname] = obj1[attrname];
-    }
-    for (var attrname in obj2) {
-        obj3[attrname] = obj2[attrname];
-    }
-    return obj3;
-}
+import mergeObjects from '../utils/merge-objects';
 
 export default class SearchLineage {
     constructor(config) {
         this.locator = config.locator;
         this.modifiers = config.modifiers || {};
 
-        this.modifiers = mergeOptions(this.modifiers, visibleModifier)
+        this.modifiers = mergeObjects(this.modifiers, visibleModifier)
 
         this.customLabels = {};
     }
