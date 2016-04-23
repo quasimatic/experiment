@@ -13,7 +13,7 @@ function mergeOptions(obj1, obj2) {
     return obj3;
 }
 
-export default class DiscoverParentContainer {
+export default class SearchLineage {
     constructor(config) {
         this.locator = config.locator;
         this.modifiers = config.modifiers || {};

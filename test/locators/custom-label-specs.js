@@ -45,7 +45,7 @@ describe("Locator: Custom Label", function () {
         }).should.deep.equal([div2]);
     });
 
-    it("should not find custom label not in container", function () {
+    it("should not find custom label not in scope", function () {
         var wrapper1 = dom.createDiv("This is custom", {class: "wrapper1"});
         var wrapper2 = dom.createDiv("This is custom", {class: "wrapper2"});
         var div = dom.createDiv("This is custom", {parent: wrapper1});

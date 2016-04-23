@@ -16,6 +16,177 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _nthFilter = require("../position-filters/nth-filter");
+
+var _nthFilter2 = _interopRequireDefault(_nthFilter);
+
+var _visible = require("../modifiers/visible");
+
+var _visible2 = _interopRequireDefault(_visible);
+
+var _isDescendant = require("../utils/isDescendant");
+
+var _isDescendant2 = _interopRequireDefault(_isDescendant);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function mergeOptions(obj1, obj2) {
+    var obj3 = {};
+    for (var attrname in obj1) {
+        obj3[attrname] = obj1[attrname];
+    }
+    for (var attrname in obj2) {
+        obj3[attrname] = obj2[attrname];
+    }
+    return obj3;
+}
+
+var DiscoverParentContainer = function () {
+    function DiscoverParentContainer(config) {
+        _classCallCheck(this, DiscoverParentContainer);
+
+        this.locator = config.locator;
+        this.modifiers = config.modifiers || {};
+
+        this.modifiers = mergeOptions(this.modifiers, _visible2.default);
+
+        this.customLabels = {};
+    }
+
+    _createClass(DiscoverParentContainer, [{
+        key: "search",
+        value: function search(targets, context, labelIndex, customLabels) {
+            var _this = this;
+
+            labelIndex = labelIndex || 0;
+            var target = targets[labelIndex];
+
+            var elements = [];
+
+            var parent = context;
+
+            var locator = this.locator;
+
+            if (target.modifiers.length > 0) {
+                var modifierNames = target.modifiers.filter(function (m) {
+                    return _this.modifiers[m].find;
+                });
+                if (modifierNames.length > 0) locator = this.modifiers[modifierNames[0]].find;
+            }
+
+            while (parent && elements.length == 0) {
+                elements = locator(target.label, parent, customLabels);
+                parent = parent.parentNode;
+            }
+
+            elements = this._limitToScope(elements, context);
+            elements = this._limitToNextSibling(elements, context);
+
+            if (target.modifiers.length > 0) {
+                elements = target.modifiers.reduce(function (previousValue, modifierName) {
+                    var modifier = _this.modifiers[modifierName];
+                    if (typeof modifier != 'undefined') {
+                        if (Object.keys(_this.modifiers).filter(function (k) {
+                            return _this.modifiers[k].override == modifierName;
+                        }).length == 0) {
+                            var filter = modifier.filter || function () {
+                                return previousValue;
+                            };
+                            return filter(previousValue);
+                        }
+
+                        return previousValue;
+                    }
+                }, elements);
+            } else {
+                elements = Object.keys(this.modifiers).reduce(function (previousValue, modifierName) {
+                    var modifier = _this.modifiers[modifierName];
+                    if (typeof modifier != 'undefined' && modifier.default) {
+                        if (Object.keys(_this.modifiers).filter(function (k) {
+                            return _this.modifiers[k].override == modifierName;
+                        }).length == 0) {
+                            var filter = modifier.filter || function () {
+                                return previousValue;
+                            };
+                            return filter(previousValue);
+                        }
+                    }
+
+                    return previousValue;
+                }, elements);
+            }
+
+            var filteredElements = (0, _nthFilter2.default)(elements, target.position);
+            if (this._lastItem(targets, labelIndex)) {
+                return filteredElements;
+            } else {
+                // IS a container
+                var newTargets = [];
+
+                for (var c = 0; c < filteredElements.length; c++) {
+                    var childContainer = filteredElements[c];
+                    var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
+                    newTargets = newTargets.concat(foundItems);
+                }
+
+                return this._unique(newTargets);
+            }
+        }
+    }, {
+        key: "_lastItem",
+        value: function _lastItem(targets, labelIndex) {
+            return labelIndex + 1 === targets.length;
+        }
+    }, {
+        key: "_limitToScope",
+        value: function _limitToScope(elements, scope) {
+            var elementContainsContainer = false;
+            var parentsContainingReference = [];
+            for (var e = 0; e < elements.length; ++e) {
+                if ((0, _isDescendant2.default)(elements[e], scope)) {
+                    elementContainsContainer = true;
+                    parentsContainingReference.push(elements[e]);
+                }
+            }
+
+            if (elementContainsContainer) return parentsContainingReference;
+
+            return elements;
+        }
+    }, {
+        key: "_limitToNextSibling",
+        value: function _limitToNextSibling(elements, scope) {
+            var siblings = elements.filter(function (e) {
+                return scope && scope.nextElementSibling == e;
+            });
+
+            return siblings.length == 0 ? elements : siblings;
+        }
+    }, {
+        key: "_unique",
+        value: function _unique(array) {
+            return array.filter(function (x, i) {
+                return array.indexOf(x) === i;
+            });
+        }
+    }]);
+
+    return DiscoverParentContainer;
+}();
+
+exports.default = DiscoverParentContainer;
+
+},{"../modifiers/visible":16,"../position-filters/nth-filter":18,"../utils/isDescendant":20}],3:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
 exports.default = function (label, container) {
     try {
         return (0, _css2.default)("." + label, container);
@@ -30,7 +201,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":4}],3:[function(require,module,exports){
+},{"./css":5}],4:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -47,7 +218,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":13}],4:[function(require,module,exports){
+},{"./xpath":14}],5:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -64,7 +235,7 @@ exports.default = function (label, container) {
     }
 };
 
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -104,7 +275,7 @@ var _isDescendant2 = _interopRequireDefault(_isDescendant);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../utils/isDescendant":20}],6:[function(require,module,exports){
+},{"../utils/isDescendant":20}],7:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -220,7 +391,7 @@ var _nodeType2 = _interopRequireDefault(_nodeType);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"../logger":14,"./class-name":2,"./contains-text":3,"./custom-label":5,"./id":7,"./image":8,"./name":9,"./node-type":10,"./placeholder":11,"./value":12}],7:[function(require,module,exports){
+},{"../logger":15,"./class-name":3,"./contains-text":4,"./custom-label":6,"./id":8,"./image":9,"./name":10,"./node-type":11,"./placeholder":12,"./value":13}],8:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -241,7 +412,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":4}],8:[function(require,module,exports){
+},{"./css":5}],9:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -258,7 +429,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":13}],9:[function(require,module,exports){
+},{"./xpath":14}],10:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -275,7 +446,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":13}],10:[function(require,module,exports){
+},{"./xpath":14}],11:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -296,7 +467,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":4}],11:[function(require,module,exports){
+},{"./css":5}],12:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -313,7 +484,7 @@ var _xpath2 = _interopRequireDefault(_xpath);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./xpath":13}],12:[function(require,module,exports){
+},{"./xpath":14}],13:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -332,7 +503,7 @@ var _css2 = _interopRequireDefault(_css);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-},{"./css":4}],13:[function(require,module,exports){
+},{"./css":5}],14:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -355,7 +526,7 @@ exports.default = function (label, container) {
     }
 };
 
-},{}],14:[function(require,module,exports){
+},{}],15:[function(require,module,exports){
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
@@ -419,7 +590,7 @@ exports.default = {
     }
 };
 
-},{}],15:[function(require,module,exports){
+},{}],16:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -436,7 +607,7 @@ exports.default = {
     }
 };
 
-},{}],16:[function(require,module,exports){
+},{}],17:[function(require,module,exports){
 "use strict";
 
 module.exports = function () {
@@ -1211,7 +1382,7 @@ module.exports = function () {
   };
 }();
 
-},{}],17:[function(require,module,exports){
+},{}],18:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1231,178 +1402,7 @@ exports.default = function (elements, position) {
     return [elements[i]];
 };
 
-},{}],18:[function(require,module,exports){
-"use strict";
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _nthFilter = require("../position-filters/nth-filter");
-
-var _nthFilter2 = _interopRequireDefault(_nthFilter);
-
-var _visible = require("../modifiers/visible");
-
-var _visible2 = _interopRequireDefault(_visible);
-
-var _isDescendant = require("../utils/isDescendant");
-
-var _isDescendant2 = _interopRequireDefault(_isDescendant);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-function mergeOptions(obj1, obj2) {
-    var obj3 = {};
-    for (var attrname in obj1) {
-        obj3[attrname] = obj1[attrname];
-    }
-    for (var attrname in obj2) {
-        obj3[attrname] = obj2[attrname];
-    }
-    return obj3;
-}
-
-var DiscoverParentContainer = function () {
-    function DiscoverParentContainer(config) {
-        _classCallCheck(this, DiscoverParentContainer);
-
-        this.locator = config.locator;
-        this.modifiers = config.modifiers || {};
-
-        this.modifiers = mergeOptions(this.modifiers, _visible2.default);
-
-        this.customLabels = {};
-    }
-
-    _createClass(DiscoverParentContainer, [{
-        key: "search",
-        value: function search(targets, context, labelIndex, customLabels) {
-            var _this = this;
-
-            labelIndex = labelIndex || 0;
-            var target = targets[labelIndex];
-
-            var elements = [];
-
-            var parent = context;
-
-            var locator = this.locator;
-
-            if (target.modifiers.length > 0) {
-                var modifierNames = target.modifiers.filter(function (m) {
-                    return _this.modifiers[m].find;
-                });
-                if (modifierNames.length > 0) locator = this.modifiers[modifierNames[0]].find;
-            }
-
-            while (parent && elements.length == 0) {
-                elements = locator(target.label, parent, customLabels);
-                parent = parent.parentNode;
-            }
-
-            elements = this._limitToScope(elements, context);
-            elements = this._limitToNextSibling(elements, context);
-
-            if (target.modifiers.length > 0) {
-                elements = target.modifiers.reduce(function (previousValue, modifierName) {
-                    var modifier = _this.modifiers[modifierName];
-                    if (typeof modifier != 'undefined') {
-                        if (Object.keys(_this.modifiers).filter(function (k) {
-                            return _this.modifiers[k].override == modifierName;
-                        }).length == 0) {
-                            var filter = modifier.filter || function () {
-                                return previousValue;
-                            };
-                            return filter(previousValue);
-                        }
-
-                        return previousValue;
-                    }
-                }, elements);
-            } else {
-                elements = Object.keys(this.modifiers).reduce(function (previousValue, modifierName) {
-                    var modifier = _this.modifiers[modifierName];
-                    if (typeof modifier != 'undefined' && modifier.default) {
-                        if (Object.keys(_this.modifiers).filter(function (k) {
-                            return _this.modifiers[k].override == modifierName;
-                        }).length == 0) {
-                            var filter = modifier.filter || function () {
-                                return previousValue;
-                            };
-                            return filter(previousValue);
-                        }
-                    }
-
-                    return previousValue;
-                }, elements);
-            }
-
-            var filteredElements = (0, _nthFilter2.default)(elements, target.position);
-            if (this._lastItem(targets, labelIndex)) {
-                return filteredElements;
-            } else {
-                // IS a container
-                var newTargets = [];
-
-                for (var c = 0; c < filteredElements.length; c++) {
-                    var childContainer = filteredElements[c];
-                    var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
-                    newTargets = newTargets.concat(foundItems);
-                }
-
-                return this._unique(newTargets);
-            }
-        }
-    }, {
-        key: "_lastItem",
-        value: function _lastItem(targets, labelIndex) {
-            return labelIndex + 1 === targets.length;
-        }
-    }, {
-        key: "_limitToScope",
-        value: function _limitToScope(elements, scope) {
-            var elementContainsContainer = false;
-            var parentsContainingReference = [];
-            for (var e = 0; e < elements.length; ++e) {
-                if ((0, _isDescendant2.default)(elements[e], scope)) {
-                    elementContainsContainer = true;
-                    parentsContainingReference.push(elements[e]);
-                }
-            }
-
-            if (elementContainsContainer) return parentsContainingReference;
-
-            return elements;
-        }
-    }, {
-        key: "_limitToNextSibling",
-        value: function _limitToNextSibling(elements, scope) {
-            var siblings = elements.filter(function (e) {
-                return scope && scope.nextElementSibling == e;
-            });
-
-            return siblings.length == 0 ? elements : siblings;
-        }
-    }, {
-        key: "_unique",
-        value: function _unique(array) {
-            return array.filter(function (x, i) {
-                return array.indexOf(x) === i;
-            });
-        }
-    }]);
-
-    return DiscoverParentContainer;
-}();
-
-exports.default = DiscoverParentContainer;
-
-},{"../modifiers/visible":15,"../position-filters/nth-filter":17,"../utils/isDescendant":20}],19:[function(require,module,exports){
+},{}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1410,9 +1410,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Parser = undefined;
 
-var _discoverParent = require("./scope-strategies/discover-parent");
+var _lineage = require("./guides/lineage");
 
-var _discoverParent2 = _interopRequireDefault(_discoverParent);
+var _lineage2 = _interopRequireDefault(_lineage);
 
 var _default = require("./locators/default");
 
@@ -1446,13 +1446,13 @@ function GlanceSelector(options) {
     _selector.customLabels = options.customLabels || {};
     _selector.modifiers = options.modifiers || {};
 
-    _selector.containerStrategyFactory = options.containerStrategyFactory;
+    _selector.guideFactory = options.guideFactory;
 
     var selector = function selector(reference) {
         var data = Parser.parse(reference);
 
         var resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
-        var elements = _selector.containerStrategyFactory({ locator: _default2.default, modifiers: _selector.modifiers }).search(data, document, 0, resolvedLabels);
+        var elements = _selector.guideFactory({ locator: _default2.default, modifiers: _selector.modifiers }).search(data, document, 0, resolvedLabels);
 
         if (elements.length === 1) return elements[0];else return elements;
     };
@@ -1478,7 +1478,7 @@ function resolveCustomLabels(data, customLabels, selector) {
         var customLabel = customLabels[reference.label];
         if (typeof customLabel == 'function') {
             newCustomLabels[reference.label] = customLabel(GlanceSelector({
-                containerStrategyFactory: selector.containerStrategyFactory,
+                guideFactory: selector.guideFactory,
                 customLabels: mergeOptions(customLabels, newCustomLabels)
             }), reference);
         } else {
@@ -1490,11 +1490,11 @@ function resolveCustomLabels(data, customLabels, selector) {
 }
 
 exports.Parser = Parser;
-exports.default = GlanceSelector({ containerStrategyFactory: function containerStrategyFactory(config) {
-        return new _discoverParent2.default(config);
+exports.default = GlanceSelector({ guideFactory: function guideFactory(config) {
+        return new _lineage2.default(config);
     } });
 
-},{"./locators/default":6,"./logger":14,"./parser":16,"./scope-strategies/discover-parent":18}],20:[function(require,module,exports){
+},{"./guides/lineage":2,"./locators/default":7,"./logger":15,"./parser":17}],20:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {

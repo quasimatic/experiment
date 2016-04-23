@@ -173,7 +173,7 @@ describe('Selector Nth', function () {
         return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
     });
 
-    it("should get the nth container for an item", function () {
+    it("should get the nth scope for an item", function () {
         dom.render(
             <div className="box2">
                 <div className="inner-box">

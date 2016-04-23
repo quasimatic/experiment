@@ -1,14 +1,14 @@
 import defaultFinder from "../../src/locators/default";
-import DiscoverParentContainer from '../../src/scope-strategies/discover-parent';
+import LineageGuide from '../../src/guides/search-lineage';
 import parser from "../../src/parser";
 import dom from "../dom";
 
-var scopeStrategy;
+describe("Guide: Search lineage", function () {
+    var lineageGuide;
 
-describe("Scope strategy: Discover container", function () {
     beforeEach(function () {
         document.body.innerHTML = "";
-        scopeStrategy = new DiscoverParentContainer({locator:defaultFinder});
+        lineageGuide = new LineageGuide({locator:defaultFinder});
     });
 
     it("should find within a container", function () {
@@ -18,7 +18,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("parent>child"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("parent>child"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should find next to", function () {
@@ -29,7 +29,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("sibling 1>sibling 2"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("sibling 1>sibling 2"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should find all children within a container", function () {
@@ -40,7 +40,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("parent>div"), document).should.deep.equal(dom.get('target-1', 'target-2'));
+        lineageGuide.search(parser.parse("parent>div"), document).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("should traverse the dom looking for items in multiple containers", function () {
@@ -53,7 +53,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("Item 1 in box 3>Item 2"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item 1 in box 3>Item 2"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should find duplicates at different levels", function () {
@@ -70,7 +70,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("box4>Duplicate A"), document).should.deep.equal(dom.get('target-1', 'target-2'));
+        lineageGuide.search(parser.parse("box4>Duplicate A"), document).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("should traverse the dom looking for items in parent containers", function () {
@@ -85,7 +85,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("box5>inner-box>Item 1"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box5>inner-box>Item 1"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should only crawl parents til first find", function () {
@@ -107,7 +107,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("Item B>Item A"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item B>Item A"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should look by class near a container", function () {
@@ -118,7 +118,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("box7>Item Content>class-name"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box7>Item Content>class-name"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should look by node type near a container", function () {
@@ -129,7 +129,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("Item Content>input-near-content"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item Content>input-near-content"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("should look within a custom label", function () {
@@ -144,7 +144,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("box9>customlabel>Item 1"), document, 0, {
+        lineageGuide.search(parser.parse("box9>customlabel>Item 1"), document, 0, {
             "customlabel": dom.get("custom")
         }).should.deep.equal([dom.get('target')]);
     });
@@ -166,7 +166,7 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("Container Label For Custom Class>customClassLabel"), document, 0, {
+        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document, 0, {
             "customClassLabel": dom.get("target")
         }).should.deep.equal([dom.get('target')]);
     })
@@ -186,6 +186,6 @@ describe("Scope strategy: Discover container", function () {
             </div>
         )
 
-        scopeStrategy.search(parser.parse("reference 1>parent>target"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("reference 1>parent>target"), document).should.deep.equal([dom.get('target')]);
     })
 });
