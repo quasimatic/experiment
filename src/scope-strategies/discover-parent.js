@@ -1,6 +1,6 @@
 import nthFilter from "../position-filters/nth-filter";
 import visibleModifier from "../modifiers/visible";
-import _isDescendant from './../../utils/isDescendant';
+import isDescendant from '../utils/isDescendant';
 
 function mergeOptions(obj1, obj2) {
     var obj3 = {};
@@ -100,7 +100,7 @@ export default class DiscoverParentContainer {
         var elementContainsContainer = false;
         var parentsContainingReference = [];
         for (var e = 0; e < elements.length; ++e) {
-            if (_isDescendant(elements[e], scope)) {
+            if (isDescendant(elements[e], scope)) {
                 elementContainsContainer = true;
                 parentsContainingReference.push(elements[e]);
             }

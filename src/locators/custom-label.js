@@ -1,4 +1,4 @@
-import isDescendant from './../../utils/isDescendant';
+import isDescendant from '../utils/isDescendant';
 
 export default function (label, container, customLabels) {
     customLabels = customLabels || {};

@@ -87,7 +87,7 @@ exports.default = function (label, container, customLabels) {
     try {
         var r = [];
         elements.forEach(function (e) {
-            if (isDescendant(container, e)) {
+            if ((0, _isDescendant2.default)(container, e)) {
                 r.push(e);
             }
         });
@@ -98,18 +98,13 @@ exports.default = function (label, container, customLabels) {
     }
 };
 
-var isDescendant = function isDescendant(parent, child) {
-    var node = child.parentNode;
-    while (node != null) {
-        if (node == parent) {
-            return true;
-        }
-        node = node.parentNode;
-    }
-    return false;
-};
+var _isDescendant = require('../utils/isDescendant');
 
-},{}],6:[function(require,module,exports){
+var _isDescendant2 = _interopRequireDefault(_isDescendant);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+},{"../utils/isDescendant":20}],6:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1253,6 +1248,10 @@ var _visible = require("../modifiers/visible");
 
 var _visible2 = _interopRequireDefault(_visible);
 
+var _isDescendant = require("../utils/isDescendant");
+
+var _isDescendant2 = _interopRequireDefault(_isDescendant);
+
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1370,7 +1369,7 @@ var DiscoverParentContainer = function () {
             var elementContainsContainer = false;
             var parentsContainingReference = [];
             for (var e = 0; e < elements.length; ++e) {
-                if (this._isDescendant(elements[e], scope)) {
+                if ((0, _isDescendant2.default)(elements[e], scope)) {
                     elementContainsContainer = true;
                     parentsContainingReference.push(elements[e]);
                 }
@@ -1396,18 +1395,6 @@ var DiscoverParentContainer = function () {
                 return array.indexOf(x) === i;
             });
         }
-    }, {
-        key: "_isDescendant",
-        value: function _isDescendant(parent, child) {
-            var node = child.parentNode;
-            while (node != null) {
-                if (node == parent) {
-                    return true;
-                }
-                node = node.parentNode;
-            }
-            return false;
-        }
     }]);
 
     return DiscoverParentContainer;
@@ -1415,7 +1402,7 @@ var DiscoverParentContainer = function () {
 
 exports.default = DiscoverParentContainer;
 
-},{"../modifiers/visible":15,"../position-filters/nth-filter":17}],19:[function(require,module,exports){
+},{"../modifiers/visible":15,"../position-filters/nth-filter":17,"../utils/isDescendant":20}],19:[function(require,module,exports){
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -1507,4 +1494,24 @@ exports.default = GlanceSelector({ containerStrategyFactory: function containerS
         return new _discoverParent2.default(config);
     } });
 
-},{"./locators/default":6,"./logger":14,"./parser":16,"./scope-strategies/discover-parent":18}]},{},[1]);
+},{"./locators/default":6,"./logger":14,"./parser":16,"./scope-strategies/discover-parent":18}],20:[function(require,module,exports){
+"use strict";
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+exports.default = function (parent, child) {
+    var node = child.parentNode;
+    while (node != null) {
+        if (node == parent) {
+            return true;
+        }
+        node = node.parentNode;
+    }
+    return false;
+};
+
+;
+
+},{}]},{},[1]);
