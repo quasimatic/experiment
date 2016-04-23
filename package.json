@@ -1,0 +1,47 @@
+{
+  "name": "glance-selector",
+  "version": "0.2.0",
+  "description": "Glance selector library",
+  "main": "lib/selector.js",
+  "scripts": {
+    "browserify": "./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector.js -t [ babelify --presets [ es2015 ] ] && ./node_modules/.bin/browserify src/glance-selector.js -o dist/glance-selector-min.js -t [ babelify --presets [ es2015 ] ] -d -p [minifyify --map bundle.js.map --output bundle.js.map]",
+    "build": "rm -rf lib && node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib && npm run browserify",
+    "test": "echo 'Please test using wallaby'",
+    "docs:prepare": "gitbook install",
+    "docs:build": "npm run docs:prepare && gitbook build",
+    "docs:watch": "npm run docs:prepare && gitbook serve",
+    "docs:publish": "npm run docs:clean && npm run docs:build && cd _book && git init && git commit --allow-empty -m 'update book' && git fetch https://github.com/quasimatic/glance-selector-js.git gh-pages && git checkout -b gh-pages && git add . && git commit -am 'update book' && git push https://github.com/quasimatic/glance-selector-js.git gh-pages --force"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/quasimatic/glance-selector.git"
+  },
+  "keywords": [
+    "glance",
+    "automation",
+    "test"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/quasimatic/glance-selector/issues"
+  },
+  "homepage": "https://github.com/quasimatic/glance-selector#readme",
+  "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.6.5",
+    "babel-preset-es2015": "^6.6.0",
+    "babel-preset-react": "^6.5.0",
+    "babelify": "^7.2.0",
+    "browserify": "^13.0.0",
+    "chai": "^3.5.0",
+    "gitbook-cli": "^2.1.3",
+    "minifyify": "^7.3.2",
+    "mocha": "^2.4.5",
+    "pegjs": "^0.9.0",
+    "phantomjs-polyfill": "0.0.2",
+    "react": "^15.0.0-rc.1",
+    "react-dom": "^15.0.0-rc.1",
+    "wallabify": "0.0.14"
+  }
+}
