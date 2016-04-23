@@ -1,6 +1,6 @@
 import nthFilter from "../position-filters/nth-filter";
 import visibleModifier from "../modifiers/visible";
-import isDescendant from '../utils/isDescendant';
+import isDescendant from '../utils/is-descendant';
 import mergeObjects from '../utils/merge-objects';
 
 export default class SearchLineage {
@@ -8,24 +8,24 @@ export default class SearchLineage {
         this.locator = config.locator;
         this.modifiers = config.modifiers || {};
 
-        this.modifiers = mergeObjects(this.modifiers, visibleModifier)
+        this.modifiers = mergeObjects(this.modifiers, visibleModifier);
 
         this.customLabels = {};
     }
 
     search(targets, context, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
-        var target = targets[labelIndex];
+        let target = targets[labelIndex];
 
-        var elements = [];
+        let elements = [];
 
-        var parent = context;
+        let parent = context;
 
-        var locator = this.locator;
+        let locator = this.locator;
 
         if (target.modifiers.length > 0) {
-            var modifierNames = target.modifiers.filter(m => this.modifiers[m].find);
-            if(modifierNames.length > 0)
+            let modifierNames = target.modifiers.filter(m => this.modifiers[m].find);
+            if (modifierNames.length > 0)
                 locator = this.modifiers[modifierNames[0]].find;
         }
 
@@ -34,47 +34,43 @@ export default class SearchLineage {
             parent = parent.parentNode;
         }
 
-        elements = this._limitToScope(elements, context);
-        elements = this._limitToNextSibling(elements, context);
+        elements = SearchLineage._limitToScope(elements, context);
+        elements = SearchLineage._limitToNextSibling(elements, context);
 
         if (target.modifiers.length > 0) {
             elements = target.modifiers.reduce((previousValue, modifierName) => {
-                var modifier = this.modifiers[modifierName];
+                let modifier = this.modifiers[modifierName];
                 if (typeof(modifier) != 'undefined') {
-                    if (Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
-                        var filter = modifier.filter || (() => previousValue);
-                        return filter(previousValue)
-                    }
-
-                    return previousValue;
-                }
-            }, elements)
-        }
-        else {
-            elements = Object.keys(this.modifiers).reduce((previousValue, modifierName) => {
-                var modifier = this.modifiers[modifierName];
-                if (typeof(modifier) != 'undefined' && modifier.default) {
-                    if (Object.keys(this.modifiers).filter(k => this.modifiers[k].override == modifierName).length == 0) {
-                        var filter = modifier.filter || (()=> previousValue);
-                        return filter(previousValue)
-                    }
+                    let filter = modifier.filter || (() => previousValue);
+                    return filter(previousValue)
                 }
 
                 return previousValue;
             }, elements)
         }
-        
-        var filteredElements = nthFilter(elements, target.position);
-        if (this._lastItem(targets, labelIndex)) {
+        else {
+            elements = Object.keys(this.modifiers).reduce((previousValue, modifierName) => {
+                let modifier = this.modifiers[modifierName];
+                if (typeof(modifier) != 'undefined' && modifier.default) {
+                    let filter = modifier.filter || (()=> previousValue);
+                    return filter(previousValue)
+                }
+
+                return previousValue;
+            }, elements)
+        }
+
+        let filteredElements = nthFilter(elements, target.position);
+        if (SearchLineage._lastItem(targets, labelIndex)) {
             return filteredElements;
         }
         else {
             // IS a container
-            var newTargets = [];
+            let newTargets = [];
 
-            for (var c = 0; c < filteredElements.length; c++) {
-                var childContainer = filteredElements[c];
-                var foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
+            for (let c = 0; c < filteredElements.length; c++) {
+                let childContainer = filteredElements[c];
+                let foundItems = this.search(targets, childContainer, labelIndex + 1, customLabels);
                 newTargets = newTargets.concat(foundItems);
             }
 
@@ -82,14 +78,14 @@ export default class SearchLineage {
         }
     }
 
-    _lastItem(targets, labelIndex) {
+    static _lastItem(targets, labelIndex) {
         return labelIndex + 1 === targets.length;
     }
-    
-    _limitToScope(elements, scope) {
-        var elementContainsContainer = false;
-        var parentsContainingReference = [];
-        for (var e = 0; e < elements.length; ++e) {
+
+    static _limitToScope(elements, scope) {
+        let elementContainsContainer = false;
+        let parentsContainingReference = [];
+        for (let e = 0; e < elements.length; ++e) {
             if (isDescendant(elements[e], scope)) {
                 elementContainsContainer = true;
                 parentsContainingReference.push(elements[e]);
@@ -102,8 +98,8 @@ export default class SearchLineage {
         return elements;
     }
 
-    _limitToNextSibling(elements, scope) {
-        var siblings = elements.filter(function (e) {
+    static _limitToNextSibling(elements, scope) {
+        let siblings = elements.filter(function(e) {
             return scope && scope.nextElementSibling == e;
         });
 
@@ -111,7 +107,7 @@ export default class SearchLineage {
     }
 
     _unique(array) {
-        return array.filter(function (x, i) {
+        return array.filter(function(x, i) {
             return array.indexOf(x) === i
         })
     }

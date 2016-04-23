@@ -1,12 +1,12 @@
-import isDescendant from '../utils/isDescendant';
+import isDescendant from '../utils/is-descendant';
 
-export default function (label, container, customLabels) {
+export default function(label, container, customLabels) {
     customLabels = customLabels || {};
     let resolver = customLabels[label];
 
     let elements = resolver;
-    if(typeof(elements) == 'function') {
-       elements = resolver();
+    if (typeof(elements) == 'function') {
+        elements = resolver();
     }
 
     if (!elements) return [];
@@ -14,8 +14,8 @@ export default function (label, container, customLabels) {
     elements = [].concat(elements);
 
     try {
-        var r = [];
-        elements.forEach(function(e){
+        let r = [];
+        elements.forEach(function(e) {
             if (isDescendant(container, e)) {
                 r.push(e)
             }

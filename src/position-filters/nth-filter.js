@@ -1,14 +1,14 @@
-export default function (elements, position) {
+export default function(elements, position) {
     if (position == null)
         return elements;
 
     if (position <= 0) {
         throw new Error("Position starts at 1")
     }
-    
+
     if (elements.length < position)
         throw new Error(`Position ${position} out of range`)
 
-    var i = position - 1;
+    let i = position - 1;
     return [elements[i]];
 }

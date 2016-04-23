@@ -34,9 +34,9 @@ export default {
     },
 
     _log(level, messages) {
-        var l = LogLevels[level];
+        let l = LogLevels[level];
 
-        if(l <= this.level) {
+        if (l <= this.level) {
             console.log(messages.join(" "));
         }
     }

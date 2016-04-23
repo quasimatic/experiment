@@ -1,10 +1,10 @@
-export default function (obj1, obj2) {
-    var obj3 = {};
-    for (var attrname in obj1) {
-        obj3[attrname] = obj1[attrname];
+export default function(obj1, obj2) {
+    let obj3 = {};
+    for (let key in obj1) {
+        obj3[key] = obj1[key];
     }
-    for (var attrname in obj2) {
-        obj3[attrname] = obj2[attrname];
+    for (let key in obj2) {
+        obj3[key] = obj2[key];
     }
     return obj3;
 }

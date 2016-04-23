@@ -1,4 +1,4 @@
-export default function (parent, child) {
+export default function(parent, child) {
     let node = child.parentNode;
     while (node != null) {
         if (node == parent) {
