@@ -242,29 +242,6 @@ describe('Selector should apply modifier', function () {
 
         return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
     });
-
-    it("should support default modifiers", function () {
-        dom.render(
-            <div>
-                <div id="target-1">1</div>
-                <div id="target-2">12</div>
-                <div id="target-3">123</div>
-                <div id="target-4">1234</div>
-            </div>
-        )
-
-        glance.addModifiers(
-            {
-                "lessthan3characters": {
-                    default:true,
-                    filter: function (filteredElements) {
-                        return filteredElements.filter(e => e.innerHTML.length < 3)
-                    }
-                }
-            }
-        )
-        return glance("1").should.deep.equal(dom.get("target-1", "target-2"));
-    });
     
     it("should support setting the locator", function() {
         dom.render(
