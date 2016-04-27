@@ -11,19 +11,17 @@ export default class SearchLineage {
         this.modifiers = config.modifiers || {};
 
         this.defaultFilters = [visible];
-
-        this.customLabels = {};
     }
 
     search(targets, context, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        let locator = this._locatorFromModifier(target) || this.defaultLocator;
+        let locator = this._locatorFromModifier(target, this.modifiers) || this.defaultLocator;
 
         let elements = this._locateElements(target, context, locator, customLabels);
 
-        elements = this._filterElements(target, elements);
+        elements = this._filterElements(target, elements, context);
 
         let filteredElements = nthFilter(elements, target.position);
 
@@ -48,9 +46,9 @@ export default class SearchLineage {
         return unique(newTargets);
     }
 
-    _filterElements(target, elements) {
+    _filterElements(target, elements, context) {
         let filters = this._filtersFromModifier(target, this.modifiers) || this.defaultFilters;
-        return filters.reduce((previousElements, filter) => filter(previousElements), elements)
+        return filters.reduce((previousElements, filter) => filter(previousElements, context), elements)
     }
 
     _filtersFromModifier(target, modifiers) {
@@ -65,11 +63,11 @@ export default class SearchLineage {
         return null;
     }
 
-    _locatorFromModifier(target) {
+    _locatorFromModifier(target, modifiers) {
         if (target.modifiers.length > 0) {
-            let modifierNames = target.modifiers.filter(m => this.modifiers[m].find);
+            let modifierNames = target.modifiers.filter(name => modifiers[name] && modifiers[name].locator);
             if (modifierNames.length > 0)
-                return this.modifiers[modifierNames[0]].find;
+                return this.modifiers[modifierNames[0]].locator;
         }
     }
 
