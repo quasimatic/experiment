@@ -12,9 +12,9 @@ export default function(label, container, customLabels) {
     if (!elements) return [];
 
     elements = [].concat(elements);
+    let r = [];
 
     try {
-        let r = [];
         elements.forEach(function(e) {
             if (isDescendant(container, e)) {
                 r.push(e)
