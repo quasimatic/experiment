@@ -8,6 +8,7 @@ function GlanceSelector(options) {
     let _selector = {};
     _selector.customLabels = options.customLabels || {};
     _selector.modifiers = options.modifiers || {};
+    _selector.hooks = options.hooks || {}
 
     _selector.guideFactory = options.guideFactory;
 
@@ -33,6 +34,17 @@ function GlanceSelector(options) {
     selector.addModifiers = function(modifiers) {
         _selector.modifiers = mergeObjects(_selector.modifiers, modifiers);
     };
+
+    selector.addOverrides = function(overrides) {
+        if (overrides.modifiers)
+            _selector.modifiers = mergeObjects(_selector.modifiers, overrides.modifiers);
+
+        if (overrides.labels)
+            _selector.customLabels = mergeObjects(_selector.customLabels, overrides.labels);
+
+        if (overrides.hooks)
+            _selector.hooks = mergeObjects(_selector.hooks, overrides.hooks);
+    }
 
     selector.setLogLevel = function(level) {
         log.setLogLevel(level)
