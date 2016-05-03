@@ -4,15 +4,15 @@ import dom from "./dom"
 describe("Extensions: labels", function() {
     beforeEach(function() {
         document.body.innerHTML = "";
-    });
 
-    it("should find elements for a custom label", function() {
         dom.render(
             <div>
                 <div id="target"></div>
             </div>
         );
+    });
 
+    it("should find elements for a custom label", function() {
         glance.addExtension({
             labels: {
                 "custom-label": {
@@ -30,9 +30,6 @@ describe("Extensions: labels", function() {
 describe("Extensions: modifiers", function() {
     beforeEach(function() {
         document.body.innerHTML = "";
-    });
-
-    it("should filter elements", function() {
         dom.render(
             <div>
                 <div className='item' id="target-1"></div>
@@ -41,7 +38,9 @@ describe("Extensions: modifiers", function() {
                 <div className='item'></div>
             </div>
         );
+    });
 
+    it("should filter elements", function() {
         glance.addExtension({
             modifiers: {
                 "every-other": {
