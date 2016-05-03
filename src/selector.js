@@ -18,11 +18,10 @@ function GlanceSelector(options) {
 
         var allCustomLabels = mergeObjects(_selector.extensions.reduce((r, e) => mergeObjects(r, e.labels), {}), _selector.customLabels)
 
-        console.log(allCustomLabels)
-
         let resolvedLabels = resolveCustomLabels(data, allCustomLabels, _selector);
 
         let elements = _selector.guideFactory({
+            extensions: _selector.extensions,
             locator: defaultLocator,
             modifiers: _selector.modifiers
         }).search(data, document, 0, resolvedLabels);

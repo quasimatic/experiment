@@ -24,7 +24,41 @@ describe("Extensions: labels", function() {
         });
 
         return glance("custom-label").should.deep.equal(dom.get("target"));
-    })
+    });
+
+    it("should have beforeLocate", function() {
+        let actualLabel;
+        glance.addExtension({
+            labels: {
+                "custom-label": {
+                    beforeLocate: function(label) {
+                        actualLabel = label;
+                    }
+                }
+            }
+        });
+
+        glance("custom-label");
+
+        return actualLabel.should.deep.equal("custom-label");
+    });
+
+    it("should have afterLocate", function() {
+        let actualLabel;
+        glance.addExtension({
+            labels: {
+                "custom-label": {
+                    afterLocate: function(label) {
+                        actualLabel = label;
+                    }
+                }
+            }
+        });
+
+        glance("custom-label");
+
+        return actualLabel.should.deep.equal("custom-label");
+    });
 });
 
 describe("Extensions: modifiers", function() {

@@ -7,7 +7,8 @@ import unique from "../utils/unique"
 export default class SearchLineage {
     constructor(config) {
         this.config = config;
-        this.defaultLocator = config.locator;
+        this.extensions = config.extensions || [];
+        this.locator = config.locator;
         this.modifiers = config.modifiers || {};
 
         this.defaultFilters = [visible];
@@ -17,9 +18,9 @@ export default class SearchLineage {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        let locator = this._locatorFromModifier(target, this.modifiers) || this.defaultLocator;
+        let locator = this._locatorFromModifier(target, this.modifiers) || this.locator;
 
-        let elements = this._locateElements(target, context, locator, customLabels);
+        let elements = this._locateElements(target, context, locator, this.extensions.filter(e => e.labels && e.labels[target.label]).map(e => e.labels[target.label]), customLabels);
 
         elements = this._filterElements(target, elements, context);
 
@@ -71,13 +72,21 @@ export default class SearchLineage {
         }
     }
 
-    _locateElements(target, context, locator, customLabels) {
+    _locateElements(target, context, locator, labelExtensions, customLabels) {
         let elements = [];
         let parent = context;
+        
+        var beforeLocate = labelExtensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
+        var afterLocate = labelExtensions.filter(e => e.afterLocate).map(e => e.afterLocate);
+
+        beforeLocate.forEach(before => before(target.label));
+
         while (parent && elements.length == 0) {
             elements = locator(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
+
+        afterLocate.forEach(before => before(target.label));
 
         elements = limitToScope(elements, context);
         elements = nextToScope(elements, context);
