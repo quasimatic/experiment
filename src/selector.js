@@ -14,6 +14,8 @@ function GlanceSelector(options) {
     _selector.guideFactory = options.guideFactory;
 
     let selector = function(reference) {
+        if(!reference) throw new Error("Selector required")
+
         let data = Parser.parse(reference);
 
         var allCustomLabels = mergeObjects(_selector.extensions.reduce((r, e) => mergeObjects(r, e.labels), {}), _selector.customLabels)
