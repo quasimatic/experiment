@@ -16,6 +16,8 @@ function GlanceSelector(options) {
     let selector = function(reference) {
         if(!reference) throw new Error("Selector required")
 
+        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
+
         let data = Parser.parse(reference);
 
         var allCustomLabels = mergeObjects(_selector.extensions.reduce((r, e) => mergeObjects(r, e.labels), {}), _selector.customLabels)
@@ -27,6 +29,8 @@ function GlanceSelector(options) {
             locator: defaultLocator,
             modifiers: _selector.modifiers
         }).search(data, document, 0, resolvedLabels);
+
+        _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll());
 
         if (elements.length === 1)
             return elements[0];
