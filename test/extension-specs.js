@@ -89,3 +89,41 @@ describe("Extensions: modifiers", function() {
         return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
     })
 });
+
+
+describe("Extensions: filter events", function() {
+    let filterCalled = false;
+    beforeEach(function() {
+        document.body.innerHTML = "";
+        dom.render(
+            <div>
+            </div>
+        );
+    });
+
+    it("should have beforeFilter event", function() {
+        glance.addExtension({
+            beforeFilter: function(target, elements) {
+                filterCalled = true;
+
+                return elements;
+            }
+        });
+
+        glance("div")
+        filterCalled.should.deep.equal(true);
+    })
+
+    it("should have afterFilter event", function() {
+        glance.addExtension({
+            afterFilter: function(target, elements) {
+                filterCalled = true;
+
+                return elements;
+            }
+        });
+
+        glance("div")
+        filterCalled.should.deep.equal(true);
+    })
+});

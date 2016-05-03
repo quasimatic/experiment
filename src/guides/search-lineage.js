@@ -22,7 +22,7 @@ export default class SearchLineage {
 
         let elements = this._locateElements(target, context, locator, this.extensions.filter(e => e.labels && e.labels[target.label]).map(e => e.labels[target.label]), customLabels);
 
-        elements = this._filterElements(target, elements, context);
+        elements = this._filterElements(target, elements, context, this.extensions);
 
         let filteredElements = nthFilter(elements, target.position);
 
@@ -47,9 +47,14 @@ export default class SearchLineage {
         return unique(newTargets);
     }
 
-    _filterElements(target, elements, context) {
+    _filterElements(target, elements, context, extensions) {
         let filters = this._filtersFromModifier(target, this.modifiers) || this.defaultFilters;
-        return filters.reduce((previousElements, filter) => filter(previousElements, context), elements)
+
+        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((beforeFilterElements, e) => beforeFilterElements = e.beforeFilter(target, beforeFilterElements), elements)
+
+        var filteredElements = filters.reduce((previousElements, filter) => filter(previousElements, context), beforeFilterElements)
+
+        return extensions.filter(e => e.afterFilter).reduce((afterFilterElements, e) => afterFilterElements = e.afterFilter(target, afterFilterElements), filteredElements)
     }
 
     _filtersFromModifier(target, modifiers) {
