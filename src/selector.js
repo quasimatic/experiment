@@ -6,6 +6,7 @@ import mergeObjects from "./utils/merge-objects";
 
 function GlanceSelector(options) {
     let _selector = {};
+    _selector.extensions = [];
     _selector.customLabels = options.customLabels || {};
     _selector.modifiers = options.modifiers || {};
     _selector.hooks = options.hooks || {}
@@ -15,7 +16,12 @@ function GlanceSelector(options) {
     let selector = function(reference) {
         let data = Parser.parse(reference);
 
-        let resolvedLabels = resolveCustomLabels(data, _selector.customLabels, _selector);
+        var allCustomLabels = mergeObjects(_selector.extensions.reduce((r, e) => mergeObjects(r, e.labels), {}), _selector.customLabels)
+
+        console.log(allCustomLabels)
+
+        let resolvedLabels = resolveCustomLabels(data, allCustomLabels, _selector);
+
         let elements = _selector.guideFactory({
             locator: defaultLocator,
             modifiers: _selector.modifiers
@@ -35,15 +41,14 @@ function GlanceSelector(options) {
         _selector.modifiers = mergeObjects(_selector.modifiers, modifiers);
     };
 
-    selector.addOverrides = function(overrides) {
-        if (overrides.modifiers)
-            _selector.modifiers = mergeObjects(_selector.modifiers, overrides.modifiers);
+    selector.addExtension = function(extension) {
+        _selector.extensions.push(extension);
 
-        if (overrides.labels)
-            _selector.customLabels = mergeObjects(_selector.customLabels, overrides.labels);
+        if (extension.modifiers)
+            _selector.modifiers = mergeObjects(_selector.modifiers, extension.modifiers);
 
-        if (overrides.hooks)
-            _selector.hooks = mergeObjects(_selector.hooks, overrides.hooks);
+        // if (extension.labels)
+        //     _selector.customLabels = mergeObjects(_selector.customLabels, extension.labels);
     }
 
     selector.setLogLevel = function(level) {
