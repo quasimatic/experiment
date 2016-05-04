@@ -47,19 +47,19 @@ export default class SearchLineage {
         return unique(newTargets);
     }
 
-    _filterElements(target, elements, context, extensions) {
+    _filterElements(target, unfilteredElements, scope, extensions) {
         let filters = this._filtersFromModifier(target, this.modifiers) || this.defaultFilters;
 
-        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((beforeFilterElements, e) => beforeFilterElements = e.beforeFilter(target, beforeFilterElements), elements)
+        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements)
 
-        var filteredElements = filters.reduce((previousElements, filter) => filter(previousElements, context), beforeFilterElements)
+        var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
 
-        return extensions.filter(e => e.afterFilter).reduce((afterFilterElements, e) => afterFilterElements = e.afterFilter(target, afterFilterElements), filteredElements)
+        return extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements)
     }
 
     _filtersFromModifier(target, modifiers) {
         if (target.modifiers.length > 0) {
-            let modifiersWithFilters = target.modifiers.filter(name => modifiers[name] && modifiers[name].filter)
+            let modifiersWithFilters = target.modifiers.filter(name => modifiers[name] && modifiers[name].filter);
 
             if (modifiersWithFilters.length != 0) {
                 return modifiersWithFilters.map(name => modifiers[name].filter)
@@ -84,14 +84,14 @@ export default class SearchLineage {
         var beforeLocate = labelExtensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
         var afterLocate = labelExtensions.filter(e => e.afterLocate).map(e => e.afterLocate);
 
-        beforeLocate.forEach(before => before(target.label));
+        beforeLocate.forEach(before => before({label: target.label}));
 
         while (parent && elements.length == 0) {
             elements = locator(target.label, parent, customLabels);
             parent = parent.parentNode;
         }
 
-        afterLocate.forEach(before => before(target.label));
+        afterLocate.forEach(before => before({label: target.label}));
 
         elements = limitToScope(elements, context);
         elements = nextToScope(elements, context);

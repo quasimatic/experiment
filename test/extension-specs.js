@@ -31,7 +31,7 @@ describe("Extensions: labels", function() {
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    beforeLocate: function(label) {
+                    beforeLocate: function({label}) {
                         actualLabel = label;
                     }
                 }
@@ -48,7 +48,7 @@ describe("Extensions: labels", function() {
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    afterLocate: function(label) {
+                    afterLocate: function({label}) {
                         actualLabel = label;
                     }
                 }
@@ -103,7 +103,7 @@ describe("Extensions: filter events", function() {
 
     it("should have beforeFilter event", function() {
         glance.addExtension({
-            beforeFilter: function(target, elements) {
+            beforeFilter: function(elements) {
                 filterCalled = true;
 
                 return elements;
@@ -116,7 +116,7 @@ describe("Extensions: filter events", function() {
 
     it("should have afterFilter event", function() {
         glance.addExtension({
-            afterFilter: function(target, elements) {
+            afterFilter: function(elements) {
                 filterCalled = true;
 
                 return elements;
@@ -133,7 +133,7 @@ describe("Extensions: before and after all", function() {
         let beforeAllCalled = false;
 
         glance.addExtension({
-            beforeAll: function(selector) {
+            beforeAll: function({selector}) {
                 beforeAllCalled = true;
             }
         });

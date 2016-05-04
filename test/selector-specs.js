@@ -220,8 +220,8 @@ describe('Selector should apply modifier', function() {
         glance.addModifiers(
             {
                 "lessthan3characters": {
-                    filter: function(filteredElements) {
-                        return filteredElements.filter(e => e.innerHTML.length < 3)
+                    filter: function(elements) {
+                        return elements.filter(e => e.innerHTML.length < 3)
                     }
                 }
             }
