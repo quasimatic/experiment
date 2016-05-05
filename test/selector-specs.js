@@ -111,9 +111,13 @@ describe("Glance", function() {
             </div>
         );
 
-        glance.addCustomLabels({
-            "customlabel": function(g, selector) {
-                return g("random>div#2");
+        glance.addExtension({
+            labels: {
+                "customlabel": {
+                    locate: function(label, scope, config) {
+                        return config.glance("random>div#2");
+                    }
+                }
             }
         });
 

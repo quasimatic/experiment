@@ -1,4 +1,4 @@
-import Extensions from "./extensions";
+import Extensions from "../utils/extensions";
 
 import limitToScope from "../filters/limit-to-scope"
 import nextToScope from "../filters/next-to-scope"

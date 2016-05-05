@@ -10,9 +10,9 @@ import findByPlaceholder from "./placeholder"
 import findByImage from "./image"
 import findByNodeType from "./node-type"
 
-export default function(label, container, customLabels) {
+export default function(label, container, config) {
     log.debug("Searching by custom label:", label);
-    let e = findByCustomLabel(label, container, customLabels || {});
+    let e = findByCustomLabel(label, container, config);
     if (e.length > 0) {
         log.info("Matched using custom label:", label);
         return e;

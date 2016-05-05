@@ -3,15 +3,32 @@ import LineageGuide from '../../src/guides/search-lineage';
 import parser from "../../src/parser";
 import dom from "../dom";
 
-describe("Guide: Search lineage", function () {
+describe("Guide: Search lineage", function() {
     var lineageGuide;
 
-    beforeEach(function () {
+    beforeEach(function() {
         document.body.innerHTML = "";
-        lineageGuide = new LineageGuide({locator:defaultFinder});
+        lineageGuide = new LineageGuide({
+            locator: defaultFinder,
+            extensions: [{
+                labels: {
+                    "customlabel": {
+                        locate: function() {
+                            return dom.get("custom");
+                        }
+                    },
+
+                    "customClassLabel": {
+                        locate: function() {
+                            return dom.get("target")
+                        }
+                    }
+                }
+            }]
+        });
     });
 
-    it("should find within a container", function () {
+    it("should find within a container", function() {
         dom.render(
             <div className="parent">
                 <div id="target">child</div>
@@ -21,7 +38,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("parent>child"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should find next to", function () {
+    it("should find next to", function() {
         dom.render(
             <div className="parent">
                 <div>sibling 1</div>
@@ -32,7 +49,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("sibling 1>sibling 2"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should find all children within a container", function () {
+    it("should find all children within a container", function() {
         dom.render(
             <div className="parent">
                 <div id="target-1">child</div>
@@ -43,7 +60,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("parent>div"), document).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
-    it("should traverse the dom looking for items in multiple containers", function () {
+    it("should traverse the dom looking for items in multiple containers", function() {
         dom.render(
             <div className="box3">
                 <div className="inner-box">
@@ -56,7 +73,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("Item 1 in box 3>Item 2"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should find duplicates at different levels", function () {
+    it("should find duplicates at different levels", function() {
         dom.render(
             <div className="box4">
                 <div className="inner-box">
@@ -73,7 +90,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("box4>Duplicate A"), document).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
-    it("should traverse the dom looking for items in parent containers", function () {
+    it("should traverse the dom looking for items in parent containers", function() {
         dom.render(
             <div className="box5">
                 <div className="inner-box">
@@ -88,7 +105,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("box5>inner-box>Item 1"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should only crawl parents til first find", function () {
+    it("should only crawl parents til first find", function() {
         dom.render(
             <div className="box6">
                 <div>
@@ -110,7 +127,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("Item B>Item A"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should look by class near a container", function () {
+    it("should look by class near a container", function() {
         dom.render(
             <div className="box7">
                 <div>Item Content</div>
@@ -121,7 +138,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("box7>Item Content>class-name"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should look by node type near a container", function () {
+    it("should look by node type near a container", function() {
         dom.render(
             <div className="box8">
                 <div>Item Content</div>
@@ -132,7 +149,7 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search(parser.parse("Item Content>input-near-content"), document).should.deep.equal([dom.get('target')]);
     });
 
-    it("should look within a custom label", function () {
+    it("should look within a custom label", function() {
         dom.render(
             <div className="box9">
                 <div className="random">
@@ -144,12 +161,10 @@ describe("Guide: Search lineage", function () {
             </div>
         )
 
-        lineageGuide.search(parser.parse("box9>customlabel>Item 1"), document, 0, {
-            "customlabel": dom.get("custom")
-        }).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box9>customlabel>Item 1"), document, 0).should.deep.equal([dom.get('target')]);
     });
 
-    it("should find the custom label in container", function () {
+    it("should find the custom label in container", function() {
         dom.render(
             <div className="box10">
                 <div className="custom-class">Outside</div>
@@ -166,12 +181,10 @@ describe("Guide: Search lineage", function () {
             </div>
         )
 
-        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document, 0, {
-            "customClassLabel": dom.get("target")
-        }).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document, 0).should.deep.equal([dom.get('target')]);
     })
 
-    it("Should limit and narrow the search to containers found", function () {
+    it("Should limit and narrow the search to containers found", function() {
         dom.render(
             <div className="box11">
                 <div className="outer-parent">

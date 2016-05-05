@@ -1,7 +1,7 @@
-import Extensions from "./extensions";
+import Extensions from "../utils/extensions";
 
 export default class Locator {
-    static locate(target, scope, extensions, customLabels, defaultLocator) {
+    static locate(target, scope, extensions, defaultLocator, config) {
         let locator = Extensions.locatorFromModifier(target, Extensions.modifiers(extensions)) || defaultLocator;
 
         let elements = [];
@@ -13,7 +13,7 @@ export default class Locator {
         beforeLocate.forEach(before => before({label: target.label}));
 
         while (parent && elements.length == 0) {
-            elements = locator(target.label, parent, customLabels);
+            elements = locator(target.label, parent, config);
             parent = parent.parentNode;
         }
 
