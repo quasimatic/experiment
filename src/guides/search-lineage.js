@@ -1,8 +1,7 @@
-import nthFilter from "../position-filters/nth-filter";
 import visible from "../filters/visible";
-import limitToScope from "../filters/limit-to-scope"
-import nextToScope from "../filters/next-to-scope"
 import unique from "../utils/unique"
+import Locator from "./locator";
+import Filter from "./filter";
 
 export default class SearchLineage {
     constructor(config) {
@@ -14,92 +13,36 @@ export default class SearchLineage {
         this.defaultFilters = [visible];
     }
 
-    search(targets, context, labelIndex, customLabels) {
+    search(targets, scope, labelIndex, customLabels) {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        let locator = this._locatorFromModifier(target, this.modifiers) || this.locator;
+        let elements = Locator.locate(target, scope, this.extensions, customLabels, this);
 
-        let elements = this._locateElements(target, context, locator, this.extensions.filter(e => e.labels && e.labels[target.label]).map(e => e.labels[target.label]), customLabels);
+        let filteredElements = Filter.filter(target, elements, scope, this.extensions, this);
 
-        elements = this._filterElements(target, elements, context, this.extensions);
-
-        let filteredElements = nthFilter(elements, target.position);
-
-        if (SearchLineage._lastItem(targets, labelIndex)) {
+        if (SearchLineage.isLastLabel(targets, labelIndex)) {
             return filteredElements;
         }
         else {
-            return this._traverseScopes(filteredElements, targets, labelIndex, customLabels);
+            return SearchLineage.traverseScopes(filteredElements, targets, labelIndex, customLabels, this.config);
         }
     }
 
-    _traverseScopes(filteredElements, targets, labelIndex, customLabels) {
+    static traverseScopes(filteredElements, targets, labelIndex, customLabels, config) {
         let newTargets = [];
 
         for (let c = 0; c < filteredElements.length; c++) {
             let childContainer = filteredElements[c];
 
-            let foundItems = new SearchLineage(this.config).search(targets, childContainer, labelIndex + 1, customLabels);
+            let foundItems = new SearchLineage(config).search(targets, childContainer, labelIndex + 1, customLabels);
             newTargets = newTargets.concat(foundItems);
         }
 
         return unique(newTargets);
     }
 
-    _filterElements(target, unfilteredElements, scope, extensions) {
-        let filters = this._filtersFromModifier(target, this.modifiers) || this.defaultFilters;
-
-        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements)
-
-        var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
-
-        return extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements)
-    }
-
-    _filtersFromModifier(target, modifiers) {
-        if (target.modifiers.length > 0) {
-            let modifiersWithFilters = target.modifiers.filter(name => modifiers[name] && modifiers[name].filter);
-
-            if (modifiersWithFilters.length != 0) {
-                return modifiersWithFilters.map(name => modifiers[name].filter)
-            }
-        }
-
-        return null;
-    }
-
-    _locatorFromModifier(target, modifiers) {
-        if (target.modifiers.length > 0) {
-            let modifierNames = target.modifiers.filter(name => modifiers[name] && modifiers[name].locator);
-            if (modifierNames.length > 0)
-                return this.modifiers[modifierNames[0]].locator;
-        }
-    }
-
-    _locateElements(target, context, locator, labelExtensions, customLabels) {
-        let elements = [];
-        let parent = context;
-        
-        var beforeLocate = labelExtensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
-        var afterLocate = labelExtensions.filter(e => e.afterLocate).map(e => e.afterLocate);
-
-        beforeLocate.forEach(before => before({label: target.label}));
-
-        while (parent && elements.length == 0) {
-            elements = locator(target.label, parent, customLabels);
-            parent = parent.parentNode;
-        }
-
-        afterLocate.forEach(before => before({label: target.label}));
-
-        elements = limitToScope(elements, context);
-        elements = nextToScope(elements, context);
-
-        return elements;
-    }
-
-    static _lastItem(targets, labelIndex) {
+    static isLastLabel(targets, labelIndex) {
         return labelIndex + 1 === targets.length;
     }
 }
