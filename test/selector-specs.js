@@ -147,10 +147,10 @@ describe("Glance", function() {
                 <div id="target-1">Duplicate</div>
                 <div style={{display: "none"}}>Duplicate</div>
             </div>
-        )
+        );
 
         return glance("Duplicate").should.deep.equal(dom.get("target-1"));
-    })
+    });
 
     it("should limit to next sibling", function() {
         dom.render(
@@ -168,7 +168,7 @@ describe("Glance", function() {
                     <input />
                 </div>
             </div>
-        )
+        );
 
         return glance("label>input").should.deep.equal(dom.get("target-1", "target-2"));
     });
@@ -181,7 +181,7 @@ describe("Glance", function() {
                     <option value="value2">text2</option>
                 </select>
             </div>
-        )
+        );
 
         return glance("select-1>text1").should.deep.equal(dom.get("target-1"));
     })
@@ -199,7 +199,7 @@ describe('Selector Nth', function() {
                 <div id="target" className="item-2">Item A</div>
                 <div className="item-3">Item A</div>
             </div>
-        )
+        );
 
         return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
     });
@@ -217,7 +217,7 @@ describe('Selector Nth', function() {
                     <div className="item-3">Item A</div>
                 </div>
             </div>
-        )
+        );
 
         return glance("box2>inner-box#2>Item A").should.deep.equal(dom.get("target"));
     });
@@ -236,7 +236,7 @@ describe('Selector should apply modifier', function() {
                 <div>123</div>
                 <div>1234</div>
             </div>
-        )
+        );
 
         glance.addExtension({
             modifiers: {
@@ -246,7 +246,7 @@ describe('Selector should apply modifier', function() {
                     }
                 }
             }
-        })
+        });
 
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
@@ -282,7 +282,7 @@ describe('Selector should apply modifier', function() {
                 <div>abc def</div>
                 <div>1234</div>
             </div>
-        )
+        );
 
         glance.addExtension({
             modifiers: {

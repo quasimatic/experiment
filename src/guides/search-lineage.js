@@ -6,7 +6,7 @@ import Filter from "./filter";
 export default class SearchLineage {
     constructor(config) {
         this.config = config;
-        this.config.extensions = config.extensions || []
+        this.config.extensions = config.extensions || [];
         this.extensions = config.extensions || [];
         this.locator = config.locator;
 

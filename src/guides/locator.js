@@ -7,7 +7,7 @@ export default class Locator {
         let elements = [];
         let parent = scope;
 
-        let beforeLocate = Extensions.locateBeforeHook(target, extensions)
+        let beforeLocate = Extensions.locateBeforeHook(target, extensions);
         let afterLocate = Extensions.locateAfterHook(target, extensions);
 
         beforeLocate.forEach(before => before({label: target.label}));

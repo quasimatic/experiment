@@ -8,12 +8,12 @@ function GlanceSelector(options) {
     let _selector = {};
     _selector.extensions = [];
     _selector.modifiers = options.modifiers || {};
-    _selector.hooks = options.hooks || {}
+    _selector.hooks = options.hooks || {};
 
     _selector.guideFactory = options.guideFactory;
 
     let selector = function(reference, config) {
-        if(!reference) throw new Error("Selector required")
+        if(!reference) throw new Error("Selector required");
 
         _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
 

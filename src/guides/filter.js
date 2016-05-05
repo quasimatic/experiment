@@ -11,11 +11,11 @@ export default class Filter {
 
         let filters = Filter.filtersFromModifier(target, Extensions.modifiers(extensions)) || defaultFilters;
 
-        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements)
+        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements);
 
         var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
 
-        var ddd = extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements)
+        var ddd = extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements);
 
         return nthFilter(ddd, target.position);
     }
