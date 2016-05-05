@@ -3,7 +3,8 @@ import Extensions from "./extensions";
 export default class Locator {
     static locate(target, scope, extensions, customLabels, guide) {
         let labelExtensions = Extensions.locatorForLabel(extensions, target);
-        let locator = Locator.locatorFromModifier(target, guide.modifiers) || guide.locator;
+
+        let locator = Locator.locatorFromModifier(target, Extensions.modifiers(extensions)) || guide.locator;
 
         let elements = [];
         let parent = scope;

@@ -8,7 +8,6 @@ export default class SearchLineage {
         this.config = config;
         this.extensions = config.extensions || [];
         this.locator = config.locator;
-        this.modifiers = config.modifiers || {};
 
         this.defaultFilters = [visible];
     }

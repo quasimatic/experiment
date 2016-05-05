@@ -26,8 +26,7 @@ function GlanceSelector(options) {
 
         let elements = _selector.guideFactory({
             extensions: _selector.extensions,
-            locator: defaultLocator,
-            modifiers: _selector.modifiers
+            locator: defaultLocator
         }).search(data, document, 0, resolvedLabels);
 
         _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll());
@@ -42,19 +41,9 @@ function GlanceSelector(options) {
         _selector.customLabels = mergeObjects(_selector.customLabels, customLabels);
     };
 
-    selector.addModifiers = function(modifiers) {
-        _selector.modifiers = mergeObjects(_selector.modifiers, modifiers);
-    };
-
     selector.addExtension = function(extension) {
         _selector.extensions.push(extension);
-
-        if (extension.modifiers)
-            _selector.modifiers = mergeObjects(_selector.modifiers, extension.modifiers);
-
-        // if (extension.labels)
-        //     _selector.customLabels = mergeObjects(_selector.customLabels, extension.labels);
-    }
+    };
 
     selector.setLogLevel = function(level) {
         log.setLogLevel(level)

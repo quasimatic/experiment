@@ -217,15 +217,15 @@ describe('Selector should apply modifier', function() {
             </div>
         )
 
-        glance.addModifiers(
-            {
+        glance.addExtension({
+            modifiers: {
                 "lessthan3characters": {
                     filter: function(elements) {
                         return elements.filter(e => e.innerHTML.length < 3)
                     }
                 }
             }
-        )
+        })
 
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
@@ -238,17 +238,17 @@ describe('Selector should apply modifier', function() {
                 <div id="target-3" style={{display: "none"}}>1</div>
                 <div id="target-4" style={{display: "none"}}>1</div>
             </div>
-        )
+        );
 
-        glance.addModifiers(
-            {
+        glance.addExtension({
+            modifiers: {
                 "include-hidden": {
                     filter: function(elements) {
                         return elements;
                     }
                 }
             }
-        )
+        });
 
         return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
     });
@@ -263,8 +263,8 @@ describe('Selector should apply modifier', function() {
             </div>
         )
 
-        glance.addModifiers(
-            {
+        glance.addExtension({
+            modifiers: {
                 "exact-match": {
                     locator: function(label, scope) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
@@ -277,7 +277,8 @@ describe('Selector should apply modifier', function() {
                     }
                 }
             }
-        )
+        });
+
         return glance("bcd:exact-match").should.deep.equal(dom.get("target"));
     });
 });
