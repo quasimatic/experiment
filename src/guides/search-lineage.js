@@ -16,9 +16,9 @@ export default class SearchLineage {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        let elements = Locator.locate(target, scope, this.extensions, customLabels, this);
+        let elements = Locator.locate(target, scope, this.extensions, customLabels, this.locator);
 
-        let filteredElements = Filter.filter(target, elements, scope, this.extensions, this);
+        let filteredElements = Filter.filter(target, elements, scope, this.extensions, this.defaultFilters);
 
         if (SearchLineage.isLastLabel(targets, labelIndex)) {
             return filteredElements;

@@ -1,16 +1,14 @@
 import Extensions from "./extensions";
 
 export default class Locator {
-    static locate(target, scope, extensions, customLabels, guide) {
-        let labelExtensions = Extensions.locatorForLabel(extensions, target);
-
-        let locator = Locator.locatorFromModifier(target, Extensions.modifiers(extensions)) || guide.locator;
+    static locate(target, scope, extensions, customLabels, defaultLocator) {
+        let locator = Extensions.locatorFromModifier(target, Extensions.modifiers(extensions)) || defaultLocator;
 
         let elements = [];
         let parent = scope;
 
-        var beforeLocate = labelExtensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
-        var afterLocate = labelExtensions.filter(e => e.afterLocate).map(e => e.afterLocate);
+        let beforeLocate = Extensions.locateBeforeHook(target, extensions)
+        let afterLocate = Extensions.locateAfterHook(target, extensions);
 
         beforeLocate.forEach(before => before({label: target.label}));
 
@@ -22,13 +20,5 @@ export default class Locator {
         afterLocate.forEach(before => before({label: target.label}));
         
         return elements;
-    }
-
-    static locatorFromModifier(target, modifiers) {
-        if (target.modifiers.length > 0) {
-            let modifierNames = target.modifiers.filter(name => modifiers[name] && modifiers[name].locator);
-            if (modifierNames.length > 0)
-                return modifiers[modifierNames[0]].locator;
-        }
     }
 }

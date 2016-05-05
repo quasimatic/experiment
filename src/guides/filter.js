@@ -5,11 +5,11 @@ import nextToScope from "../filters/next-to-scope"
 import nthFilter from "../position-filters/nth-filter";
 
 export default class Filter {
-    static filter(target, unfilteredElements, scope, extensions, guide) {
+    static filter(target, unfilteredElements, scope, extensions, defaultFilters) {
         unfilteredElements = limitToScope(unfilteredElements, scope);
         unfilteredElements = nextToScope(unfilteredElements, scope);
-        
-        let filters = Filter.filtersFromModifier(target, Extensions.modifiers(extensions)) || guide.defaultFilters;
+
+        let filters = Filter.filtersFromModifier(target, Extensions.modifiers(extensions)) || defaultFilters;
 
         var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements)
 
