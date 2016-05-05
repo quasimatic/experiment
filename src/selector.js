@@ -2,6 +2,7 @@ import defaultGuide from "./guides/search-lineage"
 import defaultLocator from "./locators/default"
 import Parser from "./parser";
 import log from "./logger";
+import mergeObject from "./utils/merge-objects"
 
 function GlanceSelector(options) {
     let _selector = {};
@@ -18,11 +19,11 @@ function GlanceSelector(options) {
 
         let data = Parser.parse(reference);
 
-        let elements = _selector.guideFactory({
+        let elements = _selector.guideFactory(mergeObject({
             extensions: _selector.extensions,
             locator: defaultLocator,
             glance: selector
-        }).search(data, document, 0);
+        }, config)).search(data, document, 0);
 
         _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll());
 
