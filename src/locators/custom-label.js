@@ -3,18 +3,27 @@ import Extensions from "../utils/extensions"
 import isDescendant from '../utils/is-descendant';
 
 export default function(label, scope, config) {
-    let customLabel = Extensions.locatorForLabel(label, config.extensions);
-
-    let elements = customLabel.reduce((e, c) => {
-        if(e.length > 0) return e;
-
-        if(c.locate) {
-            return [].concat(c.locate(label, scope, config));
+    let elements = [];
+    if (config.preload) {
+        if (config.preload.labels) {
+            elements = [].concat(config.preload.labels[label]);
         }
+    }
 
-        return [];
-    }, [])
-    
+    if (elements.length == 0) {
+        let customLabel = Extensions.locatorForLabel(label, config.extensions || []);
+
+        elements = customLabel.reduce((e, c) => {
+            if (e.length > 0) return e;
+
+            if (c.locate) {
+                return [].concat(c.locate(label, scope, config));
+            }
+
+            return [];
+        }, [])
+    }
+
     let r = [];
 
     try {
