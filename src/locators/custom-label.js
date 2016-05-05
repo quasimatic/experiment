@@ -11,6 +11,10 @@ export default function(label, container, customLabels) {
 
     if (!elements) return [];
 
+    if (elements.locate) {
+        elements = resolver.locate();
+    }
+
     elements = [].concat(elements);
     let r = [];
 
