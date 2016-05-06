@@ -47,8 +47,11 @@ module.exports = (function() {
         peg$c8 = { type: "literal", value: "#", description: "\"#\"" },
         peg$c9 = "\\",
         peg$c10 = { type: "literal", value: "\\", description: "\"\\\\\"" },
-        peg$c11 = function(reference) { return reference; },
-        peg$c12 = function(label, position, modifiers) { return { label: label.trim(), position: position, modifiers: modifiers || [] } },
+        peg$c11 = function(target) {
+         	scope += text()
+         	return target;
+         },
+        peg$c12 = function(label, position, modifiers) { return { label: label.trim(), position: position, modifiers: modifiers || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } },
         peg$c13 = function(chars) { return chars.join('') },
         peg$c14 = function(c) { return c },
         peg$c15 = { type: "any", description: "any character" },
@@ -341,7 +344,7 @@ module.exports = (function() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
-      s1 = peg$parseReference();
+      s1 = peg$parseTarget();
       if (s1 !== peg$FAILED) {
         s2 = peg$parseScopeChar();
         if (s2 === peg$FAILED) {
@@ -363,7 +366,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseReference() {
+    function peg$parseTarget() {
       var s0, s1, s2, s3, s4;
 
       s0 = peg$currPos;
@@ -620,10 +623,10 @@ module.exports = (function() {
       s1 = peg$parseModifierChar();
       if (s1 !== peg$FAILED) {
         s2 = [];
-        s3 = peg$parseModifierName();
+        s3 = peg$parseModifier();
         while (s3 !== peg$FAILED) {
           s2.push(s3);
-          s3 = peg$parseModifierName();
+          s3 = peg$parseModifier();
         }
         if (s2 !== peg$FAILED) {
           peg$savedPos = s0;
@@ -641,11 +644,11 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierName() {
+    function peg$parseModifier() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
-      s1 = peg$parseModifierThing();
+      s1 = peg$parseModifierName();
       if (s1 !== peg$FAILED) {
         s2 = peg$parseModifierSeparator();
         if (s2 === peg$FAILED) {
@@ -667,7 +670,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierThing() {
+    function peg$parseModifierName() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
@@ -724,6 +727,10 @@ module.exports = (function() {
 
       return s0;
     }
+
+
+    	var scope = "";
+
 
     peg$result = peg$startRuleFunction();
 

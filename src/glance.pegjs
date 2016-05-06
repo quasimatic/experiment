@@ -1,3 +1,7 @@
+{
+	var scope = "";
+}
+
 Start = scopes:Scope* { return scopes }
 
 ScopeChar = ">"
@@ -7,10 +11,13 @@ IndexChar = "#"
 EscapeChar = "\\"
 
 Scope
- = reference:Reference ScopeChar? { return reference; }
+ = target:Target ScopeChar? {
+ 	scope += text()
+ 	return target;
+ }
 
-Reference
- = label:Label position:Index? modifiers:Modifiers? Whitespace? { return { label: label.trim(), position: position, modifiers: modifiers || [] } }
+Target
+ = label:Label position:Index? modifiers:Modifiers? Whitespace? { return { label: label.trim(), position: position, modifiers: modifiers || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } }
 
 Label
  = chars:LabelCharacter+ { return chars.join('') }
@@ -35,12 +42,12 @@ Position
  = [0-9]+ { return parseInt(text(), 10); }
 
 Modifiers
- = ModifierChar modifiers:ModifierName* { return modifiers; }
+ = ModifierChar modifiers:Modifier* { return modifiers; }
+
+Modifier
+ = name:ModifierName ModifierSeparator? { return name.trim() }
 
 ModifierName
- = name:ModifierThing ModifierSeparator? { return name.trim() }
-
-ModifierThing
  = thing:ModifierCharacter+ { return thing.join("") }
 
 ModifierCharacter
