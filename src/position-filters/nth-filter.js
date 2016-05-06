@@ -7,7 +7,7 @@ export default function(elements, position) {
     }
 
     if (elements.length < position)
-        throw new Error(`Position ${position} out of range`)
+        throw new Error(`Position ${position} out of range`);
 
     let i = position - 1;
     return [elements[i]];

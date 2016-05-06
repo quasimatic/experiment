@@ -111,13 +111,34 @@ describe("Glance", function() {
             </div>
         );
 
-        glance.addCustomLabels({
-            "customlabel": function(g, selector) {
-                return g("random>div#2");
+        glance.addExtension({
+            labels: {
+                "customlabel": {
+                    locate: function(label, scope, config) {
+                        return config.glance("random>div#2");
+                    }
+                }
             }
         });
 
         glance("customlabel").should.deep.equal(dom.get("target-1"));
+    });
+
+    it("should look by label preload", function() {
+        dom.render(
+            <div className="random">
+                <div>one</div>
+                <div id="target-1">two</div>
+            </div>
+        );
+
+        glance("preloadedLabel", {
+            preload: {
+                labels: {
+                    "preloadedLabel": glance("random>div#2")
+                }
+            }
+        }).should.deep.equal(dom.get("target-1"));
     });
 
     it("should only search visible elements", function() {
@@ -126,10 +147,10 @@ describe("Glance", function() {
                 <div id="target-1">Duplicate</div>
                 <div style={{display: "none"}}>Duplicate</div>
             </div>
-        )
+        );
 
         return glance("Duplicate").should.deep.equal(dom.get("target-1"));
-    })
+    });
 
     it("should limit to next sibling", function() {
         dom.render(
@@ -147,7 +168,7 @@ describe("Glance", function() {
                     <input />
                 </div>
             </div>
-        )
+        );
 
         return glance("label>input").should.deep.equal(dom.get("target-1", "target-2"));
     });
@@ -160,7 +181,7 @@ describe("Glance", function() {
                     <option value="value2">text2</option>
                 </select>
             </div>
-        )
+        );
 
         return glance("select-1>text1").should.deep.equal(dom.get("target-1"));
     })
@@ -178,7 +199,7 @@ describe('Selector Nth', function() {
                 <div id="target" className="item-2">Item A</div>
                 <div className="item-3">Item A</div>
             </div>
-        )
+        );
 
         return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
     });
@@ -196,7 +217,7 @@ describe('Selector Nth', function() {
                     <div className="item-3">Item A</div>
                 </div>
             </div>
-        )
+        );
 
         return glance("box2>inner-box#2>Item A").should.deep.equal(dom.get("target"));
     });
@@ -215,7 +236,7 @@ describe('Selector should apply modifier', function() {
                 <div>123</div>
                 <div>1234</div>
             </div>
-        )
+        );
 
         glance.addExtension({
             modifiers: {
@@ -225,7 +246,7 @@ describe('Selector should apply modifier', function() {
                     }
                 }
             }
-        })
+        });
 
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
@@ -261,7 +282,7 @@ describe('Selector should apply modifier', function() {
                 <div>abc def</div>
                 <div>1234</div>
             </div>
-        )
+        );
 
         glance.addExtension({
             modifiers: {

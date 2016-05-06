@@ -1,26 +1,34 @@
+import Extensions from "../utils/extensions"
+
 import isDescendant from '../utils/is-descendant';
 
-export default function(label, container, customLabels) {
-    customLabels = customLabels || {};
-    let resolver = customLabels[label];
-
-    let elements = resolver;
-    if (typeof(elements) == 'function') {
-        elements = resolver();
+export default function(label, scope, config) {
+    let elements = [];
+    if (config.preload) {
+        if (config.preload.labels) {
+            elements = [].concat(config.preload.labels[label]);
+        }
     }
 
-    if (!elements) return [];
+    if (elements.length == 0) {
+        let customLabel = Extensions.locatorForLabel(label, config.extensions || []);
 
-    if (elements.locate) {
-        elements = resolver.locate();
+        elements = customLabel.reduce((e, c) => {
+            if (e.length > 0) return e;
+
+            if (c.locate) {
+                return [].concat(c.locate(label, scope, config));
+            }
+
+            return [];
+        }, [])
     }
 
-    elements = [].concat(elements);
     let r = [];
 
     try {
         elements.forEach(function(e) {
-            if (isDescendant(container, e)) {
+            if (isDescendant(scope, e)) {
                 r.push(e)
             }
         });
