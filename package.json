@@ -7,6 +7,7 @@
     "build": "rm -rf lib && node_modules/.bin/pegjs -o src/parser.js src/glance.pegjs && babel src -d lib",
     "test": "echo 'Please test using wallaby'",
     "prepublish": "npm run build",
+    "docs:clean": "rm -rf _book",
     "docs:prepare": "gitbook install",
     "docs:build": "npm run docs:prepare && gitbook build",
     "docs:watch": "npm run docs:prepare && gitbook serve",

@@ -3,7 +3,6 @@
   "title": "Glance Selector - Javascript",
   "description": "Glance selector for javascript",
   "plugins": [
-    "edit-link",
     "prism",
     "-highlight",
     "github",
