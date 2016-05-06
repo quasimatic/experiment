@@ -7,9 +7,10 @@ export default class Locator {
         let elements = [];
         let parent = scope;
 
-        let beforeLocate = Extensions.locateBeforeHook(target, extensions);
-        let afterLocate = Extensions.locateAfterHook(target, extensions);
+        let beforeLocate = Extensions.locateBeforeFromLabel(target.label, extensions);
+        let afterLocate = Extensions.locateAfterFromLabel(target.label, extensions);
 
+        Extensions.locateBeforeEvent(extensions).forEach(before => before({label: target.label}));
         beforeLocate.forEach(before => before({label: target.label}));
 
         while (parent && elements.length == 0) {
@@ -17,8 +18,9 @@ export default class Locator {
             parent = parent.parentNode;
         }
 
-        afterLocate.forEach(before => before({label: target.label}));
-        
+        afterLocate.forEach(after => after({label: target.label}));
+        Extensions.locateAfterEvent(extensions).forEach(after => after({label: target.label}));
+
         return elements;
     }
 }

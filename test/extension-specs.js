@@ -12,12 +12,12 @@ describe("Extensions: labels", function() {
         );
     });
 
-    it("should find elements for a custom label", function() {
+    it("should locate elements for a custom label", function () {
         glance.addExtension({
             labels: {
                 "custom-label": {
                     locate: function(label, scope, config) {
-                        return config.glance("target")
+                        return config.glance("target");
                     }
                 }
             }
@@ -87,13 +87,14 @@ describe("Extensions: modifiers", function() {
         });
 
         return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
-    })
+    });
 });
-
 
 describe("Extensions: filter events", function() {
     let filterCalled = false;
+
     beforeEach(function() {
+        filterCalled = false;
         document.body.innerHTML = "";
         dom.render(
             <div>
@@ -110,9 +111,9 @@ describe("Extensions: filter events", function() {
             }
         });
 
-        glance("div")
+        glance("div");
         filterCalled.should.deep.equal(true);
-    })
+    });
 
     it("should have afterFilter event", function() {
         glance.addExtension({
@@ -123,9 +124,43 @@ describe("Extensions: filter events", function() {
             }
         });
 
-        glance("div")
+        glance("div");
         filterCalled.should.deep.equal(true);
-    })
+    });
+});
+
+describe("Extensions: label events", function () {
+    let locateCalled = false;
+    beforeEach(function () {
+        locateCalled = false;
+        document.body.innerHTML = "";
+        dom.render(
+            <div>
+            </div>
+        );
+    });
+
+    it("should have beforeLocate event", function () {
+        glance.addExtension({
+            beforeLocate: function () {
+                locateCalled = true;
+            }
+        });
+
+        glance("div");
+        locateCalled.should.deep.equal(true);
+    });
+
+    it("should have afterLocate event", function () {
+        glance.addExtension({
+            afterLocate: function () {
+                locateCalled = true;
+            }
+        });
+
+        glance("div");
+        locateCalled.should.deep.equal(true);
+    });
 });
 
 describe("Extensions: before and after all", function() {
@@ -133,12 +168,12 @@ describe("Extensions: before and after all", function() {
         let beforeAllCalled = false;
 
         glance.addExtension({
-            beforeAll: function({selector}) {
+            beforeAll: function () {
                 beforeAllCalled = true;
             }
         });
 
-        glance("div")
+        glance("div");
         beforeAllCalled.should.deep.equal(true);
     });
 
@@ -151,7 +186,7 @@ describe("Extensions: before and after all", function() {
             }
         });
 
-        glance("div")
+        glance("div");
         afterAllCalled.should.deep.equal(true);
-    })
-})
+    });
+});
