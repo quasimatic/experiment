@@ -10,7 +10,7 @@ export default class Locator {
         let beforeLocate = Extensions.locateBeforeFromLabel(target.label, extensions);
         let afterLocate = Extensions.locateAfterFromLabel(target.label, extensions);
 
-        Extensions.locateBeforeEvent(extensions).forEach(before => before({label: target.label}));
+        Extensions.locateBeforeEvent(extensions).forEach(before => before({target: target, scope: scope}));
         beforeLocate.forEach(before => before({label: target.label}));
 
         while (parent && elements.length == 0) {
@@ -19,7 +19,7 @@ export default class Locator {
         }
 
         afterLocate.forEach(after => after({label: target.label}));
-        Extensions.locateAfterEvent(extensions).forEach(after => after({label: target.label}));
+        Extensions.locateAfterEvent(extensions).forEach(after => after({target: target, scope: scope}));
 
         return elements;
     }
