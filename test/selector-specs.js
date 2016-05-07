@@ -1,12 +1,12 @@
 import glance from '../src/selector';
 import dom from "./dom"
 
-describe("Glance", function() {
-    beforeEach(function() {
+describe("Glance", function () {
+    beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it('should find nothing with an empty selector', function() {
+    it('should find nothing with an empty selector', function () {
         try {
             glance()
             throw new Error("Didn't throw error")
@@ -16,32 +16,32 @@ describe("Glance", function() {
         }
     })
 
-    it("should look by exact text match", function() {
+    it("should look by exact text match", function () {
         dom.render(<div id="target">Content Item</div>)
         return glance("Content Item").should.deep.equal(dom.get("target"));
     });
 
-    it("should look by content as contains", function() {
+    it("should look by content as contains", function () {
         dom.render(<div id="target">Item Contains stuff</div>)
         return glance("Item Contains").should.deep.equal(dom.get("target"));
     });
 
-    it('will look by id', function() {
+    it('will look by id', function () {
         dom.render(<div id="label-id"></div>);
         return glance("label-id").should.deep.equal(dom.get('label-id'))
     });
 
-    it("should look by class", function() {
+    it("should look by class", function () {
         dom.render(<div id="target" className="div-class"></div>)
         return glance("div-class").should.deep.equal(dom.get("target"));
     });
 
-    it("should look by node type", function() {
+    it("should look by node type", function () {
         dom.render(<button id="target"></button>)
         return glance("button").should.deep.equal(dom.get("target"))
     });
 
-    it("should support an indexer", function() {
+    it("should support an indexer", function () {
         dom.render(
             <div>
                 <div>foo</div>
@@ -51,7 +51,7 @@ describe("Glance", function() {
         return glance("foo#2").should.deep.equal(dom.get("target"))
     });
 
-    it("should support a parent indexer", function() {
+    it("should support a parent indexer", function () {
         dom.render(
             <div>
                 <h2>
@@ -65,7 +65,7 @@ describe("Glance", function() {
         return glance("h2#2>Shared Title").should.deep.equal(dom.get("target"));
     });
 
-    it("should look for text in a node that contains text and a node", function() {
+    it("should look for text in a node that contains text and a node", function () {
         dom.render(
             <div id="target">
                 text and nodes
@@ -76,7 +76,7 @@ describe("Glance", function() {
         return glance("text and nodes").should.deep.equal(dom.get("target"))
     });
 
-    it("should get duplicates", function() {
+    it("should get duplicates", function () {
         dom.render(
             <div>
                 <div id="target-1">Duplicate</div>
@@ -86,7 +86,7 @@ describe("Glance", function() {
         return glance("Duplicate").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should get duplicates for first type of match", function() {
+    it("should get duplicates for first type of match", function () {
         dom.render(
             <div>
                 <div className="item"></div>
@@ -99,11 +99,11 @@ describe("Glance", function() {
         return glance("item").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should return an empty array if no elements are found", function() {
+    it("should return an empty array if no elements are found", function () {
         return glance("item-not-found").should.deep.equal([]);
     });
 
-    it("should look by custom labels", function() {
+    it("should look by custom labels", function () {
         dom.render(
             <div className="random">
                 <div>one</div>
@@ -114,7 +114,7 @@ describe("Glance", function() {
         glance.addExtension({
             labels: {
                 "customlabel": {
-                    locate: function(label, scope, config) {
+                    locate: function (label, scope, config) {
                         return config.glance("random>div#2");
                     }
                 }
@@ -124,7 +124,7 @@ describe("Glance", function() {
         glance("customlabel").should.deep.equal(dom.get("target-1"));
     });
 
-    it("should look by label preload", function() {
+    it("should look by label preload", function () {
         dom.render(
             <div className="random">
                 <div>one</div>
@@ -141,7 +141,7 @@ describe("Glance", function() {
         }).should.deep.equal(dom.get("target-1"));
     });
 
-    it("should only search visible elements", function() {
+    it("should only search visible elements", function () {
         dom.render(
             <div>
                 <div id="target-1">Duplicate</div>
@@ -152,7 +152,7 @@ describe("Glance", function() {
         return glance("Duplicate").should.deep.equal(dom.get("target-1"));
     });
 
-    it("should limit to next sibling", function() {
+    it("should limit to next sibling", function () {
         dom.render(
             <div>
                 <div>
@@ -173,7 +173,7 @@ describe("Glance", function() {
         return glance("label>input").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should find text in select option", function() {
+    it("should find text in select option", function () {
         dom.render(
             <div>
                 <select id="select-1">
@@ -187,12 +187,12 @@ describe("Glance", function() {
     })
 });
 
-describe('Selector Nth', function() {
-    beforeEach(function() {
+describe('Selector Nth', function () {
+    beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it("should get the nth item", function() {
+    it("should get the nth item", function () {
         dom.render(
             <div className="box1">
                 <div className="item-1">Item A</div>
@@ -204,7 +204,7 @@ describe('Selector Nth', function() {
         return glance("box1>Item A#2").should.deep.equal(dom.get("target"));
     });
 
-    it("should get the nth scope for an item", function() {
+    it("should get the nth scope for an item", function () {
         dom.render(
             <div className="box2">
                 <div className="inner-box">
@@ -221,14 +221,50 @@ describe('Selector Nth', function() {
 
         return glance("box2>inner-box#2>Item A").should.deep.equal(dom.get("target"));
     });
+
+    it("should get the nth item with multiple scopes", function () {
+        dom.render(
+            <div>
+                <div>Item A</div>
+                <div id="target">Item B</div>
+                <div>Item B</div>
+                <div>Item A</div>
+            </div>
+        );
+
+        return glance("Item A > Item B#1").should.deep.equal(dom.get("target"));
+    });
+
+    it("should get the nth item with multiple scopes and modifier", function () {
+        dom.render(
+            <div>
+                <div>Item A</div>
+                <div id="target">Item B</div>
+                <div>Item B</div>
+                <div>Item A</div>
+            </div>
+        );
+
+        glance.addExtension({
+            modifiers:{
+                "custom-mod": {
+                    filter: function(elements) {
+                        return [elements[0]];
+                    }
+                }
+            }
+        })
+
+        return glance("Item A > Item B:custom-mod").should.deep.equal(dom.get("target"));
+    });
 });
 
-describe('Selector should apply modifier', function() {
-    beforeEach(function() {
+describe('Selector should apply modifier', function () {
+    beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it("should filter items for modifier", function() {
+    it("should filter items for modifier", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -241,7 +277,7 @@ describe('Selector should apply modifier', function() {
         glance.addExtension({
             modifiers: {
                 "lessthan3characters": {
-                    filter: function(elements) {
+                    filter: function (elements) {
                         return elements.filter(e => e.innerHTML.length < 3)
                     }
                 }
@@ -251,7 +287,7 @@ describe('Selector should apply modifier', function() {
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should ignore default modifiers", function() {
+    it("should ignore default modifiers", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -264,7 +300,7 @@ describe('Selector should apply modifier', function() {
         glance.addExtension({
             modifiers: {
                 "include-hidden": {
-                    filter: function(elements) {
+                    filter: function (elements) {
                         return elements;
                     }
                 }
@@ -274,7 +310,7 @@ describe('Selector should apply modifier', function() {
         return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
     });
 
-    it("should support setting the locator", function() {
+    it("should support setting the locator", function () {
         dom.render(
             <div>
                 <div>abcdef</div>
@@ -287,7 +323,7 @@ describe('Selector should apply modifier', function() {
         glance.addExtension({
             modifiers: {
                 "exact-match": {
-                    locator: function(label, scope) {
+                    locator: function (label, scope) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {

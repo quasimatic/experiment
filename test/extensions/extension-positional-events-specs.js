@@ -1,8 +1,9 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: beforeFilter event", function () {
+describe("Extensions: beforePositional event", function () {
     let elementsInEvent;
+    let positionInEvent;
 
     before(function () {
         document.body.innerHTML = "";
@@ -14,42 +15,42 @@ describe("Extensions: beforeFilter event", function () {
         );
 
         glance.addExtension({
-            modifiers: {
-                "one": {
-                    filter: function(elements) {
-                        return [elements[0]];
-                    }
-                }
-            },
-            beforeFilter: function (elements) {
+            beforePositional: function (elements, position) {
                 elementsInEvent = elements;
+                positionInEvent = position;
                 return elements;
             }
         });
 
-        glance("item:one");
+        glance("item#1");
     });
 
-    it("should happen before filters", function () {
+    it("should get called before the positional filter", function () {
         elementsInEvent.should.deep.equal(dom.get("target-1","target-2"));
+    });
+
+    it("should get the position", function () {
+        positionInEvent.should.equal(1);
     });
 });
 
-describe("Extensions: afterFilter event", function () {
+describe("Extensions: afterPositional event", function () {
     let elementsInEvent;
+    let positionInEvent;
     
     before(function () {
         document.body.innerHTML = "";
         dom.render(
             <div>
-                <div id="target-1">item</div>
-                <div id="target-2">item</div>
+                <div>item</div>
+                <div id="target">item</div>
             </div>
         );
 
         glance.addExtension({
-            afterFilter: function (elements) {
+            afterPositional: function (elements, position) {
                 elementsInEvent = elements;
+                positionInEvent = position;
                 return elements;
             }
         });
@@ -57,7 +58,11 @@ describe("Extensions: afterFilter event", function () {
         glance("item#2");
     });
 
-    it("should get called before positional", function () {
-        elementsInEvent.should.deep.equal(dom.get("target-1","target-2"));
+    it("should get called after the positional filter", function () {
+        elementsInEvent.should.deep.equal([dom.get("target")]);
+    });
+
+    it("should get the position", function () {
+        positionInEvent.should.equal(2);
     });
 });

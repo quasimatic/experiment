@@ -15,9 +15,15 @@ export default class Filter {
 
         var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
 
-        var ddd = extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements);
+        var afterFilterElements = extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements);
 
-        return nthFilter(ddd, target.position);
+        var beforePositionalElements = extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(elements, target.position, {target, scope}), afterFilterElements);
+
+        var positionalElements = nthFilter(beforePositionalElements, target.position);
+
+        var afterPositionalElements = extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(elements, target.position, {target, scope}), positionalElements);
+
+        return afterPositionalElements;
     }
 
     static filtersFromModifier(target, modifiers) {
