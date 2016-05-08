@@ -1,16 +1,16 @@
 import mergeObjects from "../utils/merge-objects";
 
-export default class Extensions {
+export default class Modifiers {
     static locatorForLabel(key, extensions) {
         return extensions.filter(e => e.labels && e.labels[key]).map(e => e.labels[key]);
     }
 
     static locateBeforeFromLabel(label, extensions) {
-        return Extensions.locatorForLabel(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
+        return Modifiers.locatorForLabel(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
     static locateAfterFromLabel(label, extensions) {
-        return Extensions.locatorForLabel(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
+        return Modifiers.locatorForLabel(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
     static locateBeforeEvent(extensions) {
@@ -21,15 +21,15 @@ export default class Extensions {
         return extensions.filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static modifiers(extensions) {
-        return extensions.filter(e => e.modifiers).reduce((m, e) => mergeObjects(m, e.modifiers), {});
+    static properties(extensions) {
+        return extensions.filter(e => e.properties).reduce((m, e) => mergeObjects(m, e.properties), {});
     }
 
-    static locatorFromModifier(target, modifiers) {
-        if (target.modifiers.length > 0) {
-            let modifierNames = target.modifiers.filter(name => modifiers[name] && modifiers[name].locator);
-            if (modifierNames.length > 0)
-                return modifiers[modifierNames[0]].locator;
+    static locatorFromProperty(target, properties) {
+        if (target.properties.length > 0) {
+            let propertyNames = target.properties.filter(name => properties[name] && properties[name].locator);
+            if (propertyNames.length > 0)
+                return properties[propertyNames[0]].locator;
         }
     }
 }

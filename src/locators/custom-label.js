@@ -1,4 +1,4 @@
-import Extensions from "../utils/extensions"
+import Modifiers from "../utils/modifiers"
 
 import isDescendant from '../utils/is-descendant';
 
@@ -11,7 +11,7 @@ export default function(label, scope, config) {
     }
 
     if (elements.length == 0) {
-        let customLabel = Extensions.locatorForLabel(label, config.extensions || []);
+        let customLabel = Modifiers.locatorForLabel(label, config.extensions || []);
 
         elements = customLabel.reduce((e, c) => {
             if (e.length > 0) return e;

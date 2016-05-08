@@ -1,7 +1,7 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: modifiers", function() {
+describe("Extensions: properties", function() {
     beforeEach(function() {
         document.body.innerHTML = "";
         dom.render(
@@ -16,7 +16,7 @@ describe("Extensions: modifiers", function() {
 
     it("should filter elements", function() {
         glance.addExtension({
-            modifiers: {
+            properties: {
                 "every-other": {
                     filter: function(elements) {
                         let i = 0;

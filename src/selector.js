@@ -7,7 +7,7 @@ import mergeObject from "./utils/merge-objects"
 function GlanceSelector(options) {
     let _selector = {};
     _selector.extensions = [];
-    _selector.modifiers = options.modifiers || {};
+    _selector.properties = options.properties || {};
     _selector.hooks = options.hooks || {};
 
     _selector.guideFactory = options.guideFactory;

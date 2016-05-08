@@ -1,4 +1,4 @@
-import Extensions from "../utils/extensions";
+import Modifiers from "../utils/modifiers";
 
 import limitToScope from "../filters/limit-to-scope"
 import nextToScope from "../filters/next-to-scope"
@@ -9,7 +9,7 @@ export default class Filter {
         unfilteredElements = limitToScope(unfilteredElements, scope);
         unfilteredElements = nextToScope(unfilteredElements, scope);
 
-        let filters = Filter.filtersFromModifier(target, Extensions.modifiers(extensions)) || defaultFilters;
+        let filters = Filter.filtersFromProperty(target, Modifiers.properties(extensions)) || defaultFilters;
 
         var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements);
 
@@ -26,12 +26,12 @@ export default class Filter {
         return afterPositionalElements;
     }
 
-    static filtersFromModifier(target, modifiers) {
-        if (target.modifiers.length > 0) {
-            let modifiersWithFilters = target.modifiers.filter(name => modifiers[name] && modifiers[name].filter);
+    static filtersFromProperty(target, properties) {
+        if (target.properties.length > 0) {
+            let propertiesWithFilters = target.properties.filter(name => properties[name] && properties[name].filter);
 
-            if (modifiersWithFilters.length != 0) {
-                return modifiersWithFilters.map(name => modifiers[name].filter)
+            if (propertiesWithFilters.length != 0) {
+                return propertiesWithFilters.map(name => properties[name].filter)
             }
         }
 

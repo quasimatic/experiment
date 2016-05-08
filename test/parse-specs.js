@@ -7,7 +7,7 @@ describe("Parsing", function() {
                     {
                         label: "label",
                         position: null,
-                        modifiers: [],
+                        properties: [],
                         scope: "",
                         path: "label"
                     }
@@ -20,7 +20,7 @@ describe("Parsing", function() {
                 {
                     label: "label",
                     position: 10,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "label#10"
                 }
@@ -33,14 +33,14 @@ describe("Parsing", function() {
                 {
                     label: "scope",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "scope"
                 },
                 {
                     label: "label",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "scope",
                     path: "scope>label"
                 }
@@ -48,12 +48,12 @@ describe("Parsing", function() {
         );
     });
 
-    it("should support modifier", function() {
+    it("should support property", function() {
         parser.parse("label:text").should.deep.equal([
                 {
                     label: "label",
                     position: null,
-                    modifiers: ["text"],
+                    properties: ["text"],
                     scope: "",
                     path: "label:text"
                 }
@@ -66,7 +66,7 @@ describe("Parsing", function() {
                 {
                     label: "label#10",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "label\\#10"
                 }
@@ -79,7 +79,7 @@ describe("Parsing", function() {
                 {
                     label: "label>test",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "label\\>test"
                 }
@@ -87,12 +87,12 @@ describe("Parsing", function() {
         );
     });
 
-    it("should escape modifier character", function() {
+    it("should escape property character", function() {
         parser.parse("label\\:test").should.deep.equal([
                 {
                     label: "label:test",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "label\\:test"
                 }
@@ -105,7 +105,7 @@ describe("Parsing", function() {
                 {
                     label: "label\\test",
                     position: null,
-                    modifiers: [],
+                    properties: [],
                     scope: "",
                     path: "label\\\\test"
                 }
@@ -118,7 +118,7 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: null,
-                modifiers: [],
+                properties: [],
                 scope: "",
                 path: "label"
             }
@@ -130,14 +130,14 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: null,
-                modifiers: [],
+                properties: [],
                 scope: "",
                 path: "label"
             },
             {
                 label: "label2",
                 position: null,
-                modifiers: [],
+                properties: [],
                 scope: " label ",
                 path: "label > label2"
             }
@@ -149,7 +149,7 @@ describe("Parsing", function() {
             {
                 label: "label",
                 position: 1,
-                modifiers: [],
+                properties: [],
                 scope: "",
                 path: "label#1"
             },
@@ -157,15 +157,15 @@ describe("Parsing", function() {
     })
 
     it("should support spaces before and after a label", function() {
-        parser.parse(" label:modifier ").should.deep.equal([
+        parser.parse(" label:property ").should.deep.equal([
             {
                 label: "label",
                 position: null,
-                modifiers: [
-                    "modifier"
+                properties: [
+                    "property"
                 ],
                 scope: "",
-                path: "label:modifier"
+                path: "label:property"
             },
         ])
     })

@@ -51,7 +51,7 @@ module.exports = (function() {
          	scope += text()
          	return target;
          },
-        peg$c12 = function(label, position, modifiers) { return { label: label.trim(), position: position, modifiers: modifiers || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } },
+        peg$c12 = function(label, position, properties) { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } },
         peg$c13 = function(chars) { return chars.join('') },
         peg$c14 = function(c) { return c },
         peg$c15 = { type: "any", description: "any character" },
@@ -62,7 +62,7 @@ module.exports = (function() {
         peg$c20 = /^[0-9]/,
         peg$c21 = { type: "class", value: "[0-9]", description: "[0-9]" },
         peg$c22 = function() { return parseInt(text(), 10); },
-        peg$c23 = function(modifiers) { return modifiers; },
+        peg$c23 = function(properties) { return properties; },
         peg$c24 = function(name) { return name.trim() },
         peg$c25 = function(thing) { return thing.join("") },
 
@@ -284,7 +284,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierChar() {
+    function peg$parsePropertyChar() {
       var s0;
 
       if (input.charCodeAt(peg$currPos) === 58) {
@@ -298,7 +298,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierSeparator() {
+    function peg$parsePropertySeparator() {
       var s0;
 
       if (input.charCodeAt(peg$currPos) === 44) {
@@ -377,7 +377,7 @@ module.exports = (function() {
           s2 = null;
         }
         if (s2 !== peg$FAILED) {
-          s3 = peg$parseModifiers();
+          s3 = peg$parseProperties();
           if (s3 === peg$FAILED) {
             s3 = null;
           }
@@ -445,7 +445,7 @@ module.exports = (function() {
         if (s2 === peg$FAILED) {
           s2 = peg$parseIndexChar();
           if (s2 === peg$FAILED) {
-            s2 = peg$parseModifierChar();
+            s2 = peg$parsePropertyChar();
           }
         }
       }
@@ -538,7 +538,7 @@ module.exports = (function() {
           if (s2 === peg$FAILED) {
             s2 = peg$parseScopeChar();
             if (s2 === peg$FAILED) {
-              s2 = peg$parseModifierChar();
+              s2 = peg$parsePropertyChar();
             }
           }
         }
@@ -616,17 +616,17 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifiers() {
+    function peg$parseProperties() {
       var s0, s1, s2, s3;
 
       s0 = peg$currPos;
-      s1 = peg$parseModifierChar();
+      s1 = peg$parsePropertyChar();
       if (s1 !== peg$FAILED) {
         s2 = [];
-        s3 = peg$parseModifier();
+        s3 = peg$parseProperty();
         while (s3 !== peg$FAILED) {
           s2.push(s3);
-          s3 = peg$parseModifier();
+          s3 = peg$parseProperty();
         }
         if (s2 !== peg$FAILED) {
           peg$savedPos = s0;
@@ -644,13 +644,13 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifier() {
+    function peg$parseProperty() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
-      s1 = peg$parseModifierName();
+      s1 = peg$parsePropertyName();
       if (s1 !== peg$FAILED) {
-        s2 = peg$parseModifierSeparator();
+        s2 = peg$parsePropertySeparator();
         if (s2 === peg$FAILED) {
           s2 = null;
         }
@@ -670,16 +670,16 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierName() {
+    function peg$parsePropertyName() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
       s1 = [];
-      s2 = peg$parseModifierCharacter();
+      s2 = peg$parsePropertyCharacter();
       if (s2 !== peg$FAILED) {
         while (s2 !== peg$FAILED) {
           s1.push(s2);
-          s2 = peg$parseModifierCharacter();
+          s2 = peg$parsePropertyCharacter();
         }
       } else {
         s1 = peg$FAILED;
@@ -693,7 +693,7 @@ module.exports = (function() {
       return s0;
     }
 
-    function peg$parseModifierCharacter() {
+    function peg$parsePropertyCharacter() {
       var s0, s1, s2;
 
       s0 = peg$currPos;
@@ -701,7 +701,7 @@ module.exports = (function() {
       peg$silentFails++;
       s2 = peg$parseScopeChar();
       if (s2 === peg$FAILED) {
-        s2 = peg$parseModifierSeparator();
+        s2 = peg$parsePropertySeparator();
       }
       peg$silentFails--;
       if (s2 === peg$FAILED) {

@@ -235,7 +235,7 @@ describe('Selector Nth', function () {
         return glance("Item A > Item B#1").should.deep.equal(dom.get("target"));
     });
 
-    it("should get the nth item with multiple scopes and modifier", function () {
+    it("should get the nth item with multiple scopes and property", function () {
         dom.render(
             <div>
                 <div>Item A</div>
@@ -246,7 +246,7 @@ describe('Selector Nth', function () {
         );
 
         glance.addExtension({
-            modifiers:{
+            properties:{
                 "custom-mod": {
                     filter: function(elements) {
                         return [elements[0]];
@@ -259,12 +259,12 @@ describe('Selector Nth', function () {
     });
 });
 
-describe('Selector should apply modifier', function () {
+describe('Selector should apply property', function () {
     beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it("should filter items for modifier", function () {
+    it("should filter items for property", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -275,7 +275,7 @@ describe('Selector should apply modifier', function () {
         );
 
         glance.addExtension({
-            modifiers: {
+            properties: {
                 "lessthan3characters": {
                     filter: function (elements) {
                         return elements.filter(e => e.innerHTML.length < 3)
@@ -287,7 +287,7 @@ describe('Selector should apply modifier', function () {
         return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should ignore default modifiers", function () {
+    it("should ignore default properties", function () {
         dom.render(
             <div>
                 <div id="target-1">1</div>
@@ -298,7 +298,7 @@ describe('Selector should apply modifier', function () {
         );
 
         glance.addExtension({
-            modifiers: {
+            properties: {
                 "include-hidden": {
                     filter: function (elements) {
                         return elements;
@@ -321,7 +321,7 @@ describe('Selector should apply modifier', function () {
         );
 
         glance.addExtension({
-            modifiers: {
+            properties: {
                 "exact-match": {
                     locator: function (label, scope) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
