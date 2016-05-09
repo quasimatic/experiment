@@ -2,11 +2,11 @@ import mergeObjects from "../utils/merge-objects";
 
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
-        return extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, data), elements);
+        return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(elements, data), elements);
     }
 
     static afterFilters(elements, extensions, data) {
-        return extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, data), elements);
+        return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(elements, data), elements);
     }
 
     static beforePositional(elements, position, extensions, data) {

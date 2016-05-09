@@ -43,13 +43,13 @@ describe("Extensions: labels", function () {
                 calledEvents.push('afterScope');
             },
 
-            beforeFilter: function (elements) {
-                calledEvents.push('beforeFilter');
+            beforeFilters: function (elements) {
+                calledEvents.push('beforeFilters');
                 return elements;
             },
 
-            afterFilter: function (elements) {
-                calledEvents.push('afterFilter');
+            afterFilters: function (elements) {
+                calledEvents.push('afterFilters');
                 return elements;
             },
 
@@ -80,8 +80,8 @@ describe("Extensions: labels", function () {
             'beforeScope',
             'beforeLocate',
             'afterLocate',
-            'beforeFilter',
-            'afterFilter',
+            'beforeFilters',
+            'afterFilters',
             'beforePositional',
             'afterPositional',
             'afterScope',
@@ -89,10 +89,10 @@ describe("Extensions: labels", function () {
             'beforeLocate',
             'label locate',
             'afterLocate',
-            'beforeFilter',
+            'beforeFilters',
             'label filter',
             'property filter',
-            'afterFilter',
+            'afterFilters',
             'beforePositional',
             'afterPositional',
             'afterScope'

@@ -1,7 +1,7 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: beforeFilter event", function () {
+describe("Extensions: beforeFilters event", function () {
     let elementsInEvent;
 
     before(function () {
@@ -21,7 +21,7 @@ describe("Extensions: beforeFilter event", function () {
                     }
                 }
             },
-            beforeFilter: function (elements) {
+            beforeFilters: function (elements) {
                 elementsInEvent = elements;
                 return elements;
             }
@@ -35,7 +35,7 @@ describe("Extensions: beforeFilter event", function () {
     });
 });
 
-describe("Extensions: afterFilter event", function () {
+describe("Extensions: afterFilters event", function () {
     let elementsInEvent;
     
     before(function () {
@@ -48,7 +48,7 @@ describe("Extensions: afterFilter event", function () {
         );
 
         glance.addExtension({
-            afterFilter: function (elements) {
+            afterFilters: function (elements) {
                 elementsInEvent = elements;
                 return elements;
             }
