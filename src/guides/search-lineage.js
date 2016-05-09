@@ -1,7 +1,9 @@
 import visible from "../filters/visible";
-import unique from "../utils/unique"
+import Extensions from "../utils/extensions";
+import unique from "../utils/unique";
 import Locator from "./locator";
 import Filter from "./filter";
+
 
 export default class SearchLineage {
     constructor(config) {
@@ -17,24 +19,20 @@ export default class SearchLineage {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        this.extensions.filter(e => e.beforeScope).forEach(e => e.beforeScope({targets, scope}));
+        Extensions.beforeScopeEvent(this.extensions, {targets, scope});
 
         let elements = Locator.locate(target, scope, this.extensions, this.locator, this.config);
 
         let filteredElements = Filter.filter(target, elements, scope, this.extensions, this.defaultFilters);
 
-        let result;
-
-        this.extensions.filter(e => e.afterScope).forEach(e => e.afterScope({targets, scope}));
+        Extensions.afterScopeEvent(this.extensions, {targets, scope});
 
         if (SearchLineage.isLastLabel(targets, labelIndex)) {
-            result = filteredElements;
+            return filteredElements;
         }
         else {
-            result = SearchLineage.traverseScopes(filteredElements, targets, labelIndex, this.config);
+            return SearchLineage.traverseScopes(filteredElements, targets, labelIndex, this.config);
         }
-
-        return result;
     }
 
     static traverseScopes(filteredElements, targets, labelIndex, config) {
