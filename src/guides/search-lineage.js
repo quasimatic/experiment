@@ -17,9 +17,7 @@ export default class SearchLineage {
         labelIndex = labelIndex || 0;
         let target = targets[labelIndex];
 
-        if (labelIndex == 0) {
-            this.extensions.filter(e => e.beforeScope).forEach(e => e.beforeScope({targets, scope}));
-        }
+        this.extensions.filter(e => e.beforeScope).forEach(e => e.beforeScope({targets, scope}));
 
         let elements = Locator.locate(target, scope, this.extensions, this.locator, this.config);
 
@@ -27,17 +25,13 @@ export default class SearchLineage {
 
         let result;
 
+        this.extensions.filter(e => e.afterScope).forEach(e => e.afterScope({targets, scope}));
+
         if (SearchLineage.isLastLabel(targets, labelIndex)) {
             result = filteredElements;
         }
         else {
-            this.extensions.filter(e => e.beforeScope).forEach(e => e.beforeScope({targets, scope}));
             result = SearchLineage.traverseScopes(filteredElements, targets, labelIndex, this.config);
-            this.extensions.filter(e => e.afterScope).forEach(e => e.afterScope({targets, scope}));
-        }
-
-        if (labelIndex == 0) {
-            this.extensions.filter(e => e.afterScope).forEach(e => e.afterScope({targets, scope}));
         }
 
         return result;

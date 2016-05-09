@@ -1,7 +1,7 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: properties", function() {
+describe("Extensions: property", function() {
     beforeEach(function() {
         document.body.innerHTML = "";
         dom.render(
