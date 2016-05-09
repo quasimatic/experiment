@@ -9,32 +9,20 @@ export default class Filter {
         unfilteredElements = limitToScope(unfilteredElements, scope);
         unfilteredElements = nextToScope(unfilteredElements, scope);
 
-        let filters = Filter.filtersFromProperty(target, Modifiers.properties(extensions)) || defaultFilters;
+        let filters = Modifiers.getFilters(target, extensions) || defaultFilters;
 
-        var beforeFilterElements = extensions.filter(e => e.beforeFilter).reduce((elements, e) => e.beforeFilter(elements, {target, scope}), unfilteredElements);
+        var data = {target, scope};
+
+        var beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
 
         var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
 
-        var afterFilterElements = extensions.filter(e => e.afterFilter).reduce((elements, e) => e.afterFilter(elements, {target, scope}), filteredElements);
+        var afterFilterElements = Modifiers.afterFilters(filteredElements, extensions, data);
 
-        var beforePositionalElements = extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(elements, target.position, {target, scope}), afterFilterElements);
+        var beforePositionalElements = Modifiers.beforePositional(afterFilterElements, target.position, extensions, data);
 
         var positionalElements = nthFilter(beforePositionalElements, target.position);
 
-        var afterPositionalElements = extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(elements, target.position, {target, scope}), positionalElements);
-
-        return afterPositionalElements;
-    }
-
-    static filtersFromProperty(target, properties) {
-        if (target.properties.length > 0) {
-            let propertiesWithFilters = target.properties.filter(name => properties[name] && properties[name].filter);
-
-            if (propertiesWithFilters.length != 0) {
-                return propertiesWithFilters.map(name => properties[name].filter)
-            }
-        }
-
-        return null;
+        return Modifiers.afterPositional(positionalElements, target.position, extensions, data);
     }
 }

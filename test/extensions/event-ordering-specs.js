@@ -18,6 +18,10 @@ describe("Extensions: labels", function () {
                     locate: function (label, scope, {glance}) {
                         calledEvents.push('label locate');
                         return [document.getElementById('custom-label')];
+                    },
+                    filter: function(elements) {
+                        calledEvents.push("label filter");
+                        return elements;
                     }
                 }
             },
@@ -86,6 +90,7 @@ describe("Extensions: labels", function () {
             'label locate',
             'afterLocate',
             'beforeFilter',
+            'label filter',
             'property filter',
             'afterFilter',
             'beforePositional',
