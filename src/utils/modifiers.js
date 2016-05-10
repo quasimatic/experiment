@@ -44,7 +44,24 @@ export default class Modifiers {
     static properties(extensions) {
         return extensions.filter(e => e.properties).reduce((m, e) => mergeObjects(m, e.properties), {});
     }
+    
+    static getLocator(target, extensions) {
+        let labels = Modifiers.labels(extensions);
+        let properties = Modifiers.properties(extensions)
 
+        if (target.properties.length > 0) {
+            let propertyNames = target.properties.filter(name => properties[name] && properties[name].locate);
+            
+            if (propertyNames.length > 0)
+                return properties[propertyNames[0]].locate;
+        }
+
+        if(labels[target.label] && labels[target.label].locate) {
+            return labels[target.label].locate;
+        }
+
+        return null;
+    }
 
     static locatorForLabel(key, extensions) {
         return extensions.filter(e => e.labels && e.labels[key]).map(e => e.labels[key]);
@@ -58,20 +75,11 @@ export default class Modifiers {
         return Modifiers.locatorForLabel(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static locateBeforeEvent(extensions) {
+    static beforeLocate(extensions) {
         return extensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
-    static locateAfterEvent(extensions) {
+    static afterLocate(extensions) {
         return extensions.filter(e => e.afterLocate).map(e => e.afterLocate);
-    }
-
-
-    static locatorFromProperty(target, properties) {
-        if (target.properties.length > 0) {
-            let propertyNames = target.properties.filter(name => properties[name] && properties[name].locator);
-            if (propertyNames.length > 0)
-                return properties[propertyNames[0]].locator;
-        }
     }
 }

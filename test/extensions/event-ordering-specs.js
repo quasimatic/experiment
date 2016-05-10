@@ -8,7 +8,9 @@ describe("Extensions: labels", function () {
 
         dom.render(
             <div className="scope">
-                <div id="custom-label"></div>
+                <div id="custom-label">
+                    <div>item 1</div>
+                </div>
             </div>
         );
         
@@ -28,9 +30,19 @@ describe("Extensions: labels", function () {
 
             properties: {
                 "custom-property": {
+                    locate: function (label, scope, {glance}) {
+                        calledEvents.push('property locate');
+                        return [document.getElementById('custom-label')];
+                    },
                     filter: function (elements) {
                         calledEvents.push('property filter');
                         return elements;
+                    }
+                },
+                "another-property": {
+                    locate: function (label, scope, {glance}) {
+                        calledEvents.push('property locate');
+                        return [document.getElementById('custom-label')];
                     }
                 }
             },
@@ -72,11 +84,11 @@ describe("Extensions: labels", function () {
             }
         });
 
-        return glance("scope > custom label:custom-property");
+        return glance("scope > custom label:custom-property > item 1:another-property");
     });
 
     it("should call events in correct order", function () {
-        calledEvents.should.deep.equal([
+        calledEvents.should.deep.equal([ 
             'beforeScope',
             'beforeLocate',
             'afterLocate',
@@ -87,7 +99,7 @@ describe("Extensions: labels", function () {
             'afterScope',
             'beforeScope',
             'beforeLocate',
-            'label locate',
+            'property locate',
             'afterLocate',
             'beforeFilters',
             'label filter',
@@ -95,7 +107,15 @@ describe("Extensions: labels", function () {
             'afterFilters',
             'beforePositional',
             'afterPositional',
-            'afterScope'
-        ]);
+            'afterScope',
+            'beforeScope',
+            'beforeLocate',
+            'property locate',
+            'afterLocate',
+            'beforeFilters',
+            'afterFilters',
+            'beforePositional',
+            'afterPositional',
+            'afterScope' ]);
     });
 });

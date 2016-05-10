@@ -323,7 +323,7 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "exact-match": {
-                    locator: function (label, scope) {
+                    locate: function (label, scope) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
