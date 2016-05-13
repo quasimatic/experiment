@@ -7,13 +7,13 @@ describe("Locator: Exact Match", function() {
     });
 
     it("should find by css selector", function() {
-        var div = dom.createDiv("text", {class: "class-name"});
+        dom.render(<div className="class-name" id="target">text</div>);
 
-        findByCSS(".class-name", document).should.deep.equal([div]);
+        findByCSS(".class-name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find by css selector", function() {
-        var div = dom. createDiv("text", {class: "class-name"});
+        dom.render(<div className="class-name">text</div>);
 
         findByCSS(".missing-class", document).should.deep.equal([]);
     });

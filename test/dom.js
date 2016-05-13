@@ -20,11 +20,6 @@ export default {
         return div;
     },
 
-    createDiv(text, options)
-    {
-        return this.create("div", text, options);
-    },
-
     createText(text, options) {
         options.parent = options.parent || document.body;
 

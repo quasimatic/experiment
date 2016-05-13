@@ -7,21 +7,23 @@ describe("Locator: Exact Match", function() {
     });
 
     it("should find by exact text match", function() {
-        var div = dom.createDiv("exact text");
+        dom.render(<div id="target">exact text</div>);
 
-        findExactText("exact text", document).should.deep.equal([div]);
+        findExactText("exact text", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find containing match", function() {
-        dom.createDiv("not so exact text here");
+        dom.render(<div>not so exact text here</div>);
 
         findExactText("exact text", document).should.deep.equal([]);
     });
 
     it("should find more than one", function() {
-        var div = dom.createDiv("exact text");
-        var div2 = dom.createDiv("exact text");
+        dom.render(<div>
+            <div id="target-1">exact text</div>
+            <div id="target-2">exact text</div>
+        </div>);
 
-        findExactText("exact text", document).should.deep.equal([div, div2]);
+        findExactText("exact text", document).should.deep.equal(dom.get("target-1", "target-2"));
     })
 });

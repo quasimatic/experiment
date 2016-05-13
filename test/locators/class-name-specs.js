@@ -7,12 +7,13 @@ describe("Locator: Exact Match", function() {
     });
 
     it("should find by class name", function() {
-        var div = dom.createDiv("text", {class: "class-name"});
-        findByClassName("class-name", document).should.deep.equal([div]);
+        dom.render(<div className="class-name" id="target">text</div>);
+
+        findByClassName("class-name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find by class name", function() {
-        var div = dom.createDiv("text", {class: "class-name"});
+        dom.render(<div className="class-name">text</div>);
 
         findByClassName("missing-class", document).should.deep.equal([]);
     });
