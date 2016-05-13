@@ -7,12 +7,12 @@ describe("Locator: Placeholder Match", function() {
     });
 
     it("should find in placeholder", function() {
-        var input = dom.create("input", "", {placeholder: "enter name"});
-        findByPlaceholder("enter name", document).should.deep.equal([input]);
+        dom.render(<input placeholder="enter name" id="target"/>);
+        findByPlaceholder("enter name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find in placeholder case insensitive", function() {
-        var input = dom.create("input", "", {PlacEholder: "eNter namE"});
-        findByPlaceholder("enteR naMe", document).should.deep.equal([input]);
+        dom.render(<input placeholder="eNter namE" id="target"/>)
+        findByPlaceholder("enteR naMe", document).should.deep.equal([dom.get("target")]);
     });
 });

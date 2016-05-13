@@ -7,43 +7,39 @@ describe("Locator: Value Match", function() {
     });
 
     it("should find in value", function() {
-        var input = dom.create("input", "", {value: "enter name"});
-        findByValue("enter name", document).should.deep.equal([input]);
+        dom.render(<input value="enter name" id="target"/>);
+        findByValue("enter name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find in value case insensitive", function() {
-        var input = dom.create("input", "", {vAlUe: "eNter namE"});
-        findByValue("enteR naMe", document).should.deep.equal([input]);
+        dom.render(<input value="eNter namE" id="target"/>);
+        findByValue("enteR naMe", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find by contains", function() {
-        var input = dom.create("input", "", {});
-        input.value = "this name is unique"
-        findByValue("name", document).should.deep.equal([input]);
+        dom.render(<input id="target" value="this name is unique"/>);
+        findByValue("name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find dynamically set value", function() {
-        var input = dom.create("input", "", {});
-        input.value = "name"
-        findByValue("name", document).should.deep.equal([input]);
+        dom.render(<input id="target"/>);
+        dom.get("target").value = "name";
+        findByValue("name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find for button", function() {
-        var element = dom.create("button", "", {});
-        element.value = "name"
-        findByValue("name", document).should.deep.equal([element]);
+        dom.render(<button value="name" id="target"></button>);
+        findByValue("name", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should find for option", function() {
-        var element = dom.create("option", "", {});
-        element.value = "name"
-        findByValue("name", document).should.deep.equal([element]);
+        dom.render(<option value="name" id="target"></option>);
+        findByValue("name", document).should.deep.equal([dom.get("target")]);
     });
     
     it("should find for param", function() {
-        var element = dom.create("param", "", {});
-        element.value = "name"
-        findByValue("name", document).should.deep.equal([element]);
+        dom.render(<param value="name" id="target"/>);
+        findByValue("name", document).should.deep.equal([dom.get("target")]);
     });
 });
 
