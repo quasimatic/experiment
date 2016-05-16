@@ -47,5 +47,8 @@
     "react-dom": "^15.0.2",
     "wallabify": "0.0.14",
     "webpack": "^1.13.0"
+  },
+  "babel": {
+    "presets": ["es2015"]
   }
 }
