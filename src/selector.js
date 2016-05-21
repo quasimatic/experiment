@@ -25,7 +25,7 @@ function GlanceSelector(options) {
             glance: selector
         }, config)).search(data, document, 0);
 
-        _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll());
+        _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
         if (elements.length === 1)
             return elements[0];
