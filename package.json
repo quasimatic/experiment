@@ -1,6 +1,6 @@
 {
   "name": "glance-selector",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "Glance selector library",
   "main": "lib/selector.js",
   "scripts": {
@@ -49,6 +49,8 @@
     "webpack": "^1.13.0"
   },
   "babel": {
-    "presets": ["es2015"]
+    "presets": [
+      "es2015"
+    ]
   }
 }
