@@ -1,6 +1,9 @@
 import glance from '../src/selector';
 import dom from "./dom"
 
+// TODO preload scope
+// it should fail on a bad preload selector
+
 describe("Preloading", function() {
     beforeEach(function() {
         document.body.innerHTML = "";
@@ -122,7 +125,47 @@ describe("Preloading", function() {
         }).should.deep.equal(dom.get("target"));
     });
 
+    it("should preload a label with a property", function() {
+        dom.render(
+            <div>
+                <div>item 1</div>
+                <div id="target">item 2</div>
+                <div>item 3</div>
+            </div>
+        );
 
-    // it should support preloading multiple scopes
-    // it should fail on a bad preload selector
+        glance("item:even", {
+            preload: {
+                selector: "item:even",
+                elements: [dom.get("target")]
+            }
+        }).should.deep.equal(dom.get("target"));
+    });
+
+    it("should preload a label before a property", function() {
+        dom.render(
+            <div>
+                <div id="item-1">item 1</div>
+                <div id="target">item 2</div>
+                <div id="item-3">item 3</div>
+            </div>
+        );
+
+        glance.addExtension({
+            properties: {
+                "even": {
+                    filter: function(elements) {
+                        return [elements[1]];
+                    }
+                }
+            }
+        })
+
+        glance("item:even", {
+            preload: {
+                selector: "item",
+                elements: dom.get("item-1", "target", "item-3")
+            }
+        }).should.deep.equal(dom.get("target"));
+    });
 });

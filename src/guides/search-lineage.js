@@ -22,8 +22,15 @@ export default class SearchLineage {
 
             if (SearchLineage.isLastLabel(targets, labelIndex)) {
                 var target = targets[labelIndex];
-                
-                if (!preloadedTargets[labelIndex].position) {
+
+                if(preloadedTargets[labelIndex].properties.length < target.properties.length) {
+                    target.properties = target.properties.filter( function( el ) {
+                        return preloadedTargets[labelIndex].properties.indexOf( el ) < 0;
+                    });
+                    
+                    return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
+                }
+                else if (!preloadedTargets[labelIndex].position && target.position) {
                     return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
                 }
                 else {
