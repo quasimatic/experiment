@@ -16,19 +16,25 @@ export default class SearchLineage {
     }
 
     search(targets, scope) {
-        if(this.config.preload) {
-            console.log(this.config.preload.targets)
+        if (this.config.preload) {
+            let preloadedTargets = this.config.preload.targets;
             let labelIndex = this.config.preload.targets.length - 1;
 
             if (SearchLineage.isLastLabel(targets, labelIndex)) {
-                return this.config.preload.elements;
+                var target = targets[labelIndex];
+                
+                if (!preloadedTargets[labelIndex].position) {
+                    return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
+                }
+                else {
+                    return this.config.preload.elements;
+                }
             }
             else {
                 return SearchLineage.traverseScopes(this.config.preload.elements, targets, labelIndex, this.config);
             }
         }
-        else
-        {
+        else {
             return this.process(targets, scope, 0)
         }
     }

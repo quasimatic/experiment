@@ -53,7 +53,7 @@ describe("Preloading", function() {
         }).should.deep.equal(dom.get("target"));
     });
 
-    it("should preload multiple scopes and label", function() {
+    it("should preload multi level scopes and label", function() {
         dom.render(
             <div id="scope-1">
                 <div id="scope-2">
@@ -70,5 +70,59 @@ describe("Preloading", function() {
         }).should.deep.equal(dom.get("target"));
     });
 
+    it("should preload multiple scopes and label", function() {
+        dom.render(
+            <div>
+                <div class="scope" id="scope-1">
+                    <div id="target-1">item</div>
+                </div>
+                <div class="scope" id="scope-2">
+                    <div id="target-2">item</div>
+                </div>
+            </div>
+        );
+
+        glance("scope > item", {
+            preload: {
+                selector: "scope",
+                elements: [dom.get("scope-1"), dom.get("scope-2")]
+            }
+        }).should.deep.equal(dom.get("target-1", "target-2"));
+    });
+
+    it("should preload an indexer", function() {
+        dom.render(
+            <div>
+                <div>item 1</div>
+                <div id="target">item 2</div>
+            </div>
+        );
+
+        glance("item#2", {
+            preload: {
+                selector: "item#2",
+                elements: [dom.get("target")]
+            }
+        }).should.deep.equal(dom.get("target"));
+    });
+
+    it("should preload a label before an indexer", function() {
+        dom.render(
+            <div>
+                <div id="item-1">item 1</div>
+                <div id="target">item 2</div>
+            </div>
+        );
+
+        glance("item#2", {
+            preload: {
+                selector: "item",
+                elements: [dom.get("item-1"), dom.get("target")]
+            }
+        }).should.deep.equal(dom.get("target"));
+    });
+
+
+    // it should support preloading multiple scopes
     // it should fail on a bad preload selector
 });
