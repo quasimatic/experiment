@@ -4,12 +4,7 @@ import isDescendant from '../utils/is-descendant';
 
 export default function(label, scope, config) {
     let elements = [];
-    if (config.preload) {
-        if (config.preload.labels) {
-            elements = [].concat(config.preload.labels[label]);
-        }
-    }
-
+    
     if (elements.length == 0) {
         let customLabel = Modifiers.locatorForLabel(label, config.extensions || []);
 
