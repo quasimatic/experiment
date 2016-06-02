@@ -15,8 +15,25 @@ export default class SearchLineage {
         this.defaultFilters = [visible];
     }
 
-    search(targets, scope, labelIndex) {
-        labelIndex = labelIndex || 0;
+    search(targets, scope) {
+        if(this.config.preload) {
+            console.log(this.config.preload.targets)
+            let labelIndex = this.config.preload.targets.length - 1;
+
+            if (SearchLineage.isLastLabel(targets, labelIndex)) {
+                return this.config.preload.elements;
+            }
+            else {
+                return SearchLineage.traverseScopes(this.config.preload.elements, targets, labelIndex, this.config);
+            }
+        }
+        else
+        {
+            return this.process(targets, scope, 0)
+        }
+    }
+
+    process(targets, scope, labelIndex) {
         let target = targets[labelIndex];
 
         Extensions.beforeScopeEvent(this.extensions, {targets, scope});
@@ -41,7 +58,7 @@ export default class SearchLineage {
         for (let c = 0; c < filteredElements.length; c++) {
             let childContainer = filteredElements[c];
 
-            let foundItems = new SearchLineage(config).search(targets, childContainer, labelIndex + 1);
+            let foundItems = new SearchLineage(config).process(targets, childContainer, labelIndex + 1);
             newTargets = newTargets.concat(foundItems);
         }
 

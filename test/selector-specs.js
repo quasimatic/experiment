@@ -124,22 +124,22 @@ describe("Glance", function () {
         glance("customlabel").should.deep.equal(dom.get("target-1"));
     });
 
-    it("should look by label preload", function () {
-        dom.render(
-            <div className="random">
-                <div>one</div>
-                <div id="target-1">two</div>
-            </div>
-        );
-
-        glance("preloadedLabel", {
-            preload: {
-                labels: {
-                    "preloadedLabel": glance("random>div#2")
-                }
-            }
-        }).should.deep.equal(dom.get("target-1"));
-    });
+    // it("should look by label preload", function () {
+    //     dom.render(
+    //         <div className="random">
+    //             <div>one</div>
+    //             <div id="target-1">two</div>
+    //         </div>
+    //     );
+    //
+    //     glance("preloadedLabel", {
+    //         preload: {
+    //             labels: {
+    //                 "preloadedLabel": glance("random>div#2")
+    //             }
+    //         }
+    //     }).should.deep.equal(dom.get("target-1"));
+    // });
 
     it("should only search visible elements", function () {
         dom.render(
