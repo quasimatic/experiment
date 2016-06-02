@@ -1,10 +1,10 @@
 import findByCSS from "./css"
 
-export default function(label, container) {
+export default function (label, container, config, resultHandler = result => result) {
     try {
-        return findByCSS(`${label}`, container);
+        return customExecute(findByCSS, `${label}`, container, resultHandler);
     }
     catch (e) {
-        return [];
+        return resultHandler([]);
     }
 }

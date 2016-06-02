@@ -12,33 +12,47 @@ function GlanceSelector(options) {
 
     _selector.guideFactory = options.guideFactory;
 
-    let selector = function(reference, config) {
-        if(!reference) throw new Error("Selector required");
+    let selector = function (reference, config) {
+        if (!reference) throw new Error("Selector required");
+
+        config = config || {};
+        config.rootElement = config.rootElement || document;
+        let callback = config.callback || function (result) {
+                return result;
+            };
+
+        var globalScope = global || window;
+        globalScope.customExecute = config.execute || function (func, ...args) {
+            let callback = typeof(args[args.length - 1]) == "function" ? args[args.length - 1] : function (value) {
+                return value;
+            };
+            return callback(func.apply(func, args));
+        };
 
         _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
 
         let data = Parser.parse(reference);
 
-        let elements = _selector.guideFactory(mergeObject({
+        return _selector.guideFactory(mergeObject({
             extensions: _selector.extensions,
             locator: defaultLocator,
             glance: selector
-        }, config)).search(data, document, 0);
+        }, config)).search(data, config.rootElement, function (elements) {
+            _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
-        _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
-
-        if (elements.length === 1)
-            return elements[0];
-        else
-            return elements;
+            if (elements.length === 1)
+                return callback(elements[0]);
+            else
+                return callback(elements);
+        });
     };
 
-    selector.addExtension = function(extension) {
+    selector.addExtension = function (extension) {
         _selector.extensions.push(extension);
     };
 
-    selector.setLogLevel = function(level) {
-        log.setLogLevel(level)
+    selector.setLogLevel = function (level) {
+        log.setLogLevel(level);
     };
 
     return selector;

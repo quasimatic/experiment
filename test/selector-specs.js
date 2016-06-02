@@ -123,24 +123,7 @@ describe("Glance", function () {
 
         glance("customlabel").should.deep.equal(dom.get("target-1"));
     });
-
-    it("should look by label preload", function () {
-        dom.render(
-            <div className="random">
-                <div>one</div>
-                <div id="target-1">two</div>
-            </div>
-        );
-
-        glance("preloadedLabel", {
-            preload: {
-                labels: {
-                    "preloadedLabel": glance("random>div#2")
-                }
-            }
-        }).should.deep.equal(dom.get("target-1"));
-    });
-
+    
     it("should only search visible elements", function () {
         dom.render(
             <div>
@@ -323,14 +306,14 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "exact-match": {
-                    locate: function (label, scope) {
+                    locate: function (label, scope, config, callback) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
                             results.push(xpathResult.snapshotItem(i));
                         }
 
-                        return results;
+                        return callback(results);
                     }
                 }
             }

@@ -1,4 +1,5 @@
 import log from '../logger';
+import {until} from "../utils/array-utils";
 
 import findByCustomLabel from "./custom-label"
 import findByContainsText from "./contains-text"
@@ -10,69 +11,100 @@ import findByPlaceholder from "./placeholder"
 import findByImage from "./image"
 import findByNodeType from "./node-type"
 
-export default function(label, container, config) {
-    log.debug("Searching by custom label:", label);
-    let e = findByCustomLabel(label, container, config);
-    if (e.length > 0) {
-        log.info("Matched using custom label:", label);
-        return e;
-    }
+export default function (label, container, config, resultHandler) {
+    let locators = [
+        (callback) => {
+            log.debug("Searching by custom label:", label);
+            return findByCustomLabel(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using custom label:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching for text that contains:", label);
-    e = findByContainsText(label, container);
-    if (e.length > 0) {
-        log.info("Matched using contains text:", label);
-        return e;
-    }
+        (callback) => {
+            log.debug("Searching for text that contains:", label);
+            return findByContainsText(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using contains text:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching by id:", label);
-    e = findByID(label, container);
-    if (e.length > 0) {
-        log.info("Matched using ID:", label);
-        return e;
-    }
+        (callback) => {
+            log.debug("Searching by id:", label);
+            return findByID(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using ID:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching for css class:", label);
-    e = findByClass(label, container);
-    if (e.length > 0) {
-        log.info("Matched using css class:", label);
-        return e;
-    }
+        (callback) => {
 
-    log.debug("Searching in name:", label);
-    e = findByName(label, container);
-    if (e.length > 0) {
-        log.info("Matched using name:", label);
-        return e;
-    }
+            log.debug("Searching for css class:", label);
+            return findByClass(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using css class:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching in value:", label);
-    e = findByValue(label, container);
-    if (e.length > 0) {
-        log.info("Matched using value:", label);
-        return e;
-    }
+        (callback) => {
 
-    log.debug("Searching in placeholder:", label);
-    e = findByPlaceholder(label, container);
-    if (e.length > 0) {
-        log.info("Matched using placeholder:", label);
-        return e;
-    }
+            log.debug("Searching in name:", label);
+            return findByName(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using name:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching for image alt:", label);
-    e = findByImage(label, container);
-    if (e.length > 0) {
-        log.info("Matched using image alt:", label);
-        return e;
-    }
+        (callback) => {
+            log.debug("Searching in value:", label);
+            return findByValue(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using value:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    log.debug("Searching by node type:", label);
-    e = findByNodeType(label, container);
-    if (e.length > 0) {
-        log.info("Matched using node type:", label);
-        return e;
-    }
+        (callback) => {
+            log.debug("Searching in placeholder:", label);
+            return findByPlaceholder(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using placeholder:", label);
+                }
+                return callback(e);
+            });
+        },
 
-    return e;
+        (callback) => {
+            log.debug("Searching for image alt:", label);
+            return findByImage(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using image alt:", label);
+                }
+                return callback(e);
+            });
+        },
+
+        (callback) => {
+            log.debug("Searching by node type:", label);
+            return findByNodeType(label, container, config, function (e) {
+                if (e.length > 0) {
+                    log.info("Matched using node type:", label);
+                }
+                return callback(e);
+            });
+        }
+    ];
+
+    return until(locators, (elements)=> elements.length > 0, result => resultHandler(result || []));
 }

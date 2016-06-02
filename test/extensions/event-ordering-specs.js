@@ -17,9 +17,9 @@ describe("Extensions: labels", function () {
         glance.addExtension({
             labels: {
                 "custom label": {
-                    locate: function (label, scope, {glance}) {
+                    locate: function (label, scope, {glance}, callback) {
                         calledEvents.push('label locate');
-                        return [document.getElementById('custom-label')];
+                        return callback([document.getElementById('custom-label')]);
                     },
                     filter: function(elements) {
                         calledEvents.push("label filter");
@@ -30,9 +30,9 @@ describe("Extensions: labels", function () {
 
             properties: {
                 "custom-property": {
-                    locate: function (label, scope, {glance}) {
+                    locate: function (label, scope, {glance}, callback) {
                         calledEvents.push('property locate');
-                        return [document.getElementById('custom-label')];
+                        return callback([document.getElementById('custom-label')]);
                     },
                     filter: function (elements) {
                         calledEvents.push('property filter');
@@ -40,9 +40,9 @@ describe("Extensions: labels", function () {
                     }
                 },
                 "another-property": {
-                    locate: function (label, scope, {glance}) {
+                    locate: function (label, scope, {glance}, callback) {
                         calledEvents.push('property locate');
-                        return [document.getElementById('custom-label')];
+                        return callback([document.getElementById('custom-label')]);
                     }
                 }
             },
