@@ -7,14 +7,14 @@ describe("Locator: Exact Match", function () {
     });
 
     it("should find by node type", function () {
-        dom.render(<div id="target"></div>);
+        dom.render(<p id="target"></p>);
 
-        findByNodeType("div", document).should.deep.equal([dom.get("target")]);
+        findByNodeType("p", document).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find by node type", function () {
         dom.render(<span></span>);
         
-        findByNodeType("div", document).should.deep.equal([]);
+        findByNodeType("p", document).should.deep.equal([]);
     });
 });

@@ -4,17 +4,34 @@ import limitToScope from "../filters/limit-to-scope"
 import nextToScope from "../filters/next-to-scope"
 
 export default class Filter {
-    static filter(target, unfilteredElements, scope, extensions, defaultFilters) {
-        unfilteredElements = limitToScope(unfilteredElements, scope);
-        unfilteredElements = nextToScope(unfilteredElements, scope);
-
+    static filter(target, unfilteredElements, scope, extensions, defaultFilters, preloadedElements, debug) {
         let filters = Modifiers.getFilters(target, extensions) || defaultFilters;
+        filters = filters.slice(preloadedElements.length);
+        let data = {target, scope};
+        let beforeFilterElements = [];
 
-        var data = {target, scope};
+        if(preloadedElements.length == 0) {
+            unfilteredElements = limitToScope(unfilteredElements, scope);
+            unfilteredElements = nextToScope(unfilteredElements, scope);
 
-        var beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
+            beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
+        }
+        else {
+            beforeFilterElements = preloadedElements[preloadedElements.length -1];
+        }
 
-        var filteredElements = filters.reduce((elements, filter) => filter(elements, {target, scope}), beforeFilterElements);
+        let filteredElements = [];
+
+        if(debug) {
+            filteredElements = filters[0](beforeFilterElements, data);
+
+            if(filters.length > 1) {
+                return filteredElements;
+            }
+        }
+        else {
+            filteredElements = filters.reduce((elements, filter) => filter(elements, data), beforeFilterElements);
+        }
 
         return Modifiers.afterFilters(filteredElements, extensions, data);
     }

@@ -10,6 +10,8 @@ export default {
     },
 
     render(jsx) {
-        return ReactDOM.render(jsx, document.body);
+        var div = document.createElement("div");
+        document.body.appendChild(div)
+        return ReactDOM.render(jsx, div);
     }
 }

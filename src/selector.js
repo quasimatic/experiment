@@ -18,6 +18,7 @@ function GlanceSelector(options) {
         _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
 
         let data = Parser.parse(reference);
+        
         if (config && config.preload) {
             config.preload.targets = Parser.parse(config.preload.selector);
         }
