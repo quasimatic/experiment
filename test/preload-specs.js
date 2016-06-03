@@ -120,7 +120,7 @@ describe("Preloading", function() {
         glance("item#2", {
             preload: {
                 selector: "item",
-                elements: [dom.get("item-1"), dom.get("target")]
+                elements: dom.get("item-1", "target")
             }
         }).should.deep.equal(dom.get("target"));
     });

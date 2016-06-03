@@ -3,7 +3,7 @@ import Extensions from "../utils/extensions";
 import unique from "../utils/unique";
 import Locator from "./locator";
 import Filter from "./filter";
-
+import Positional from "./positional";
 
 export default class SearchLineage {
     constructor(config) {
@@ -23,15 +23,16 @@ export default class SearchLineage {
             if (SearchLineage.isLastLabel(targets, labelIndex)) {
                 var target = targets[labelIndex];
 
-                if(preloadedTargets[labelIndex].properties.length < target.properties.length) {
-                    target.properties = target.properties.filter( function( el ) {
-                        return preloadedTargets[labelIndex].properties.indexOf( el ) < 0;
+                if (preloadedTargets[labelIndex].properties.length < target.properties.length) {
+                    target.properties = target.properties.filter(function (el) {
+                        return preloadedTargets[labelIndex].properties.indexOf(el) < 0;
                     });
-                    
+
                     return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
                 }
                 else if (!preloadedTargets[labelIndex].position && target.position) {
-                    return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
+                    let filteredElements = Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
+                    return Positional.filter(filteredElements, target, this.extensions, {target, scope});
                 }
                 else {
                     return this.config.preload.elements;
@@ -42,7 +43,7 @@ export default class SearchLineage {
             }
         }
         else {
-            return this.process(targets, scope, 0)
+            return this.process(targets, scope, 0);
         }
     }
 
@@ -55,13 +56,15 @@ export default class SearchLineage {
 
         let filteredElements = Filter.filter(target, elements, scope, this.extensions, this.defaultFilters);
 
+        let positionalElements = Positional.filter(filteredElements, target, this.extensions, {target, scope});
+
         Extensions.afterScopeEvent(this.extensions, {targets, scope});
 
         if (SearchLineage.isLastLabel(targets, labelIndex)) {
-            return filteredElements;
+            return positionalElements;
         }
         else {
-            return SearchLineage.traverseScopes(filteredElements, targets, labelIndex, this.config);
+            return SearchLineage.traverseScopes(positionalElements, targets, labelIndex, this.config);
         }
     }
 
