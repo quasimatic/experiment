@@ -4,6 +4,13 @@ import limitToScope from "../filters/limit-to-scope"
 import nextToScope from "../filters/next-to-scope"
 
 export default class Filter {
+    static count(target, unfilteredElements, scope, extensions, defaultFilters, preloadedElements, debug) {
+        let hasCustomFilters = Modifiers.getFilters(target, extensions);
+        let filters = Modifiers.getFilters(target, extensions) || defaultFilters;
+
+        return filters.length;
+    }
+
     static filter(target, unfilteredElements, scope, extensions, defaultFilters, preloadedElements, debug) {
         let filters = Modifiers.getFilters(target, extensions) || defaultFilters;
         filters = filters.slice(preloadedElements.length);

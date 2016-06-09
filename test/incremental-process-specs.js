@@ -40,7 +40,7 @@ describe("Incremental Process", function () {
         }).should.deep.equal({
             selector: "item:even",
             located: [dom.get('target')],
-            filtered: [[dom.get('target')]]
+            filtered: [dom.get('target')]
         });
     });
 
@@ -63,12 +63,12 @@ describe("Incremental Process", function () {
                 },
                 "two": {
                     filter: function (elements) {
-                        return [elements[0],elements[1]];
+                        return [elements[0], elements[1]];
                     }
                 },
                 "three": {
                     filter: function (elements) {
-                        return [elements[0],elements[1],elements[2]];
+                        return [elements[0], elements[1], elements[2]];
                     }
                 }
             }
@@ -79,14 +79,14 @@ describe("Incremental Process", function () {
             preload: {
                 selector: "item:three,two,one",
                 located: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
-                filtered: [dom.get('item-1', 'item-2', 'item-3')]
+                filtering: [dom.get('item-1', 'item-2', 'item-3')]
             }
         })
 
         result.should.deep.equal({
             selector: "item:three,two,one",
             located: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
-            filtered: [dom.get('item-1','item-2', 'item-3'), dom.get('item-1','item-2')]
+            filtering: [dom.get('item-1', 'item-2', 'item-3'), dom.get('item-1', 'item-2')]
         });
 
         glance("item:three,two,one", {
@@ -95,7 +95,32 @@ describe("Incremental Process", function () {
         }).should.deep.equal({
             selector: "item:three,two,one",
             located: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
-            filtered: [dom.get('item-1','item-2', 'item-3'), dom.get('item-1','item-2'), [dom.get('item-1')]]
+            filtered: [dom.get('item-1')]
+        });
+    });
+
+    it("should return after positional", function () {
+        dom.render(
+            <div>
+                <div id="item-1">item 1</div>
+                <div id="item-2">item 2</div>
+                <div id="item-3">item 3</div>
+                <div id="item-4">item 4</div>
+            </div>
+        );
+
+        glance("item#3", {
+            debug: true,
+            preload: {
+                selector: "item#3",
+                located: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
+                filtered: dom.get('item-1', 'item-2', 'item-3', 'item-4')
+            }
+        }).should.deep.equal({
+            selector: "item#3",
+            located: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
+            filtered: dom.get('item-1', 'item-2', 'item-3', 'item-4'),
+            positional: [dom.get('item-3')]
         });
     });
 });

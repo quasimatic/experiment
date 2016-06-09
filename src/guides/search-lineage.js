@@ -16,78 +16,72 @@ export default class SearchLineage {
     }
 
     search(targets, scope) {
-        // if (this.config.preload) {
-        //     let preloadedTargets = this.config.preload.targets;
-        //     let labelIndex = this.config.preload.targets.length - 1;
-        //
-        //     if (SearchLineage.isLastLabel(targets, labelIndex)) {
-        //         var target = targets[labelIndex];
-        //
-        //         if (preloadedTargets[labelIndex].properties.length < target.properties.length) {
-        //             target.properties = target.properties.filter(function (el) {
-        //                 return preloadedTargets[labelIndex].properties.indexOf(el) < 0;
-        //             });
-        //
-        //             return Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
-        //         }
-        //         else if (!preloadedTargets[labelIndex].position && target.position) {
-        //             let filteredElements = Filter.filter(target, this.config.preload.elements, scope, this.extensions, this.defaultFilters);
-        //             return Positional.filter(filteredElements, target, this.extensions, {target, scope});
-        //         }
-        //         else {
-        //             return this.config.preload.elements;
-        //         }
-        //     }
-        //     else {
-        //         return SearchLineage.traverseScopes(this.config.preload.elements, targets, labelIndex, this.config);
-        //     }
-        // }
         let labelIndex = 0;
-        let skipTo = null;
-        if (this.config.preload) {
-            //let preloadedTargets = this.config.preload.targets;
-            labelIndex = this.config.preload.targets.length - 1;
 
-            if (this.config.preload.located) {
-                skipTo = "filter";
-            }
-            else {
-                skipTo = "locate";
-            }
+        if (this.config.preload) {
+            labelIndex = this.config.preload.targets.length - 1;
         }
 
-        return this.process(targets, scope, labelIndex, skipTo);
+        return this.process(targets, scope, labelIndex);
     }
 
-    process(targets, scope, labelIndex, skipTo) {
+    process(targets, scope, labelIndex) {
+        let preload = this.config.preload || {};
         let target = targets[labelIndex];
 
         Extensions.beforeScopeEvent(this.extensions, {targets, scope});
 
         let locatedElements = [];
-        if (!skipTo || skipTo == "locate") {
+        if (!preload.located) {
             locatedElements = Locator.locate(target, scope, this.extensions, this.locator, this.config);
             if (this.config.debug) return this.debugInfo(target, {located: locatedElements});
         }
         else {
-            locatedElements = this.config.preload.located;
+            locatedElements = preload.located;
         }
 
         let filteredElements = [];
-        if (!skipTo || skipTo == "filter") {
-            let preloadedFilteredElements = this.config.preload ? (this.config.preload.filtered || []) : [];
-            filteredElements = Filter.filter(target, locatedElements, scope, this.extensions, this.defaultFilters, preloadedFilteredElements, this.config.debug);
-
-            if (this.config.debug) {
-                preloadedFilteredElements.push(filteredElements);
-                return this.debugInfo(target, {
-                    located: locatedElements,
-                    filtered: preloadedFilteredElements
-                });
+        
+        if (!preload.filtered) {
+            let preloadedFilteredElements = preload ? (preload.filtering || []) : [];
+            if (preloadedFilteredElements.length > 0) {
+                filteredElements = preloadedFilteredElements[preloadedFilteredElements.length - 1];
             }
+
+            let filterCount = Filter.count(target, locatedElements, scope, this.extensions, this.defaultFilters, preloadedFilteredElements, this.config.debug);
+            if (filterCount != preloadedFilteredElements.length) {
+                filteredElements = Filter.filter(target, locatedElements, scope, this.extensions, this.defaultFilters, preloadedFilteredElements, this.config.debug);
+
+                if (this.config.debug) {
+                    if (filterCount != preloadedFilteredElements.length + 1) {
+                        preloadedFilteredElements.push(filteredElements);
+                        return this.debugInfo(target, {
+                            located: locatedElements,
+                            filtering: preloadedFilteredElements
+                        });
+                    }
+                    else {
+                        return this.debugInfo(target, {
+                            located: locatedElements,
+                            filtered: filteredElements
+                        });
+                    }
+                }
+            }
+        }
+        else {
+            filteredElements = preload.filtered;
         }
 
         let positionalElements = Positional.filter(filteredElements, target, this.extensions, {target, scope});
+
+        if (this.config.debug) {
+            return this.debugInfo(target, {
+                located: locatedElements,
+                filtered: filteredElements,
+                positional: positionalElements
+            });
+        }
 
         Extensions.afterScopeEvent(this.extensions, {targets, scope});
 
