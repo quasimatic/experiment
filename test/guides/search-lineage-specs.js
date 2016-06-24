@@ -13,14 +13,14 @@ describe("Guide: Search lineage", function () {
             extensions: [{
                 labels: {
                     "customlabel": {
-                        locate: function () {
-                            return dom.get("custom");
+                        locate: function (label, scope, config, callback) {
+                            return callback(dom.get("custom"));
                         }
                     },
 
                     "customClassLabel": {
-                        locate: function () {
-                            return dom.get("target");
+                        locate: function (label, scope, config, callback) {
+                            return callback(dom.get("target"));
                         }
                     }
                 }
@@ -181,7 +181,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document, 0).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document).should.deep.equal([dom.get('target')]);
     });
 
     it("Should limit and narrow the search to containers found", function () {
