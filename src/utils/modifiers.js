@@ -27,10 +27,10 @@ export default class Modifiers {
         }
 
         if (target.properties.length > 0) {
-            let propertiesWithFilters = target.properties.filter(name => properties[name] && properties[name].filter);
+            let propertiesWithFilters = target.properties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
 
             if (propertiesWithFilters.length != 0) {
-                filters = filters.concat(propertiesWithFilters.map(name => properties[name].filter));
+                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
             }
         }
 

@@ -26,6 +26,18 @@ describe("Extensions: labels", function() {
         return glance("custom-label").should.deep.equal(dom.get("target"));
     });
 
+    it("should locate elements for a custom label as a function", function () {
+        glance.addExtension({
+            labels: {
+                "custom-label": function (label, scope, config) {
+                    return config.glance("target");
+                }
+            }
+        });
+
+        return glance("custom-label").should.deep.equal(dom.get("target"));
+    });
+
     it("should have beforeLocate", function() {
         let actualLabel;
         glance.addExtension({

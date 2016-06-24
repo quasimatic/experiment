@@ -11,7 +11,9 @@ export default function (label, scope, config, resultHandler = result => result)
         elements = customLabel.reduce((e, c) => {
             if (e.length > 0) return e;
 
-            if (c.locate) {
+            let locate = typeof(c) == "function" ? c : c.locate;
+
+            if (locate) {
                 return [].concat(c.locate(label, scope, config, function (result) {
                     return result
                 }));

@@ -1,8 +1,8 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: property", function() {
-    beforeEach(function() {
+describe("Extensions: property", function () {
+    beforeEach(function () {
         document.body.innerHTML = "";
         dom.render(
             <div>
@@ -14,14 +14,27 @@ describe("Extensions: property", function() {
         );
     });
 
-    it("should filter elements", function() {
+    it("should filter elements", function () {
         glance.addExtension({
             properties: {
                 "every-other": {
-                    filter: function(elements) {
+                    filter: function (elements) {
                         let i = 0;
                         return elements.filter(e => ++i % 2);
                     }
+                }
+            }
+        });
+
+        return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
+    });
+
+    it("should filter elements as a function", function () {
+        glance.addExtension({
+            properties: {
+                "every-other": function (elements) {
+                    let i = 0;
+                    return elements.filter(e => ++i % 2);
                 }
             }
         });
