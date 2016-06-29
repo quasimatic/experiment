@@ -4,6 +4,7 @@ var wallabyPostprocessor = wallabify({});
 module.exports = function (wallaby) {
     return {
         files: [
+            {pattern: 'node_modules/babel-polyfill/dist/polyfill.js', instrument: false},
             {pattern: 'node_modules/phantomjs-polyfill/bind-polyfill.js', instrument: false},
             {pattern: 'node_modules/react/dist/react-with-addons.js', instrument: false},
 
@@ -18,10 +19,11 @@ module.exports = function (wallaby) {
             {pattern: 'test/**/*-specs.js', load: false}
         ],
 
-        preprocessors: {
-            '**/*.js': file => require('babel-core').transform(
-                file.content,
-                {sourceMap: true, presets: ['es2015', 'react']})
+        compilers: {
+            '**/*.js*': wallaby.compilers.babel({
+                presets: ['es2015', 'react'],
+                babel: require('babel-core')
+            })
         },
 
         postprocessor: wallabyPostprocessor,

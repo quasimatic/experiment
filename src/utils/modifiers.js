@@ -1,5 +1,3 @@
-import mergeObjects from "../utils/merge-objects";
-
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
         return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(elements, data), elements);
@@ -38,11 +36,11 @@ export default class Modifiers {
     }
 
     static labels(extensions) {
-        return extensions.filter(e => e.labels).reduce((m, e) => mergeObjects(m, e.labels), {});
+        return extensions.filter(e => e.labels).reduce((m, e) => Object.assign({}, m, e.labels), {});
     }
 
     static properties(extensions) {
-        return extensions.filter(e => e.properties).reduce((m, e) => mergeObjects(m, e.properties), {});
+        return extensions.filter(e => e.properties).reduce((m, e) => Object.assign({}, m, e.properties), {});
     }
     
     static getLocator(target, extensions) {
