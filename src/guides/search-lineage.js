@@ -13,43 +13,43 @@ export default class SearchLineage {
     }
 
     search(targets, scope, callback) {
-        callback = callback || function (result) {
+        callback = callback || function (err, result) {
                 return result;
             };
         let labelIndex = 0;
 
-        return this.process(targets, scope, labelIndex, function (elements) {
-            return callback(elements);
+        return this.process(targets, scope, labelIndex, function (err, elements) {
+            return callback(err, elements);
         });
     }
 
-    process(targets, scope, labelIndex, callback) {
+    process(targets, scope, labelIndex, resultHandler) {
         let target = targets[labelIndex];
 
         Extensions.beforeScopeEvent(this.extensions, {targets, scope});
 
-        return Locator.locate(target, scope, this.extensions, this.config, (locatedElements) => {
-            return Filter.filter(target, locatedElements, scope, this.extensions, this.config, (filteredElements) => {
+        return Locator.locate(target, scope, this.extensions, this.config, (err, locatedElements) => {
+            return Filter.filter(target, locatedElements, scope, this.extensions, this.config, (err, filteredElements) => {
                 let positionalElements = Positional.filter(filteredElements, target, this.extensions, {target, scope});
 
                 Extensions.afterScopeEvent(this.extensions, {targets, scope});
 
                 if (SearchLineage.isLastLabel(targets, labelIndex)) {
-                    return callback(positionalElements);
+                    return resultHandler(null, positionalElements);
                 }
                 else {
-                    return SearchLineage.traverseScopes(positionalElements, targets, labelIndex, this.config, callback);
+                    return SearchLineage.traverseScopes(positionalElements, targets, labelIndex, this.config, resultHandler);
                 }
             });
         });
     }
 
-    static traverseScopes(filteredElements, targets, labelIndex, config, callback) {
+    static traverseScopes(filteredElements, targets, labelIndex, config, resultHandler) {
         let process = (filtered, childContainer, reduceeCallback) => {
-            return new SearchLineage(config).process(targets, childContainer, labelIndex + 1, foundItems => reduceeCallback(filtered.concat(foundItems)));
+            return new SearchLineage(config).process(targets, childContainer, labelIndex + 1, (err, foundItems) => reduceeCallback(filtered.concat(foundItems)));
         };
 
-        return reduce(filteredElements, [], process, (newTargets) => callback(unique(newTargets)));
+        return reduce(filteredElements, [], process, (newTargets) => resultHandler(null, unique(newTargets)));
     }
 
     static isLastLabel(targets, labelIndex) {

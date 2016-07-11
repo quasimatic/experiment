@@ -32,7 +32,7 @@ describe("Extensions: labels", function () {
                 "custom-property": {
                     locate: function (label, scope, {glance}, callback) {
                         calledEvents.push('property locate');
-                        return callback([document.getElementById('custom-label')]);
+                        return callback(null, [document.getElementById('custom-label')]);
                     },
                     filter: function (elements) {
                         calledEvents.push('property filter');
@@ -42,7 +42,7 @@ describe("Extensions: labels", function () {
                 "another-property": {
                     locate: function (label, scope, {glance}, callback) {
                         calledEvents.push('property locate');
-                        return callback([document.getElementById('custom-label')]);
+                        return callback(null, [document.getElementById('custom-label')]);
                     }
                 }
             },

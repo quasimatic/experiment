@@ -16,9 +16,13 @@ describe("Glance", function () {
         }
     })
 
-    it("should look by exact text match", function () {
+    it("should look by exact text match", function (done) {
         dom.render(<div id="target">Content Item</div>)
-        return glance("Content Item").should.deep.equal(dom.get("target"));
+        glance("Content Item", function (err, result) {
+            result.should.deep.equal(dom.get("target"));
+            done();
+            return result;
+        }).should.deep.equal(dom.get("target"));
     });
 
     it("should look by content as contains", function () {
@@ -123,7 +127,7 @@ describe("Glance", function () {
 
         glance("customlabel").should.deep.equal(dom.get("target-1"));
     });
-    
+
     it("should only search visible elements", function () {
         dom.render(
             <div>
@@ -229,9 +233,9 @@ describe('Selector Nth', function () {
         );
 
         glance.addExtension({
-            properties:{
+            properties: {
                 "custom-mod": {
-                    filter: function(elements) {
+                    filter: function (elements) {
                         return [elements[0]];
                     }
                 }
@@ -313,7 +317,7 @@ describe('Selector should apply property', function () {
                             results.push(xpathResult.snapshotItem(i));
                         }
 
-                        return callback(results);
+                        return callback(null, results);
                     }
                 }
             }

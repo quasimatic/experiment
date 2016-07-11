@@ -2,7 +2,7 @@ import Modifiers from "../utils/modifiers"
 
 import isDescendant from '../utils/is-descendant';
 
-export default function (label, scope, config, resultHandler = result => result) {
+export default function (label, scope, config, resultHandler = (err, result) => result) {
     let elements = [];
     
     if (elements.length == 0) {
@@ -32,9 +32,9 @@ export default function (label, scope, config, resultHandler = result => result)
             }
         });
 
-        return resultHandler(r);
+        return resultHandler(null, r);
     }
     catch (e) {
-        return resultHandler([]);
+        return resultHandler(null, []);
     }
 }

@@ -16,8 +16,8 @@ export default class Filter {
         unfilteredElements = nextToScope(unfilteredElements, scope);
 
         let beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
-        let executeFilter = (filteredElements, filter, callback) => customExecute(filter, filteredElements, data, callback);
-        let afterFilters = (filteredElements) => callback(Modifiers.afterFilters(filteredElements, extensions, data));
+        let executeFilter = (filteredElements, filter, executeCallback) => customExecute(filter, filteredElements, data, (err, result)=> executeCallback(result));
+        let afterFilters = (filteredElements) => callback(null, Modifiers.afterFilters(filteredElements, extensions, data));
 
         return reduce(filters, beforeFilterElements, executeFilter, afterFilters);
     }

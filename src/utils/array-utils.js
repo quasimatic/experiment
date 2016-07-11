@@ -21,16 +21,16 @@ export function unique(array) {
 export function until(collection, check, resultHandler) {
     function process(i, collection, check, handler) {
         if (i < collection.length) {
-            return collection[i]((result) => {
+            return collection[i]((err, result) => {
                 if (check(result)) {
-                    return handler(result);
+                    return handler(err, result);
                 } else {
                     return process(++i, collection, check, handler);
                 }
             });
         }
 
-        return handler(null);
+        return handler(null, null);
     }
 
     return process(0, collection, check, resultHandler);

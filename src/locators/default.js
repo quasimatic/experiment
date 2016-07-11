@@ -15,96 +15,96 @@ export default function (label, container, config, resultHandler) {
     let locators = [
         (callback) => {
             log.debug("Searching by custom label:", label);
-            return findByCustomLabel(label, container, config, function (e) {
+            return findByCustomLabel(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using custom label:", label);
                 }
-                return callback(e);
+
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching for text that contains:", label);
-            return findByContainsText(label, container, config, function (e) {
+            return findByContainsText(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using contains text:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching by id:", label);
-            return findByID(label, container, config, function (e) {
+            return findByID(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using ID:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
-
             log.debug("Searching for css class:", label);
-            return findByClass(label, container, config, function (e) {
+            return findByClass(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using css class:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
-
             log.debug("Searching in name:", label);
-            return findByName(label, container, config, function (e) {
+            return findByName(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using name:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching in value:", label);
-            return findByValue(label, container, config, function (e) {
+            return findByValue(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using value:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching in placeholder:", label);
-            return findByPlaceholder(label, container, config, function (e) {
+            return findByPlaceholder(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using placeholder:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching for image alt:", label);
-            return findByImage(label, container, config, function (e) {
+            return findByImage(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using image alt:", label);
                 }
-                return callback(e);
+                return callback(null, e);
             });
         },
 
         (callback) => {
             log.debug("Searching by node type:", label);
-            return findByNodeType(label, container, config, function (e) {
+            return findByNodeType(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using node type:", label);
                 }
-                return callback(e);
+
+                return callback(null, e);
             });
         }
     ];
 
-    return until(locators, (elements)=> elements.length > 0, result => resultHandler(result || []));
+    return until(locators, (elements)=> elements.length > 0, (err, result) => resultHandler(err, result || []));
 }
