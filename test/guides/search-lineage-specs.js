@@ -14,13 +14,13 @@ describe("Guide: Search lineage", function () {
                 labels: {
                     "customlabel": {
                         locate: function (label, scope, config, callback) {
-                            return callback(dom.get("custom"));
+                            return callback(null, dom.get("custom"));
                         }
                     },
 
                     "customClassLabel": {
                         locate: function (label, scope, config, callback) {
-                            return callback(dom.get("target"));
+                            return callback(null, dom.get("target"));
                         }
                     }
                 }

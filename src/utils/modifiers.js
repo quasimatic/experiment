@@ -51,11 +51,11 @@ export default class Modifiers {
             let propertyNames = target.properties.filter(name => properties[name] && properties[name].locate);
             
             if (propertyNames.length > 0)
-                return properties[propertyNames[0]].locate;
+                return properties[propertyNames[propertyNames.length - 1]].locate;
         }
 
-        if(labels[target.label] && labels[target.label].locate) {
-            return labels[target.label].locate;
+        if(labels[target.label] && labels[target.label].locate || typeof(labels[target.label]) == 'function') {
+            return typeof(labels[target.label]) == 'function' ? labels[target.label] : labels[target.label].locate;
         }
 
         return null;

@@ -1,7 +1,24 @@
-var wallabify = require('wallabify');
-var wallabyPostprocessor = wallabify({});
+var wallabyWebpack = require('wallaby-webpack');
 
 module.exports = function (wallaby) {
+    var webpackPostprocessor = wallabyWebpack({
+        externals: {
+            "react": "React"
+        },
+        module: {
+            loaders: [
+                {
+                    test: /.js?$/,
+                    loader: 'babel-loader',
+                    exclude: /node_modules/,
+                    query: {
+                        presets: ['es2015']
+                    }
+                }
+            ]
+        }
+    });
+
     return {
         files: [
             {pattern: 'node_modules/babel-polyfill/dist/polyfill.js', instrument: false},
@@ -26,7 +43,7 @@ module.exports = function (wallaby) {
             })
         },
 
-        postprocessor: wallabyPostprocessor,
+        postprocessor: webpackPostprocessor,
 
         testFramework: "mocha",
 
@@ -35,11 +52,6 @@ module.exports = function (wallaby) {
             var should = chai.should();
 
             window.__moduleBundler.loadTests();
-        },
-
-        workers: {
-            initial: 6,
-            regular: 6
         }
     };
 };

@@ -1,6 +1,6 @@
 import isDescendant from '../utils/is-descendant';
 
-export default function limitToScope(elements, scope) {
+export default function limitToScope(elements, scope, resultHandler) {
     let elementContainsContainer = false;
     let parentsContainingReference = [];
     for (let e = 0; e < elements.length; ++e) {
@@ -11,7 +11,7 @@ export default function limitToScope(elements, scope) {
     }
 
     if (elementContainsContainer)
-        return parentsContainingReference;
+        return resultHandler(null, parentsContainingReference);
 
-    return elements;
+    return resultHandler(null, elements);
 }

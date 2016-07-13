@@ -1,4 +1,4 @@
-export default function(label, container) {
+export default function(label, container, resultHandler) {
     try {
         let results = [];
 
@@ -8,9 +8,9 @@ export default function(label, container) {
             results.push(xpathResult.snapshotItem(i));
         }
 
-        return results;
+        return resultHandler(null, results);
     }
     catch (err) {
-        return [];
+        return resultHandler(err, []);
     }
 }
