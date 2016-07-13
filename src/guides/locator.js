@@ -1,7 +1,7 @@
 import Modifiers from "../utils/modifiers";
 
 export default class Locator {
-    static locate(target, scope, extensions, config, callback) {
+    static locate(target, scope, extensions, config, resultHandler) {
         let parent = scope;
         let defaultLocator = config.locator;
 
@@ -14,22 +14,22 @@ export default class Locator {
 
         beforeLocate.forEach(before => before({label: target.label}));
 
-        return Locator.locateInParent(locate, [], parent, target, config, function (elements) {
+        return Locator.locateInParent(locate, [], parent, target, config, function (err, elements) {
             afterLocate.forEach(after => after({label: target.label}));
             Modifiers.afterLocate(extensions).forEach(after => after({target: target, scope: scope}));
 
-            return callback(elements);
+            return resultHandler(err, elements);
         });
     }
 
-    static locateInParent(locate, elements, parent, target, config, callback) {
+    static locateInParent(locate, elements, parent, target, config, resultHandler) {
         if (parent && elements.length == 0) {
-            return locate(target.label, parent, config, function (foundElements) {
-                return Locator.locateInParent(locate, [].concat(foundElements), parent.parentNode, target, config, callback);
+            return locate(target.label, parent, config, function (err, foundElements) {
+                return Locator.locateInParent(locate, [].concat(foundElements), parent.parentNode, target, config, resultHandler);
             });
         }
         else {
-            return callback(elements);
+            return resultHandler(null, elements);
         }
     }
 }

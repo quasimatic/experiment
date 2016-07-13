@@ -1,9 +1,27 @@
-var wallabify = require('wallabify');
-var wallabyPostprocessor = wallabify({});
+var wallabyWebpack = require('wallaby-webpack');
 
 module.exports = function (wallaby) {
+    var webpackPostprocessor = wallabyWebpack({
+        externals: {
+            "react": "React"
+        },
+        module: {
+            loaders: [
+                {
+                    test: /.js?$/,
+                    loader: 'babel-loader',
+                    exclude: /node_modules/,
+                    query: {
+                        presets: ['es2015']
+                    }
+                }
+            ]
+        }
+    });
+
     return {
         files: [
+            {pattern: 'node_modules/babel-polyfill/dist/polyfill.js', instrument: false},
             {pattern: 'node_modules/phantomjs-polyfill/bind-polyfill.js', instrument: false},
             {pattern: 'node_modules/react/dist/react-with-addons.js', instrument: false},
 
@@ -18,13 +36,14 @@ module.exports = function (wallaby) {
             {pattern: 'test/**/*-specs.js', load: false}
         ],
 
-        preprocessors: {
-            '**/*.js': file => require('babel-core').transform(
-                file.content,
-                {sourceMap: true, presets: ['es2015', 'react']})
+        compilers: {
+            '**/*.js*': wallaby.compilers.babel({
+                presets: ['es2015', 'react'],
+                babel: require('babel-core')
+            })
         },
 
-        postprocessor: wallabyPostprocessor,
+        postprocessor: webpackPostprocessor,
 
         testFramework: "mocha",
 
@@ -33,11 +52,6 @@ module.exports = function (wallaby) {
             var should = chai.should();
 
             window.__moduleBundler.loadTests();
-        },
-
-        workers: {
-            initial: 6,
-            regular: 6
         }
     };
 };

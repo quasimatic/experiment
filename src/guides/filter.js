@@ -12,13 +12,17 @@ export default class Filter {
         let filters = Modifiers.getFilters(target, extensions) || [visible];
         let data = {target, scope};
 
-        unfilteredElements = limitToScope(unfilteredElements, scope);
-        unfilteredElements = nextToScope(unfilteredElements, scope);
+        return limitToScope(unfilteredElements, scope, (err, elements) =>{
+            unfilteredElements = elements;
+             return nextToScope(unfilteredElements, scope, (err, nextToScopeElements) => {
+                 unfilteredElements = nextToScopeElements;
 
-        let beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
-        let executeFilter = (filteredElements, filter, callback) => customExecute(filter, filteredElements, data, callback);
-        let afterFilters = (filteredElements) => callback(Modifiers.afterFilters(filteredElements, extensions, data));
+                 let beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
+                 let executeFilter = (filteredElements, filter, executeCallback) => customExecute(filter, filteredElements, data, executeCallback);
+                 let afterFilters = (err, filteredElements) => callback(err, Modifiers.afterFilters(filteredElements, extensions, data));
 
-        return reduce(filters, beforeFilterElements, executeFilter, afterFilters);
+                 return reduce(filters, beforeFilterElements, executeFilter, afterFilters);
+            });
+        });
     }
 }

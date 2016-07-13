@@ -1,5 +1,3 @@
-import mergeObjects from "../utils/merge-objects";
-
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
         return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(elements, data), elements);
@@ -38,11 +36,11 @@ export default class Modifiers {
     }
 
     static labels(extensions) {
-        return extensions.filter(e => e.labels).reduce((m, e) => mergeObjects(m, e.labels), {});
+        return extensions.filter(e => e.labels).reduce((m, e) => Object.assign({}, m, e.labels), {});
     }
 
     static properties(extensions) {
-        return extensions.filter(e => e.properties).reduce((m, e) => mergeObjects(m, e.properties), {});
+        return extensions.filter(e => e.properties).reduce((m, e) => Object.assign({}, m, e.properties), {});
     }
     
     static getLocator(target, extensions) {
@@ -53,11 +51,11 @@ export default class Modifiers {
             let propertyNames = target.properties.filter(name => properties[name] && properties[name].locate);
             
             if (propertyNames.length > 0)
-                return properties[propertyNames[0]].locate;
+                return properties[propertyNames[propertyNames.length - 1]].locate;
         }
 
-        if(labels[target.label] && labels[target.label].locate) {
-            return labels[target.label].locate;
+        if(labels[target.label] && labels[target.label].locate || typeof(labels[target.label]) == 'function') {
+            return typeof(labels[target.label]) == 'function' ? labels[target.label] : labels[target.label].locate;
         }
 
         return null;

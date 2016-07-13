@@ -1,10 +1,10 @@
-export default function(label, container) {
+export default function(label, container, resultHandler = (err, result) => result) {
     try {
         let results = container.querySelectorAll(label);
 
-        return Array.prototype.slice.apply(results);
+        return resultHandler(null, Array.prototype.slice.apply(results));
     }
-    catch (e) {
-        return [];
+    catch (err) {
+        return resultHandler(err, []);
     }
 }
