@@ -1,12 +1,5 @@
 import ReactDOM from 'react-dom';
 
-window.customExecute = function (func, ...args) {
-    let callback = typeof(args[args.length - 1]) == "function" ? args[args.length - 1] : function (err, value) {
-        return value;
-    };
-    return callback(null, func.apply(func, args));
-};
-
 export default {
     get(...ids) {
         var result = ids.map(function(id) {

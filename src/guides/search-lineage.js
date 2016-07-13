@@ -46,10 +46,10 @@ export default class SearchLineage {
 
     static traverseScopes(filteredElements, targets, labelIndex, config, resultHandler) {
         let process = (filtered, childContainer, reduceeCallback) => {
-            return new SearchLineage(config).process(targets, childContainer, labelIndex + 1, (err, foundItems) => reduceeCallback(filtered.concat(foundItems)));
+            return new SearchLineage(config).process(targets, childContainer, labelIndex + 1, (err, foundItems) => reduceeCallback(err, filtered.concat(foundItems)));
         };
 
-        return reduce(filteredElements, [], process, (newTargets) => resultHandler(null, unique(newTargets)));
+        return reduce(filteredElements, [], process, (err, newTargets) => resultHandler(err, unique(newTargets)));
     }
 
     static isLastLabel(targets, labelIndex) {

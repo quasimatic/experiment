@@ -17,7 +17,7 @@ function GlanceSelector(options) {
         let resultHandler = (err, result)=> result;
         let config = {};
 
-        if(args.length > 0) {
+        if (args.length > 0) {
             if (typeof(args[0]) == 'object') {
                 config = args[0];
 
@@ -33,17 +33,16 @@ function GlanceSelector(options) {
         config.rootElement = config.rootElement || document;
 
         var globalScope = global || window;
-        globalScope.customExecute = config.execute || function (func, ...args) {
-                let callback = typeof(args[args.length - 1]) == "function" ? args[args.length - 1] : function (err, value) {
-                    return value;
-                };
 
-                return callback(null, func.apply(func, args));
+        globalScope.customExecute = config.execute || function (func, ...args) {
+                return func(...args);
             };
 
         _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
 
         let data = Parser.parse(reference);
+
+        log.trace("Selector:", reference)
 
         return _selector.guideFactory(Object.assign({}, {
             extensions: _selector.extensions,

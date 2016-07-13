@@ -1,15 +1,15 @@
-export function reduce(collection, memo, iteratee, callback) {
-    function process(i, collection, memo, iteratee, callback) {
+export function reduce(collection, memo, iteratee, resultHandler) {
+    function process(i, collection, memo, iteratee, handler) {
         if (i < collection.length) {
-            return iteratee(memo, collection[i], function(result){
-                return process(++i, collection, result, iteratee, callback);
+            return iteratee(memo, collection[i], function(err, result){
+                return process(++i, collection, result, iteratee, handler);
             });
         }
 
-        return callback(memo);
+        return handler(null, memo);
     }
 
-    return process(0, collection, memo, iteratee, callback);
+    return process(0, collection, memo, iteratee, resultHandler);
 }
 
 export function unique(array) {

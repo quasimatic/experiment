@@ -235,8 +235,8 @@ describe('Selector Nth', function () {
         glance.addExtension({
             properties: {
                 "custom-mod": {
-                    filter: function (elements) {
-                        return [elements[0]];
+                    filter: function (elements, data, resultHandler) {
+                        return resultHandler(null, [elements[0]]);
                     }
                 }
             }
@@ -264,8 +264,8 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "lessthan3characters": {
-                    filter: function (elements) {
-                        return elements.filter(e => e.innerHTML.length < 3)
+                    filter: function (elements, data, resultHandler) {
+                        return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
                     }
                 }
             }

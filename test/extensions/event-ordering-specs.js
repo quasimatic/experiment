@@ -21,9 +21,9 @@ describe("Extensions: labels", function () {
                         calledEvents.push('label locate');
                         return callback([document.getElementById('custom-label')]);
                     },
-                    filter: function(elements) {
+                    filter: function(elements, data, resultHandler) {
                         calledEvents.push("label filter");
-                        return elements;
+                        return resultHandler(null, elements);
                     }
                 }
             },
@@ -34,9 +34,9 @@ describe("Extensions: labels", function () {
                         calledEvents.push('property locate');
                         return callback(null, [document.getElementById('custom-label')]);
                     },
-                    filter: function (elements) {
+                    filter: function (elements, data, resultHandler) {
                         calledEvents.push('property filter');
-                        return elements;
+                        return resultHandler(null, elements);
                     }
                 },
                 "another-property": {
@@ -60,7 +60,7 @@ describe("Extensions: labels", function () {
                 return elements;
             },
 
-            afterFilters: function (elements) {
+            afterFilters: function (elements, data, resultHandler) {
                 calledEvents.push('afterFilters');
                 return elements;
             },
