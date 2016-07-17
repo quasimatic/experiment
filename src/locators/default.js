@@ -1,5 +1,5 @@
 import log from '../logger';
-import {until} from "../utils/array-utils";
+import {reduce, until} from "../utils/array-utils";
 
 import findByCustomLabel from "./custom-label"
 import findByContainsText from "./contains-text"
@@ -29,6 +29,26 @@ export default function (label, container, config, resultHandler) {
             return findByContainsText(label, container, config, function (err, e) {
                 if (e.length > 0) {
                     log.info("Matched using contains text:", label);
+                }
+                return callback(null, e);
+            });
+        },
+
+        (callback) => {
+            log.debug("Searching in value:", label);
+            return findByValue(label, container, config, function (err, e) {
+                if (e.length > 0) {
+                    log.info("Matched using value:", label);
+                }
+                return callback(null, e);
+            });
+        },
+
+        (callback) => {
+            log.debug("Searching in placeholder:", label);
+            return findByPlaceholder(label, container, config, function (err, e) {
+                if (e.length > 0) {
+                    log.info("Matched using placeholder:", label);
                 }
                 return callback(null, e);
             });
@@ -65,26 +85,6 @@ export default function (label, container, config, resultHandler) {
         },
 
         (callback) => {
-            log.debug("Searching in value:", label);
-            return findByValue(label, container, config, function (err, e) {
-                if (e.length > 0) {
-                    log.info("Matched using value:", label);
-                }
-                return callback(null, e);
-            });
-        },
-
-        (callback) => {
-            log.debug("Searching in placeholder:", label);
-            return findByPlaceholder(label, container, config, function (err, e) {
-                if (e.length > 0) {
-                    log.info("Matched using placeholder:", label);
-                }
-                return callback(null, e);
-            });
-        },
-
-        (callback) => {
             log.debug("Searching for image alt:", label);
             return findByImage(label, container, config, function (err, e) {
                 if (e.length > 0) {
@@ -106,5 +106,10 @@ export default function (label, container, config, resultHandler) {
         }
     ];
 
-    return until(locators, (elements)=> elements.length > 0, (err, result) => resultHandler(err, result || []));
+     return reduce(locators, [], (elements, locator, handler) => {
+        return locator(function (err, e) {
+            elements = elements.concat(e);
+            return handler(err, elements);
+        });
+    }, resultHandler);
 }

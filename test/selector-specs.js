@@ -90,13 +90,14 @@ describe("Glance", function () {
         return glance("Duplicate").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should get duplicates for first type of match", function () {
+    it("should get duplicates for visible items only", function () {
+
         dom.render(
             <div>
-                <div className="item"></div>
-                <div className="item"></div>
                 <div id="target-1">item</div>
-                <div id="target-2">this is an item</div>
+                <div id="target-2" className="item"></div>
+                <div className="item" style={{display: "none"}}></div>
+                <div style={{display: "none"}}>this is an item</div>
             </div>
         );
 
@@ -143,13 +144,13 @@ describe("Glance", function () {
         dom.render(
             <div>
                 <div>
-                    <label>label</label>
+                    <label>name</label>
                     <input id="target-1"/>
                     <label>another</label>
                     <input />
                 </div>
                 <div>
-                    <label>label</label>
+                    <label>name</label>
                     <input id="target-2"/>
                     <label >another</label>
                     <input />
@@ -157,7 +158,7 @@ describe("Glance", function () {
             </div>
         );
 
-        return glance("label>input").should.deep.equal(dom.get("target-1", "target-2"));
+        return glance("name>input").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
     it("should find text in select option", function () {
