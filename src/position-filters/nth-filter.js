@@ -1,13 +1,17 @@
-export default function(elements, position) {
-    if (position == null)
+export default function (elements, position) {
+    if (position == null) {
         return elements;
-
-    if (position <= 0) {
-        throw new Error("Position starts at 1")
     }
 
-    if (elements.length < position)
-        throw new Error(`Position ${position} out of range`);
+    if (position <= 0) {
+        console.log("Positions start at 1")
+        return [];
+    }
+
+    if (elements.length < position) {
+        console.log(`Position ${position} out of range`);
+        return [];
+    }
 
     let i = position - 1;
     return [elements[i]];

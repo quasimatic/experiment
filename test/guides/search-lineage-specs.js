@@ -218,4 +218,52 @@ describe("Guide: Search lineage", function () {
 
         lineageGuide.search(parser.parse("item A > item B"), document).should.deep.equal(dom.get('target-1', 'target-2'));
     });
+
+    it("Should get nth position for a simple list", function () {
+        dom.render(
+            <div>
+                <div>item 1</div>
+                <div>item 2</div>
+                <div id="target">item 3</div>
+                <div>item 4</div>
+                <div>item 5</div>
+            </div>
+        );
+
+        lineageGuide.search(parser.parse("item#3"), document).should.deep.equal([dom.get('target')]);
+    });
+
+    it("Should get nth position for a scope", function () {
+        dom.render(
+            <div>
+                <div>
+                    <div>item 1</div>
+                    <div>another A</div>
+                </div>
+                <div>
+                    <div>item 2</div>
+                    <div id="target">another A</div>
+                </div>
+            </div>
+        );
+
+        lineageGuide.search(parser.parse("item#2 > another A"), document).should.deep.equal([dom.get('target')]);
+    });
+
+    it("Should get nth position for a target in a scope", function () {
+        dom.render(
+            <div>
+                <div>
+                    <div>item 1</div>
+                    <div>another A</div>
+                </div>
+                <div>
+                    <div>item 2</div>
+                    <div id="target">another A</div>
+                </div>
+            </div>
+        );
+
+        lineageGuide.search(parser.parse("item > another A#2"), document).should.deep.equal([dom.get('target')]);
+    });
 });

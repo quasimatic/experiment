@@ -30,6 +30,9 @@ function GlanceSelector(options) {
             }
         }
 
+        if (config.logLevel) {
+            log.setLogLevel(config.logLevel);
+        }
         config.rootElement = config.rootElement || document;
 
         var globalScope = global || window;

@@ -1,12 +1,16 @@
 import ReactDOM from 'react-dom';
 
+window.customExecute = function (func, ...args) {
+    return func(...args);
+};
+
 export default {
     get(...ids) {
-        var result = ids.map(function(id) {
+        var result = ids.map(function (id) {
             return document.getElementById(id)
         });
 
-        return result.length == 1? result[0] : result;
+        return result.length == 1 ? result[0] : result;
     },
 
     render(jsx) {
