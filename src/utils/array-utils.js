@@ -12,10 +12,13 @@ export function reduce(collection, memo, iteratee, resultHandler) {
     return process(0, collection, memo, iteratee, resultHandler);
 }
 
-export function unique(array) {
-    return array.filter(function(x, i) {
-        return array.indexOf(x) === i;
-    });
+export function unique(array, resultHandler) {
+    return customExecute(function(array, handler){
+        return handler(null, array.filter(function(x, i) {
+            return array.indexOf(x) === i;
+        }));
+    }, array, resultHandler);
+
 }
 
 export function until(collection, check, resultHandler) {

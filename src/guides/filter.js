@@ -12,11 +12,8 @@ export default class Filter {
         let filters = Modifiers.getFilters(target, extensions) || [visible];
         let data = {target, scope};
 
-        return limitToScope(unfilteredElements, scope, (err, elements) =>{
-            unfilteredElements = elements;
-             return nextToScope(unfilteredElements, scope, (err, nextToScopeElements) => {
-                 unfilteredElements = nextToScopeElements;
-
+        return customExecute(limitToScope, unfilteredElements, scope, (err, elements) =>{
+             return customExecute(nextToScope, elements, scope, (err, unfilteredElements) => {
                  let beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
                  let executeFilter = (filteredElements, filter, executeCallback) => customExecute(filter, filteredElements, data, executeCallback);
                  let afterFilters = (err, filteredElements) => callback(err, Modifiers.afterFilters(filteredElements, extensions, data));

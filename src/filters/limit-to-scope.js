@@ -1,10 +1,19 @@
-import isDescendant from '../utils/is-descendant';
-
 export default function limitToScope(elements, scope, resultHandler) {
     let elementContainsContainer = false;
     let parentsContainingReference = [];
+
     for (let e = 0; e < elements.length; ++e) {
-        if (isDescendant(elements[e], scope)) {
+        var isDescendant = false;
+
+        let node = scope.parentNode;
+        while (node != null) {
+            if (node == elements[e]) {
+                isDescendant = true;
+            }
+            node = node.parentNode;
+        }
+
+        if (isDescendant) {
             elementContainsContainer = true;
             parentsContainingReference.push(elements[e]);
         }

@@ -19,14 +19,17 @@ export default class SearchLineage {
 
         return this.processLevel(targets, scope, 0, (err, elements) => {
             let target = targets[0]
-            let positionalElements = Positional.filter(unique(elements), target, this.extensions, {target, scope});
-            if (targets.length > 1) {
-                Extensions.afterScopeEvent(this.extensions, {targets, scope});
-                return SearchLineage.traverseScopes(positionalElements, targets, 1, scope, this.config, callback);
-            }
-            else {
-                return callback(err, positionalElements);
-            }
+
+            return unique(elements, (err, uniqueElements)=>{
+                let positionalElements = Positional.filter(uniqueElements, target, this.extensions, {target, scope});
+                if (targets.length > 1) {
+                    Extensions.afterScopeEvent(this.extensions, {targets, scope});
+                    return SearchLineage.traverseScopes(positionalElements, targets, 1, scope, this.config, callback);
+                }
+                else {
+                    return callback(err, positionalElements);
+                }
+            })
         });
     }
 
@@ -49,12 +52,18 @@ export default class SearchLineage {
 
         return reduce(filteredElements, [], process, (err, newTargets) => {
             let target = targets[labelIndex];
-            let positionalElements = Positional.filter(unique(newTargets), target, config.extensions, {target, scope});
-            Extensions.afterScopeEvent(config.extensions, {targets, scope});
-            if (SearchLineage.isLastLabel(targets, labelIndex))
-                return resultHandler(err, positionalElements)
-            else
-                return SearchLineage.traverseScopes(positionalElements, targets, labelIndex + 1, scope, config, resultHandler);
+            return unique(newTargets, (err, uniqueTargets)=> {
+                let positionalElements = Positional.filter(uniqueTargets, target, config.extensions, {
+                    target,
+                    scope
+                });
+                Extensions.afterScopeEvent(config.extensions, {targets, scope});
+                if (SearchLineage.isLastLabel(targets, labelIndex)) {
+                    return resultHandler(err, positionalElements)
+                }
+                else
+                    return SearchLineage.traverseScopes(positionalElements, targets, labelIndex + 1, scope, config, resultHandler);
+            });
         });
     }
 
