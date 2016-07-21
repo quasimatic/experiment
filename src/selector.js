@@ -30,9 +30,8 @@ function GlanceSelector(options) {
             }
         }
 
-        if (config.logLevel) {
-            log.setLogLevel(config.logLevel);
-        }
+        log.setLogLevel(config.logLevel || 'info');
+
         config.rootElement = config.rootElement || document;
 
         var globalScope = global || window;
@@ -45,7 +44,7 @@ function GlanceSelector(options) {
 
         let data = Parser.parse(reference);
 
-        log.trace("Selector:", reference)
+        log.debug("Selector:", reference);
 
         return _selector.guideFactory(Object.assign({}, {
             extensions: _selector.extensions,
