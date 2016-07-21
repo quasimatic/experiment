@@ -1,3 +1,4 @@
+import log from '../logger';
 import Modifiers from "../utils/modifiers";
 
 export default class Locator {
@@ -24,6 +25,7 @@ export default class Locator {
 
     static locateInParent(locate, elements, parent, target, config, resultHandler) {
         if (parent && elements.length == 0) {
+            log.debug("Elements not found, trying parent");
             return locate(target.label, parent, config, (err, foundElements) => {
                 return customExecute(function (node, handler) {
                     return handler(null, { parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});

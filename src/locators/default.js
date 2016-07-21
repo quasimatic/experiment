@@ -17,7 +17,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching by custom label:", label);
             return findByCustomLabel(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using custom label:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
 
                 return callback(null, e);
@@ -28,7 +28,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching for text that contains:", label);
             return findByContainsText(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using contains text:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -38,7 +38,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching in value:", label);
             return findByValue(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using value:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -48,7 +48,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching in placeholder:", label);
             return findByPlaceholder(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using placeholder:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -58,7 +58,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching by id:", label);
             return findByID(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using ID:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -68,7 +68,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching for css class:", label);
             return findByClass(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using css class:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -78,7 +78,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching in name:", label);
             return findByName(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using name:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -88,7 +88,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching for image alt:", label);
             return findByImage(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using image alt:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
                 return callback(null, e);
             });
@@ -98,7 +98,7 @@ export default function (label, container, config, resultHandler) {
             log.debug("Searching by node type:", label);
             return findByNodeType(label, container, config, function (err, e) {
                 if (e.length > 0) {
-                    log.info("Matched using node type:", label);
+                    log.debug(`Matched ${e.length}`);
                 }
 
                 return callback(null, e);
