@@ -5,11 +5,16 @@ import findByCss from './css';
  xpath and css won't find. The method is used to get search those dynamic values as well.
  */
 export default function (label, container, config, resultHandler = (err, result) => result) {
-    return customExecute(findByCss, "button,input,option,param", container, (err, foundElements) => {
+    try {
+        let results = container.querySelectorAll("button,input,option,param");
+
         return customExecute(function (elements, l, handler) {
             return handler(null, elements.filter(function (input) {
                 return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
             }));
-        }, foundElements, label, resultHandler);
-    });
+        }, Array.prototype.slice.apply(results), label, resultHandler);
+    }
+    catch(error) {
+        return resultHandler(error, []);
+    }
 }
