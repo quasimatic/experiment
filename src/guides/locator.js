@@ -26,9 +26,12 @@ export default class Locator {
         if (parent && elements.length == 0) {
             return locate(target.label, parent, config, (err, foundElements) => {
                 return customExecute(function (node, handler) {
-                    return handler(null, node.parentNode);
-                }, parent, (err, parentNode) => {
-                    return Locator.locateInParent(locate, [].concat(foundElements), parentNode, target, config, resultHandler);
+                    return handler(null, { parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
+                }, parent, (err, data) => {
+                    if(data.continue)
+                        return Locator.locateInParent(locate, [].concat(foundElements), data.parentNode, target, config, resultHandler);
+
+                    return resultHandler(null, elements);
                 });
 
             });
