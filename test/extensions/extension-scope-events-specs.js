@@ -7,7 +7,7 @@ describe("Extensions: beforeScope event", function () {
     before(function () {
         document.body.innerHTML = "";
         dom.render(
-            <div class="scope">
+            <div className="scope">
                 <div>item 1</div>
             </div>
         );
@@ -32,7 +32,7 @@ describe("Extensions: afterScope event", function () {
     before(function () {
         document.body.innerHTML = "";
         dom.render(
-            <div scope>
+            <div className="scope">
                 <div>item</div>
             </div>
         );

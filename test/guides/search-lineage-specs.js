@@ -4,24 +4,22 @@ import parser from "../../src/parser";
 import dom from "../dom";
 
 describe("Guide: Search lineage", function () {
-    var lineageGuide;
+    let lineageGuide;
+    let body;
 
     beforeEach(function () {
+        body = document.body;
         document.body.innerHTML = "";
         lineageGuide = new LineageGuide({
             locator: defaultFinder,
             extensions: [{
                 labels: {
-                    "customlabel": {
-                        locate: function (label, scope, config, callback) {
-                            return callback(null, dom.get("custom"));
-                        }
+                    "customlabel": function (label, scope, config, callback) {
+                        return callback(null, dom.get("custom"));
                     },
 
-                    "customClassLabel": {
-                        locate: function (label, scope, config, callback) {
-                            return callback(null, dom.get("target"));
-                        }
+                    "customClassLabel": function (label, scope, config, callback) {
+                        return callback(null, dom.get("target"));
                     }
                 }
             }]
@@ -35,7 +33,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("parent>child"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("parent>child"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should find next to", function () {
@@ -46,7 +44,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("sibling 1>sibling 2"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("sibling 1>sibling 2"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should find all children within a container", function () {
@@ -57,7 +55,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("parent>div"), document).should.deep.equal(dom.get('target-1', 'target-2'));
+        lineageGuide.search(parser.parse("parent>div"), body).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("should traverse the dom looking for items in multiple containers", function () {
@@ -70,7 +68,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("Item 1 in box 3>Item 2"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item 1 in box 3>Item 2"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should find duplicates at different levels", function () {
@@ -87,7 +85,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("box4>Duplicate A"), document).should.deep.equal(dom.get('target-1', 'target-2'));
+        lineageGuide.search(parser.parse("box4>Duplicate A"), body).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("should traverse the dom looking for items in parent containers", function () {
@@ -102,7 +100,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("box5>inner-box>Item 1"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box5>inner-box>Item 1"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should only crawl parents til first find", function () {
@@ -124,7 +122,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("Item B>Item A"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item B>Item A"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should look by class near a container", function () {
@@ -135,7 +133,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("box7>Item Content>class-name"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box7>Item Content>class-name"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should look by node type near a container", function () {
@@ -146,7 +144,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("Item Content>input-near-content"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Item Content>input-near-content"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should look within a custom label", function () {
@@ -161,7 +159,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("box9>customlabel>Item 1"), document, 0).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("box9>customlabel>Item 1"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("should find the custom label in container", function () {
@@ -181,7 +179,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("Container Label For Custom Class>customClassLabel"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("Should limit and narrow the search to containers found", function () {
@@ -199,7 +197,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("reference 1>parent>target"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("reference 1>parent>target"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("Should get duplicates within multiple scopes", function () {
@@ -216,7 +214,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("item A > item B"), document).should.deep.equal(dom.get('target-1', 'target-2'));
+        lineageGuide.search(parser.parse("item A > item B"), body).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("Should get nth position for a simple list", function () {
@@ -230,7 +228,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("item#3"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("item#3"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("Should get nth position for a scope", function () {
@@ -247,7 +245,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("item#2 > another A"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("item#2 > another A"), body).should.deep.equal([dom.get('target')]);
     });
 
     it("Should get nth position for a target in a scope", function () {
@@ -264,6 +262,6 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search(parser.parse("item > another A#2"), document).should.deep.equal([dom.get('target')]);
+        lineageGuide.search(parser.parse("item > another A#2"), body).should.deep.equal([dom.get('target')]);
     });
 });

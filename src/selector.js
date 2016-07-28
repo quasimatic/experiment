@@ -32,7 +32,7 @@ function GlanceSelector(options) {
 
         log.setLogLevel(config.logLevel || 'info');
 
-        config.rootElement = config.rootElement || document;
+        config.rootElement = config.rootElement || document.body;
 
         var globalScope = global || window;
 
