@@ -21,7 +21,7 @@ describe("Extensions: beforeFilters event", function () {
                     }
                 }
             },
-            beforeFilters: function (elements) {
+            beforeFilters: function ({elements}) {
                 elementsInEvent = elements;
                 return elements;
             }
@@ -48,7 +48,7 @@ describe("Extensions: afterFilters event", function () {
         );
 
         glance.addExtension({
-            afterFilters: function (elements) {
+            afterFilters: function ({elements}) {
                 elementsInEvent = elements;
                 return elements;
             }

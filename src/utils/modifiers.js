@@ -1,18 +1,19 @@
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
-        return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(elements, data), elements);
+        console.log(Object.assign(data, {elements}))
+        return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(Object.assign(data, {elements})), elements);
     }
 
     static afterFilters(elements, extensions, data) {
-        return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(elements, data), elements);
+        return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), elements);
     }
 
     static beforePositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(elements, position, data), elements);
+        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {elements, position})), elements);
     }
 
     static afterPositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(elements, position, data), elements);
+        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {elements, position})), elements);
     }
 
     static getFilters(target, extensions) {

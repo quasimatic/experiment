@@ -41,7 +41,7 @@ function GlanceSelector(options) {
                 return func(...args);
             };
 
-        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
+        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector:reference}));
 
         let data = Parser.parse(reference);
 
