@@ -3,11 +3,11 @@ import Modifiers from "../utils/modifiers";
 import {reduce} from "../utils/array-utils";
 
 export default class Locator {
-    static locate(target, scope, extensions, config, resultHandler) {
+    static locate(target, scope, config, resultHandler) {
+        let extensions = config.extensions;
         let parent = scope;
-        let defaultLocator = config.locator;
 
-        var locators = Modifiers.getLocators(target, extensions) || [defaultLocator];
+        var locators = Modifiers.getLocators(target, extensions) || Modifiers.getDefaultLocators(extensions, config.defaultProperties);
 
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {

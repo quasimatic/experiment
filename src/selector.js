@@ -1,11 +1,12 @@
 import defaultGuide from "./guides/search-lineage"
-import defaultLocator from "./locators/default"
 import Parser from "./parser";
 import log from "./logger";
+import defaultExtensions from './extensions/default';
+import defaultProperties from './default-properties';
 
 function GlanceSelector(options) {
     let _selector = {};
-    _selector.extensions = [];
+    _selector.extensions = defaultExtensions;
     _selector.properties = options.properties || {};
     _selector.hooks = options.hooks || {};
 
@@ -47,8 +48,8 @@ function GlanceSelector(options) {
         log.debug("Selector:", reference);
 
         return _selector.guideFactory(Object.assign({}, {
+            defaultProperties: defaultProperties,
             extensions: _selector.extensions,
-            locator: defaultLocator,
             glance: selector
         }, config)).search(data, config.rootElement, function (err, elements) {
             _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));

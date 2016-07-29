@@ -1,7 +1,8 @@
 import dom from "../dom"
-import findByName from '../../src/locators/name';
+import extension from '../../src/extensions/name';
 
 describe("Locator: Name Match", function() {
+    let findByName = extension.properties.name.locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

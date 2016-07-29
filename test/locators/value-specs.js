@@ -1,7 +1,9 @@
 import dom from "../dom"
-import findByValue from '../../src/locators/value';
+import extension from '../../src/extensions/value';
 
 describe("Locator: Value Match", function() {
+    let findByValue = extension.properties.value.locate;
+
     beforeEach(function(){
         document.body.innerHTML = "";
     });

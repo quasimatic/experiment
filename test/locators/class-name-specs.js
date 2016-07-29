@@ -1,7 +1,8 @@
 import dom from "../dom"
-import findByClassName from '../../src/locators/class-name';
+import extension from '../../src/extensions/classname';
 
 describe("Locator: Exact Match", function() {
+    let findByClassName = extension.properties.classname.locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

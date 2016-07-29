@@ -46,7 +46,7 @@ export default class Modifiers {
     static getLocators(target, extensions) {
         let locators = [];
         let labels = Modifiers.labels(extensions);
-        let properties = Modifiers.properties(extensions)
+        let properties = Modifiers.properties(extensions);
 
         if (labels[target.label]) {
             if (typeof(labels[target.label]) == 'function') {
@@ -60,6 +60,21 @@ export default class Modifiers {
 
         if (target.properties.length > 0) {
             let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
+
+            if (propertiesWithlocators.length != 0) {
+                locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
+            }
+        }
+
+        return locators.length > 0 ? locators : null;
+    }
+
+    static getDefaultLocators(extensions, defaultProperties) {
+        let locators = [];
+        let properties = Modifiers.properties(extensions);
+
+        if (defaultProperties.length > 0) {
+            let propertiesWithlocators = defaultProperties.filter(name => properties[name] && (properties[name].locate));
 
             if (propertiesWithlocators.length != 0) {
                 locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));

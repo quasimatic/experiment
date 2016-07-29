@@ -38,7 +38,7 @@ export default class SearchLineage {
 
         Extensions.beforeScopeEvent(this.extensions, {targets, scope});
 
-        return Locator.locate(target, scope, this.extensions, this.config, (err, locatedElements) => {
+        return Locator.locate(target, scope, this.config, (err, locatedElements) => {
             return Filter.filter(target, locatedElements, scope, this.extensions, this.config, (err, filteredElements) => {
                 return resultHandler(null, filteredElements);
             });

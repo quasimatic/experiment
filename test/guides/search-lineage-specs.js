@@ -1,4 +1,5 @@
-import defaultFinder from "../../src/locators/default";
+import defaultExtensions from '../../src/extensions/default';
+import defaultProperties from '../../src/default-properties';
 import LineageGuide from '../../src/guides/search-lineage';
 import parser from "../../src/parser";
 import dom from "../dom";
@@ -11,8 +12,8 @@ describe("Guide: Search lineage", function () {
         body = document.body;
         document.body.innerHTML = "";
         lineageGuide = new LineageGuide({
-            locator: defaultFinder,
-            extensions: [{
+            defaultProperties:defaultProperties,
+            extensions: defaultExtensions.concat({
                 labels: {
                     "customlabel": function ({label, scope, config}, callback) {
                         return callback(null, dom.get("custom"));
@@ -22,7 +23,7 @@ describe("Guide: Search lineage", function () {
                         return callback(null, dom.get("target"));
                     }
                 }
-            }]
+            })
         });
     });
 

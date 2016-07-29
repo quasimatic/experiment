@@ -1,7 +1,9 @@
 import dom from "../dom"
-import findByPlaceholder from '../../src/locators/placeholder';
+import extension from '../../src/extensions/placeholder';
 
 describe("Locator: Placeholder Match", function() {
+    let findByPlaceholder = extension.properties.placeholder.locate;
+
     beforeEach(function(){
         document.body.innerHTML = "";
     });

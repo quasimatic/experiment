@@ -1,7 +1,8 @@
 import dom from "../dom"
-import findByID from '../../src/locators/id';
+import extension from '../../src/extensions/id';
 
 describe("Locator: Exact Match", function() {
+    let findByID = extension.properties.id.locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

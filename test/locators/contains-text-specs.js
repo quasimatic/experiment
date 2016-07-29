@@ -1,7 +1,8 @@
 import dom from "../dom"
-import findContainsText from '../../src/locators/contains-text';
+import extension from '../../src/extensions/contains';
 
 describe("Locator: Contains Match", function () {
+    let findContainsText = extension.properties.contains.locate;
     beforeEach(function () {
         document.body.innerHTML = "";
     });
