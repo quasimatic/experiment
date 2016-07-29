@@ -18,9 +18,9 @@ describe("Extensions: property", function () {
         glance.addExtension({
             properties: {
                 "every-other": {
-                    filter: function (elements) {
+                    filter: function ({elements}, resultHandler) {
                         let i = 0;
-                        return elements.filter(e => ++i % 2);
+                        return resultHandler(null, elements.filter(e => ++i % 2));
                     }
                 }
             }
@@ -32,9 +32,9 @@ describe("Extensions: property", function () {
     it("should filter elements as a function", function () {
         glance.addExtension({
             properties: {
-                "every-other": function (elements) {
+                "every-other": function ({elements}, resultHandler) {
                     let i = 0;
-                    return elements.filter(e => ++i % 2);
+                    return resultHandler(null, elements.filter(e => ++i % 2));
                 }
             }
         });

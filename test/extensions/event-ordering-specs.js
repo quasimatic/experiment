@@ -23,7 +23,7 @@ describe("Extensions: labels", function () {
                         calledEvents.push('label locate');
                         return callback(null, [dom.get('custom-label')]);
                     },
-                    filter: function (elements, data, resultHandler) {
+                    filter: function ({elements}, resultHandler) {
                         calledEvents.push("label filter");
                         return resultHandler(null, elements);
                     }
@@ -36,7 +36,7 @@ describe("Extensions: labels", function () {
                         calledEvents.push('property locate');
                         return callback(null, [dom.get('custom-label')]);
                     },
-                    filter: function (elements, data, resultHandler) {
+                    filter: function ({elements}, resultHandler) {
                         calledEvents.push('property filter');
                         return resultHandler(null, elements);
                     }

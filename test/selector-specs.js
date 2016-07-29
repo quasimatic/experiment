@@ -235,10 +235,8 @@ describe('Selector Nth', function () {
 
         glance.addExtension({
             properties: {
-                "custom-mod": {
-                    filter: function (elements, data, resultHandler) {
-                        return resultHandler(null, [elements[0]]);
-                    }
+                "custom-mod": function ({elements}, resultHandler) {
+                    return resultHandler(null, [elements[0]]);
                 }
             }
         })
@@ -264,10 +262,8 @@ describe('Selector should apply property', function () {
 
         glance.addExtension({
             properties: {
-                "lessthan3characters": {
-                    filter: function (elements, data, resultHandler) {
-                        return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
-                    }
+                "lessthan3characters": function ({elements}, resultHandler) {
+                    return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
                 }
             }
         });
@@ -287,10 +283,8 @@ describe('Selector should apply property', function () {
 
         glance.addExtension({
             properties: {
-                "include-hidden": {
-                    filter: function (elements) {
-                        return elements;
-                    }
+                "include-hidden": function ({elements}, resultHandler) {
+                    return resultHandler(null, elements);
                 }
             }
         });
@@ -311,7 +305,7 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "exact-match": {
-                    locate: function ({label, container, config}, callback) {
+                    locate: function ({label, container}, callback) {
                         var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
