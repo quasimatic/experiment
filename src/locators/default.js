@@ -14,17 +14,6 @@ import findByNodeType from "./node-type"
 export default function ({label, container, config}, resultHandler) {
     let locators = [
         (callback) => {
-            log.debug("Searching by custom label:", label);
-            return findByCustomLabel({label, container, config}, function (err, e) {
-                if (e.length > 0) {
-                    log.debug(`Matched ${e.length}`);
-                }
-
-                return callback(null, e);
-            });
-        },
-
-        (callback) => {
             log.debug("Searching for text that contains:", label);
             return findByContainsText({label, container, config}, function (err, e) {
                 if (e.length > 0) {

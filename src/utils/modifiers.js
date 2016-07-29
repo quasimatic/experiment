@@ -42,23 +42,31 @@ export default class Modifiers {
     static properties(extensions) {
         return extensions.filter(e => e.properties).reduce((m, e) => Object.assign({}, m, e.properties), {});
     }
-    
-    static getLocator(target, extensions) {
+
+    static getLocators(target, extensions) {
+        let locators = [];
         let labels = Modifiers.labels(extensions);
         let properties = Modifiers.properties(extensions)
 
+        if (labels[target.label]) {
+            if (typeof(labels[target.label]) == 'function') {
+                locators = locators.concat(labels[target.label]);
+            }
+
+            if (labels[target.label].locate) {
+                locators = locators.concat(labels[target.label].locate);
+            }
+        }
+
         if (target.properties.length > 0) {
-            let propertyNames = target.properties.filter(name => properties[name] && properties[name].locate);
-            
-            if (propertyNames.length > 0)
-                return properties[propertyNames[propertyNames.length - 1]].locate;
+            let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
+
+            if (propertiesWithlocators.length != 0) {
+                locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
+            }
         }
 
-        if(labels[target.label] && labels[target.label].locate || typeof(labels[target.label]) == 'function') {
-            return typeof(labels[target.label]) == 'function' ? labels[target.label] : labels[target.label].locate;
-        }
-
-        return null;
+        return locators.length > 0 ? locators : null;
     }
 
     static locatorForLabel(key, extensions) {

@@ -2,8 +2,10 @@ import glance from '../../src/selector';
 import dom from "../dom";
 
 describe("Extensions: labels", function () {
-    let calledEvents = [];
+    let calledEvents;
+
     before(function () {
+        calledEvents = [];
         document.body.innerHTML = "";
 
         dom.render(
@@ -13,15 +15,15 @@ describe("Extensions: labels", function () {
                 </div>
             </div>
         );
-        
+
         glance.addExtension({
             labels: {
                 "custom label": {
                     locate: function (target, callback) {
                         calledEvents.push('label locate');
-                        return callback([dom.get('custom-label')]);
+                        return callback(null, [dom.get('custom-label')]);
                     },
-                    filter: function(elements, data, resultHandler) {
+                    filter: function (elements, data, resultHandler) {
                         calledEvents.push("label filter");
                         return resultHandler(null, elements);
                     }
@@ -83,12 +85,11 @@ describe("Extensions: labels", function () {
                 return elements;
             }
         });
-
-        return glance("scope > custom label:custom-property > item 1:another-property");
     });
 
     it("should call events in correct order", function () {
-        calledEvents.should.deep.equal([ 
+        glance("scope > custom label:custom-property > item 1:another-property");
+        calledEvents.should.deep.equal([
             'beforeScope',
             'beforeLocate',
             'afterLocate',
@@ -99,6 +100,7 @@ describe("Extensions: labels", function () {
             'afterScope',
             'beforeScope',
             'beforeLocate',
+            'label locate',
             'property locate',
             'afterLocate',
             'beforeFilters',
@@ -116,6 +118,6 @@ describe("Extensions: labels", function () {
             'afterFilters',
             'beforePositional',
             'afterPositional',
-            'afterScope' ]);
+            'afterScope']);
     });
 });

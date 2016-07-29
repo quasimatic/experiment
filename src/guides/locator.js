@@ -1,12 +1,22 @@
 import log from '../logger';
 import Modifiers from "../utils/modifiers";
+import {reduce} from "../utils/array-utils";
 
 export default class Locator {
     static locate(target, scope, extensions, config, resultHandler) {
         let parent = scope;
         let defaultLocator = config.locator;
 
-        let locate = Modifiers.getLocator(target, extensions) || defaultLocator;
+        var locators = Modifiers.getLocators(target, extensions) || [defaultLocator];
+
+        let locate = (target, resultHandler) => {
+            return reduce(locators, [], (elements, locator, handler) => {
+                return locator(target, function (err, e) {
+                    elements = elements.concat(e);
+                    return handler(err, elements);
+                });
+            }, resultHandler);
+        };
 
         let beforeLocate = Modifiers.locateBeforeFromLabel(target.label, extensions);
         let afterLocate = Modifiers.locateAfterFromLabel(target.label, extensions);
