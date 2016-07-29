@@ -6,5 +6,6 @@ import classname from './classname';
 import name from './name';
 import alt from './alt';
 import nodetype from './nodetype';
+import visible from './visible';
 
-export default [contains,value,placeholder,id,classname,name,alt,nodetype];
+export default [contains,value,placeholder,id,classname,name,alt,nodetype,visible];

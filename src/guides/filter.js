@@ -3,13 +3,11 @@ import Modifiers from "../utils/modifiers";
 import limitToScope from "../filters/limit-to-scope"
 import nextToScope from "../filters/next-to-scope"
 
-import visible from "../filters/visible";
-
 import {reduce} from "../utils/array-utils";
 
 export default class Filter {
     static filter(target, unfilteredElements, scope, extensions, config, callback) {
-        let filters = Modifiers.getFilters(target, extensions) || [visible];
+        let filters = Modifiers.getFilters(target, extensions) || Modifiers.getDefaultFilters(extensions, config.defaultProperties);
         let data = {target, scope};
 
         return browserExecute(limitToScope, unfilteredElements, scope, (err, elements) =>{

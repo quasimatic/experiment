@@ -35,6 +35,21 @@ export default class Modifiers {
         return filters.length > 0 ? filters : null;
     }
 
+    static getDefaultFilters(extensions, defaultProperties) {
+        let filters = [];
+        let properties = Modifiers.properties(extensions);
+
+        if (defaultProperties.length > 0) {
+            let propertiesWithFilters = defaultProperties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
+
+            if (propertiesWithFilters.length != 0) {
+                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
+            }
+        }
+
+        return filters;
+    }
+
     static labels(extensions) {
         return extensions.filter(e => e.labels).reduce((m, e) => Object.assign({}, m, e.labels), {});
     }
@@ -81,7 +96,7 @@ export default class Modifiers {
             }
         }
 
-        return locators.length > 0 ? locators : null;
+        return locators;
     }
 
     static locatorForLabel(key, extensions) {
