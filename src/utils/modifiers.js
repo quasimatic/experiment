@@ -1,6 +1,5 @@
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
-        console.log(Object.assign(data, {elements}))
         return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(Object.assign(data, {elements})), elements);
     }
 

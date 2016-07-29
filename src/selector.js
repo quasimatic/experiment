@@ -6,7 +6,8 @@ import defaultProperties from './default-properties';
 
 function GlanceSelector(options) {
     let _selector = {};
-    _selector.extensions = defaultExtensions;
+    _selector.defaultExtensions = options.defaultExtensions || defaultExtensions;
+    _selector.extensions = options.extensions ? _selector.defaultExtensions.concat(options.extensions) : _selector.defaultExtensions;
     _selector.properties = options.properties || {};
     _selector.hooks = options.hooks || {};
 
@@ -31,6 +32,10 @@ function GlanceSelector(options) {
             }
         }
 
+        config.defaultExtensions = config.defaultExtensions || defaultExtensions;
+        config.extensions = config.extensions ? config.defaultExtensions.concat(config.extensions) : config.defaultExtensions;
+        config.defaultProperties = defaultProperties;
+
         log.setLogLevel(config.logLevel || 'info');
 
         config.rootElement = config.rootElement || document.body;
@@ -48,8 +53,6 @@ function GlanceSelector(options) {
         log.debug("Selector:", reference);
 
         return _selector.guideFactory(Object.assign({}, {
-            defaultProperties: defaultProperties,
-            extensions: _selector.extensions,
             glance: selector
         }, config)).search(data, config.rootElement, function (err, elements) {
             _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
