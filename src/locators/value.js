@@ -8,7 +8,7 @@ export default function (label, container, config, resultHandler = (err, result)
     try {
         let results = container.querySelectorAll("button,input,option,param");
 
-        return customExecute(function (elements, l, handler) {
+        return browserExecute(function (elements, l, handler) {
             return handler(null, elements.filter(function (input) {
                 return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
             }));

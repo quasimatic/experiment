@@ -36,7 +36,7 @@ function GlanceSelector(options) {
 
         var globalScope = global || window;
 
-        globalScope.customExecute = config.execute || function (func, ...args) {
+        globalScope.browserExecute = config.browserExecute || function (func, ...args) {
                 return func(...args);
             };
 

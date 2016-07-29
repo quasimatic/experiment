@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom';
 
-window.customExecute = function (func, ...args) {
+window.browserExecute = function (func, ...args) {
     return func(...args);
 };
 
