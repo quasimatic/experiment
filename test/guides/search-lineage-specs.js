@@ -14,11 +14,11 @@ describe("Guide: Search lineage", function () {
             locator: defaultFinder,
             extensions: [{
                 labels: {
-                    "customlabel": function (label, scope, config, callback) {
+                    "customlabel": function ({label, scope, config}, callback) {
                         return callback(null, dom.get("custom"));
                     },
 
-                    "customClassLabel": function (label, scope, config, callback) {
+                    "customClassLabel": function ({label, scope, config}, callback) {
                         return callback(null, dom.get("target"));
                     }
                 }

@@ -2,7 +2,7 @@ import Modifiers from "../utils/modifiers"
 
 import isDescendant from '../utils/is-descendant';
 
-export default function (label, scope, config, resultHandler = (err, result) => result) {
+export default function ({label, container, config}, resultHandler = (err, result) => result) {
     let elements = [];
     
     if (elements.length == 0) {
@@ -14,8 +14,8 @@ export default function (label, scope, config, resultHandler = (err, result) => 
             let locate = typeof(c) == "function" ? c : c.locate;
 
             if (locate) {
-                return [].concat(c.locate(label, scope, config, function (result) {
-                    return result
+                return [].concat(c.locate({label, container, config}, function (err, result) {
+                    return result;
                 }));
             }
 
@@ -27,7 +27,7 @@ export default function (label, scope, config, resultHandler = (err, result) => 
 
     try {
         elements.forEach(function(e) {
-            if (isDescendant(scope, e)) {
+            if (isDescendant(container, e)) {
                 r.push(e)
             }
         });

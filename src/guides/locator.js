@@ -26,7 +26,7 @@ export default class Locator {
     static locateInParent(locate, elements, parent, target, config, resultHandler) {
         if (parent && elements.length == 0) {
             log.debug("Elements not found, trying parent");
-            return locate(target.label, parent, config, (err, foundElements) => {
+            return locate({label: target.label, container:parent, config:config}, (err, foundElements) => {
                 return browserExecute(function (node, handler) {
                     return handler(null, { parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
                 }, parent, (err, data) => {
