@@ -9,6 +9,7 @@ describe("Parsing", function() {
                         position: null,
                         properties: [],
                         scope: "",
+                        scopeIndex: 0,
                         path: "label"
                     }
                 ]
@@ -22,6 +23,7 @@ describe("Parsing", function() {
                     position: 10,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label#10"
                 }
             ]
@@ -35,6 +37,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "scope"
                 },
                 {
@@ -42,6 +45,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "scope",
+                    scopeIndex: 1,
                     path: "scope>label"
                 }
             ]
@@ -55,6 +59,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: ["text"],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label:text"
                 }
             ]
@@ -68,6 +73,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label\\#10"
                 }
             ]
@@ -81,6 +87,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label\\>test"
                 }
             ]
@@ -94,6 +101,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label\\:test"
                 }
             ]
@@ -107,6 +115,7 @@ describe("Parsing", function() {
                     position: null,
                     properties: [],
                     scope: "",
+                    scopeIndex: 0,
                     path: "label\\\\test"
                 }
             ]
@@ -120,6 +129,7 @@ describe("Parsing", function() {
                 position: null,
                 properties: [],
                 scope: "",
+                scopeIndex: 0,
                 path: "label"
             }
         ])
@@ -132,6 +142,7 @@ describe("Parsing", function() {
                 position: null,
                 properties: [],
                 scope: "",
+                scopeIndex: 0,
                 path: "label"
             },
             {
@@ -139,6 +150,7 @@ describe("Parsing", function() {
                 position: null,
                 properties: [],
                 scope: " label ",
+                scopeIndex: 1,
                 path: "label > label2"
             }
         ])
@@ -151,6 +163,7 @@ describe("Parsing", function() {
                 position: 1,
                 properties: [],
                 scope: "",
+                scopeIndex: 0,
                 path: "label#1"
             },
         ])
@@ -165,6 +178,7 @@ describe("Parsing", function() {
                     "property"
                 ],
                 scope: "",
+                scopeIndex: 0,
                 path: "label:property"
             },
         ])

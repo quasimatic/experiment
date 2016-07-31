@@ -6,25 +6,36 @@ import Positional from "./positional";
 import {reduce, unique} from "../utils/array-utils";
 
 export default class SearchLineage {
-    constructor(config) {
-        this.config = config;
-        this.config.extensions = config.extensions || [];
-        this.extensions = config.extensions || [];
-    }
-
-    search(targets, scope, callback) {
+    search({targets, scope, config}, callback) {
         callback = callback || function (err, result) {
                 return result;
             };
 
-        return this.processLevel(targets, scope, 0, (err, elements) => {
-            let target = targets[0]
+        config = config || {};
+        config.extensions = config.extensions || [];
 
-            return unique(elements, (err, uniqueElements)=>{
-                let positionalElements = Positional.filter(uniqueElements, target, this.extensions, {target, scope});
+        let data = {
+            target: targets[0],
+            config,
+            targets,
+            scope,
+            extensions: config.extensions || []
+        };
+
+        return this.processLevel(data, (err, elements) => {
+            return unique(elements, (err, uniqueElements)=> {
+                data = {...data, elements: uniqueElements};
+
+                let positionalElements = Positional.filter(data);
                 if (targets.length > 1) {
-                    Extensions.afterScopeEvent(this.extensions, {targets, scope});
-                    return SearchLineage.traverseScopes(positionalElements, targets, 1, scope, this.config, callback);
+                    Extensions.afterScopeEvent(data);
+
+                    return SearchLineage.traverseScopes({
+                        ...data,
+                        elements: positionalElements,
+                        scopeIndex: 1,
+                        target: data.targets[1]
+                    }, callback);
                 }
                 else {
                     return callback(err, positionalElements);
@@ -33,41 +44,51 @@ export default class SearchLineage {
         });
     }
 
-    processLevel(targets, scope, labelIndex, resultHandler) {
-        let target = targets[labelIndex];
+    processLevel(data, resultHandler) {
+        Extensions.beforeScopeEvent(data);
 
-        Extensions.beforeScopeEvent(this.extensions, {targets, scope});
-
-        return Locator.locate(target, scope, this.config, (err, locatedElements) => {
-            return Filter.filter(target, locatedElements, scope, this.extensions, this.config, (err, filteredElements) => {
-                return resultHandler(null, filteredElements);
-            });
+        return Locator.locate(data, (err, elements) => {
+            return Filter.filter({...data, elements}, (err, filteredElements) => resultHandler(null, filteredElements));
         });
     }
 
-    static traverseScopes(filteredElements, targets, labelIndex, scope, config, resultHandler) {
-        let process = (filtered, childContainer, reduceeCallback) => {
-            return new SearchLineage(config).processLevel(targets, childContainer, labelIndex, (err, foundItems) => reduceeCallback(err, filtered.concat(foundItems)));
+    static traverseScopes(data, resultHandler) {
+        let {
+            target,
+            elements,
+            targets
+        } = data;
+
+        let process = (filtered, scope, reduceeCallback) => {
+            return new SearchLineage().processLevel({
+                ...data,
+                scope
+            }, (err, foundItems) => reduceeCallback(err, filtered.concat(foundItems)));
         };
 
-        return reduce(filteredElements, [], process, (err, newTargets) => {
-            let target = targets[labelIndex];
+        return reduce(elements, [], process, (err, newTargets) => {
             return unique(newTargets, (err, uniqueTargets)=> {
-                let positionalElements = Positional.filter(uniqueTargets, target, config.extensions, {
-                    target,
-                    scope
-                });
-                Extensions.afterScopeEvent(config.extensions, {targets, scope});
-                if (SearchLineage.isLastLabel(targets, labelIndex)) {
-                    return resultHandler(err, positionalElements)
+                data = {...data, elements: uniqueTargets};
+
+                let positionalElements = Positional.filter(data);
+
+                Extensions.afterScopeEvent(data);
+
+                if (SearchLineage.isLastLabel(targets, target)) {
+                    return resultHandler(err, positionalElements);
                 }
-                else
-                    return SearchLineage.traverseScopes(positionalElements, targets, labelIndex + 1, scope, config, resultHandler);
+                else {
+                    return SearchLineage.traverseScopes({
+                        ...data,
+                        elements: positionalElements,
+                        target: targets[target.scopeIndex + 1]
+                    }, resultHandler);
+                }
             });
         });
     }
 
-    static isLastLabel(targets, labelIndex) {
-        return labelIndex + 1 === targets.length;
+    static isLastLabel(targets, {scopeIndex}) {
+        return scopeIndex + 1 === targets.length;
     }
 }

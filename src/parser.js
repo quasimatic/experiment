@@ -51,7 +51,7 @@ module.exports = (function() {
          	scope += text()
          	return target;
          },
-        peg$c12 = function(label, position, properties) { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } },
+        peg$c12 = function(label, position, properties) { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex++, path: (scope + text()).trim() } },
         peg$c13 = function(chars) { return chars.join('') },
         peg$c14 = function(c) { return c },
         peg$c15 = { type: "any", description: "any character" },
@@ -730,6 +730,7 @@ module.exports = (function() {
 
 
     	var scope = "";
+    	var scopeIndex = 0;
 
 
     peg$result = peg$startRuleFunction();

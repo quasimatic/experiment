@@ -7,5 +7,6 @@ import name from './name';
 import alt from './alt';
 import nodetype from './nodetype';
 import visible from './visible';
+import inputafter from './inputafter';
 
-export default [contains,value,placeholder,id,classname,name,alt,nodetype,visible];
+export default [contains,value,placeholder,id,classname,name,alt,nodetype,visible,inputafter];

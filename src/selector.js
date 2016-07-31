@@ -46,15 +46,21 @@ function GlanceSelector(options) {
                 return func(...args);
             };
 
-        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector:reference}));
+        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
-        let data = Parser.parse(reference);
+        let targets = Parser.parse(reference);
+
+        config.glance = selector;
 
         log.debug("Selector:", reference);
 
-        return _selector.guideFactory(Object.assign({}, {
-            glance: selector
-        }, config)).search(data, config.rootElement, function (err, elements) {
+        return _selector.guideFactory().search({
+            glance: selector,
+            scope: config.rootElement,
+            targets,
+            config,
+            extensions: config.extensions
+        }, function (err, elements) {
             _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
             if (elements.length === 1)
@@ -76,4 +82,4 @@ function GlanceSelector(options) {
 }
 
 export {Parser};
-export default GlanceSelector({guideFactory: (config) => new defaultGuide(config)});
+export default GlanceSelector({guideFactory: () => new defaultGuide()});

@@ -140,27 +140,6 @@ describe("Glance", function () {
         return glance("Duplicate").should.deep.equal(dom.get("target-1"));
     });
 
-    it("should limit to next sibling", function () {
-        dom.render(
-            <div>
-                <div>
-                    <label>name</label>
-                    <input id="target-1"/>
-                    <label>another</label>
-                    <input />
-                </div>
-                <div>
-                    <label>name</label>
-                    <input id="target-2"/>
-                    <label >another</label>
-                    <input />
-                </div>
-            </div>
-        );
-
-        return glance("name>input").should.deep.equal(dom.get("target-1", "target-2"));
-    });
-
     it("should find text in select option", function () {
         dom.render(
             <div>

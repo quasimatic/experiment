@@ -1,5 +1,6 @@
 {
 	var scope = "";
+	var scopeIndex = 0;
 }
 
 Start = scopes:Scope* { return scopes }
@@ -17,7 +18,7 @@ Scope
  }
 
 Target
- = label:Label position:Index? properties:Properties? Whitespace? { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } }
+ = label:Label position:Index? properties:Properties? Whitespace? { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex++, path: (scope + text()).trim() } }
 
 Label
  = chars:LabelCharacter+ { return chars.join('') }

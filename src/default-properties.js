@@ -1,1 +1,1 @@
-export default ['contains','value','placeholder','id','classname','name','alt','nodetype','visible'];
+export default ['contains','value','placeholder','id','classname','name','alt','nodetype','visible','inputafter'];
