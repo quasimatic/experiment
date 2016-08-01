@@ -1,6 +1,6 @@
-export default function(label, container, resultHandler = (err, result) => result) {
+export default function(label, scopeElement, resultHandler = (err, result) => result) {
     try {
-        let results = container.querySelectorAll(label);
+        let results = scopeElement.querySelectorAll(label);
 
         return resultHandler(null, Array.prototype.slice.apply(results));
     }

@@ -10,12 +10,12 @@ describe("Locator: Exact Match", function() {
     it("should find by id", function() {
         dom.render(<div id="unique-id">text</div>);
 
-        findByID({label:"unique-id", container:document.body}).should.deep.equal([dom.get("unique-id")]);
+        findByID({label:"unique-id", scopeElement:document.body}).should.deep.equal([dom.get("unique-id")]);
     });
 
     it("should not find by id", function() {
         dom.render(<div id="unique-id"></div>)
 
-        findByID({label:"missing-id", container:document.body}).should.deep.equal([]);
+        findByID({label:"missing-id", scopeElement:document.body}).should.deep.equal([]);
     });
 });

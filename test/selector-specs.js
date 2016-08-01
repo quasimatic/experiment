@@ -119,8 +119,8 @@ describe("Glance", function () {
         glance.addExtension({
             labels: {
                 "customlabel": {
-                    locate: function ({label, scope, config}, resultHandler) {
-                        return resultHandler(null, config.glance("random>div#2"));
+                    locate: function ({glance}, resultHandler) {
+                        return resultHandler(null, glance("random>div#2"));
                     }
                 }
             }
@@ -284,8 +284,8 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "exact-match": {
-                    locate: function ({label, container}, callback) {
-                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", container, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                    locate: function ({label, scopeElement}, callback) {
+                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scopeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
                             results.push(xpathResult.snapshotItem(i));

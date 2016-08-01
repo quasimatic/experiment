@@ -6,20 +6,14 @@ import Positional from "./positional";
 import {reduce, unique} from "../utils/array-utils";
 
 export default class SearchLineage {
-    search({targets, scope, config}, callback) {
-        callback = callback || function (err, result) {
-                return result;
-            };
-
-        config = config || {};
+    search(data, callback = (err, result) => result) {
+        let {targets, scopeElement, config = {}} = data;
         config.extensions = config.extensions || [];
 
-        let data = {
-            elements: [scope],
+        data = {
+            ...data,
+            elements: [scopeElement],
             target: targets[0],
-            config,
-            targets,
-            scope,
             extensions: config.extensions
         };
 
@@ -39,10 +33,10 @@ export default class SearchLineage {
             targets
         } = data;
 
-        let processLevel = (result, scope, reduceeCallback) => {
+        let processLevel = (result, scopeElement, reduceeCallback) => {
             return SearchLineage.processLevel({
                 ...data,
-                scope
+                scopeElement
             }, (err, foundItems) => reduceeCallback(err, result.concat(foundItems)));
         };
 

@@ -7,9 +7,9 @@ import findByCss from './css';
 export default {
     properties: {
         value: {
-            locate: function ({label, container}, resultHandler = (err, result) => result) {
+            locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
                 try {
-                    let results = container.querySelectorAll("button,input,option,param");
+                    let results = scopeElement.querySelectorAll("button,input,option,param");
 
                     return browserExecute(function (elements, l, handler) {
                         return handler(null, elements.filter(function (input) {

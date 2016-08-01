@@ -7,15 +7,15 @@ import {reduce} from "../utils/array-utils";
 
 export default class Filter {
     static filter(data, callback) {
-        let {target, elements:unfilteredElements, scope, extensions, config} = data;
+        let {target, elements:unfilteredElements, scopeElement, extensions, config} = data;
         let filters = Modifiers.getFilters(target, extensions) || Modifiers.getDefaultFilters(extensions, config.defaultProperties);
 
-        return browserExecute(limitToScope, unfilteredElements, scope, (err, unfilteredElements) => {
+        return browserExecute(limitToScope, unfilteredElements, scopeElement, (err, unfilteredElements) => {
             let beforeFilterElements = Modifiers.beforeFilters(unfilteredElements, extensions, data);
             let executeFilter = (filteredElements, filter, executeCallback) => browserExecute(filter, {
                 elements: filteredElements,
                 target,
-                scope
+                scopeElement
             }, executeCallback);
             let afterFilters = (err, filteredElements) => callback(err, Modifiers.afterFilters(filteredElements, extensions, data));
 

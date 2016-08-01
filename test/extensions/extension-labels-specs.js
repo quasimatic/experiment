@@ -16,8 +16,8 @@ describe("Extensions: labels", function() {
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    locate: function({label, scope, config}, resultHandler) {
-                        return resultHandler(null, config.glance("target"));
+                    locate: function({glance}, resultHandler) {
+                        return resultHandler(null, glance("target"));
                     }
                 }
             }
@@ -29,8 +29,8 @@ describe("Extensions: labels", function() {
     it("should locate elements for a custom label as a function", function () {
         glance.addExtension({
             labels: {
-                "custom-label": function ({label, scope, config}, resultHandler) {
-                    return resultHandler(null, config.glance("target"));
+                "custom-label": function ({glance}, resultHandler) {
+                    return resultHandler(null, glance("target"));
                 }
             }
         });

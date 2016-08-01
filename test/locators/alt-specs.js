@@ -10,16 +10,16 @@ describe("Locator: Image Match", function() {
     it("should find in alt attribute", function() {
         dom.render(<img alt="image-name" id="target"/>)
 
-        findByAlt({label:"image-name", container:document.body}).should.deep.equal([dom.get("target")]);
+        findByAlt({label:"image-name", scopeElement:document.body}).should.deep.equal([dom.get("target")]);
     });
 
     it("should find in alt attribute case insensitive", function() {
         dom.render(<img alt="image-name" id="target"/>)
-        findByAlt({label:"ImagE-nAme", container:document.body}).should.deep.equal([dom.get("target")]);
+        findByAlt({label:"ImagE-nAme", scopeElement:document.body}).should.deep.equal([dom.get("target")]);
     });
 
     it("should find as contains in alt attribute", function() {
         dom.render(<img alt="image-name" id="target"/>)
-        findByAlt({label:"image-", container:document.body}).should.deep.equal([dom.get("target")]);
+        findByAlt({label:"image-", scopeElement:document.body}).should.deep.equal([dom.get("target")]);
     });
 });

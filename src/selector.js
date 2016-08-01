@@ -56,7 +56,7 @@ function GlanceSelector(options) {
 
         return _selector.guideFactory().search({
             glance: selector,
-            scope: config.rootElement,
+            scopeElement: config.rootElement,
             targets,
             config,
             extensions: config.extensions
