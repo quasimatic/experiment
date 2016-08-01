@@ -3,6 +3,7 @@ import extension from '../../src/extensions/alt';
 
 describe("Locator: Image Match", function() {
     let findByAlt = extension.properties.alt.locate;
+    
     beforeEach(function(){
         document.body.innerHTML = "";
     });

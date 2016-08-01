@@ -12,12 +12,10 @@ export default class SearchLineage {
 
         data = {
             ...data,
-            elements: [scopeElement],
-            target: targets[0],
             extensions: config.extensions
         };
 
-        return SearchLineage.traverseScopes(data, callback);
+        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target: targets[0]}, callback);
     }
 
     static processLevel(data, resultHandler) {

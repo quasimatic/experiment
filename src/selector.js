@@ -59,7 +59,8 @@ function GlanceSelector(options) {
             scopeElement: config.rootElement,
             targets,
             config,
-            extensions: config.extensions
+            extensions: config.extensions,
+            log: log
         }, function (err, elements) {
             _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 

@@ -1,10 +1,12 @@
-import findByXPath from "./xpath"
+import findByXPath from "./lib/xpath"
 
 export default {
     properties: {
         placeholder: {
-            locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
-                return browserExecute(findByXPath, ".//*[contains(translate(@placeholder, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", scopeElement, resultHandler);
+            locate: function ({label, scopeElement, log={debug:console.log}}, resultHandler = (err, result) => result) {
+                log.debug("Searching in placeholder:", label);
+
+                return findByXPath(".//*[contains(translate(@placeholder, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", scopeElement, resultHandler);
             }
         }
     }

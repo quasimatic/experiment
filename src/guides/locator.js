@@ -12,7 +12,12 @@ export default class Locator {
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
                 return locator(target, function (err, e) {
+                    if (e.length > 0) {
+                        log.debug(`Matched ${e.length}`);
+                    }
+
                     elements = elements.concat(e);
+
                     return handler(err, elements);
                 });
             }, resultHandler);

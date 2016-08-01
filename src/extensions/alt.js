@@ -1,10 +1,12 @@
-import findByXPath from "./xpath"
+import findByXPath from "./lib/xpath"
 
 export default {
     properties: {
         alt: {
-            locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
-                return browserExecute(findByXPath, ".//*[contains(translate(@alt, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", scopeElement, resultHandler);
+            locate: function ({label, scopeElement, log={debug:console.log}}, resultHandler = (err, result) => result) {
+                log.debug("Searching by image alt attribute:", label);
+
+                return findByXPath(".//*[contains(translate(@alt, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'), translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz'))]", scopeElement, resultHandler);
             }
         }
     }
