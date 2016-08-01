@@ -50,12 +50,12 @@ function GlanceSelector(options) {
 
         let targets = Parser.parse(reference);
 
-        config.glance = selector;
+        config.glance = config.glance || selector;
 
         log.debug("Selector:", reference);
 
         return _selector.guideFactory().search({
-            glance: selector,
+            glance: config.glance,
             scopeElement: config.rootElement,
             targets,
             config,
