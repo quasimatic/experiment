@@ -15,41 +15,21 @@ export default class SearchLineage {
         config.extensions = config.extensions || [];
 
         let data = {
+            elements: [scope],
             target: targets[0],
             config,
             targets,
             scope,
-            extensions: config.extensions || []
+            extensions: config.extensions
         };
 
-        return this.processLevel(data, (err, elements) => {
-            return unique(elements, (err, uniqueElements)=> {
-                data = {...data, elements: uniqueElements};
-
-                let positionalElements = Positional.filter(data);
-                if (targets.length > 1) {
-                    Extensions.afterScopeEvent(data);
-
-                    return SearchLineage.traverseScopes({
-                        ...data,
-                        elements: positionalElements,
-                        scopeIndex: 1,
-                        target: data.targets[1]
-                    }, callback);
-                }
-                else {
-                    return callback(err, positionalElements);
-                }
-            })
-        });
+        return SearchLineage.traverseScopes(data, callback);
     }
 
-    processLevel(data, resultHandler) {
+    static processLevel(data, resultHandler) {
         Extensions.beforeScopeEvent(data);
 
-        return Locator.locate(data, (err, elements) => {
-            return Filter.filter({...data, elements}, (err, filteredElements) => resultHandler(null, filteredElements));
-        });
+        return Locator.locate(data, (err, elements) => Filter.filter({...data, elements}, resultHandler));
     }
 
     static traverseScopes(data, resultHandler) {
@@ -59,20 +39,18 @@ export default class SearchLineage {
             targets
         } = data;
 
-        let process = (filtered, scope, reduceeCallback) => {
-            return new SearchLineage().processLevel({
+        let processLevel = (result, scope, reduceeCallback) => {
+            return SearchLineage.processLevel({
                 ...data,
                 scope
-            }, (err, foundItems) => reduceeCallback(err, filtered.concat(foundItems)));
+            }, (err, foundItems) => reduceeCallback(err, result.concat(foundItems)));
         };
 
-        return reduce(elements, [], process, (err, newTargets) => {
-            return unique(newTargets, (err, uniqueTargets)=> {
-                data = {...data, elements: uniqueTargets};
+        return reduce(elements, [], processLevel, (err, newTargets) => {
+            return unique(newTargets, (err, uniqueTargets) => {
+                let positionalElements = Positional.filter({...data, elements: uniqueTargets});
 
-                let positionalElements = Positional.filter(data);
-
-                Extensions.afterScopeEvent(data);
+                Extensions.afterScopeEvent({...data, elements: positionalElements});
 
                 if (SearchLineage.isLastLabel(targets, target)) {
                     return resultHandler(err, positionalElements);
