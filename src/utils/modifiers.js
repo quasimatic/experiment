@@ -71,8 +71,8 @@ export default class Modifiers {
 
         if (labels[target.label]) {
             if (typeof(labels[target.label]) == 'string') {
-                locators = locators.concat(function ({glance}, handler) {
-                    return handler(null, glance(labels[target.label]));
+                locators = locators.concat(function ({glanceSelector}, handler) {
+                    return glanceSelector(labels[target.label],handler);
                 });
             }
 
@@ -91,8 +91,8 @@ export default class Modifiers {
             if (propertiesWithlocators.length != 0) {
                 locators = locators.concat(propertiesWithlocators.map(name => {
                     if (typeof(properties[name].locate) == 'string')
-                        return function ({glance}, handler) {
-                            return handler(null, glance(properties[name].locate));
+                        return function ({glanceSelector}, handler) {
+                            return glanceSelector(properties[name].locate, handler);
                         };
                     else
                         return properties[name].locate;

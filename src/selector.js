@@ -39,6 +39,8 @@ function GlanceSelector(options) {
         log.setLogLevel(config.logLevel || 'info');
 
         config.rootElement = config.rootElement || document.body;
+        config.glance = config.glance || selector;
+        config.glanceSelector = config.glanceSelector || selector;
 
         var globalScope = global || window;
 
@@ -46,29 +48,32 @@ function GlanceSelector(options) {
                 return func(...args);
             };
 
-        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
+        selector.find = function(reference, resultHandler) {
+            let targets = Parser.parse(reference);
 
-        let targets = Parser.parse(reference);
+            log.debug("Selector:", reference);
 
-        config.glance = config.glance || selector;
+            _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
-        log.debug("Selector:", reference);
+            return _selector.guideFactory().search({
+                glance: config.glance,
+                glanceSelector: config.glanceSelector,
+                scopeElement: config.rootElement,
+                targets,
+                config,
+                extensions: config.extensions,
+                log: log
+            }, function (err, elements) {
+                _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
-        return _selector.guideFactory().search({
-            glance: config.glance,
-            scopeElement: config.rootElement,
-            targets,
-            config,
-            extensions: config.extensions,
-            log: log
-        }, function (err, elements) {
-            _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
+                if (elements.length === 1)
+                    return resultHandler(err, elements[0]);
+                else
+                    return resultHandler(err, elements);
+            });
+        }
 
-            if (elements.length === 1)
-                return resultHandler(err, elements[0]);
-            else
-                return resultHandler(err, elements);
-        });
+        return selector.find(reference, resultHandler);
     };
 
     selector.addExtension = function (extension) {
