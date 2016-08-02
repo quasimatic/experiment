@@ -10,7 +10,12 @@ export default function(label, scopeElement, resultHandler) {
             }
 
             return handler(null, results);
-        }, label, scopeElement, resultHandler);
+        }, label, scopeElement, (err, result)=>{
+            if(err)
+                return resultHandler(err, []);
+
+            return resultHandler(null, result);
+        });
     }
     catch (err) {
         return resultHandler(err, []);

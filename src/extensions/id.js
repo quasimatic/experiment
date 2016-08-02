@@ -1,4 +1,5 @@
 import findByCSS from "./lib/css"
+import escapeCSS from '@walkerrandolphsmith/escape-css-selector'
 
 export default {
     properties: {
@@ -7,7 +8,7 @@ export default {
                 try {
                     log.debug("Searching by id:", label);
 
-                    return findByCSS(`#${label}`, scopeElement, resultHandler);
+                    return findByCSS(`#${escapeCSS(label)}`, scopeElement, resultHandler);
                 }
                 catch (err) {
                     return resultHandler(err, []);
