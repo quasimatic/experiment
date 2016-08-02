@@ -1,12 +1,17 @@
 export default {
     properties: {
         "inputafter": {
-            filter: function visible({elements, scopeElement}, resultHandler) {
-                let siblings = elements.filter(function(e) {
-                    return scopeElement && scopeElement.nextElementSibling == e;
-                });
+            filter: function inputafter({elements, scopeElements}, resultHandler) {
+                return browserExecute(function (elements, scopeElements, handler) {
+                    let siblings = elements.filter(function (e) {
+                        if (e.nodeName.toLowerCase() == "input") {
+                            return e.previousElementSibling.nodeName.toLowerCase() != "input" && scopeElements.indexOf(e.previousElementSibling) != -1;
+                        }
 
-                return resultHandler(null, siblings.length == 0 ? elements : siblings);
+                        return false;
+                    });
+                    return handler(null, siblings.length == 0 ? elements : siblings);
+                }, elements, scopeElements, resultHandler);
             }
         }
     }

@@ -30,7 +30,7 @@ export default class Locator {
 
         beforeLocate.forEach(before => before({label: target.label}));
 
-        return Locator.locateInParent(locate, [], parent, target, data, function (err, elements) {
+        return Locator.locateInParent(locate, [], parent, null, target, data, function (err, elements) {
             afterLocate.forEach(after => after({label: target.label}));
             Modifiers.afterLocate(extensions).forEach(after => after(data));
 
@@ -38,15 +38,19 @@ export default class Locator {
         });
     }
 
-    static locateInParent(locate, elements, parent, target, data, resultHandler) {
+    static locateInParent(locate, elements, parent, previousParent, target, data, resultHandler) {
         if (parent && elements.length == 0) {
             log.debug("Elements not found, trying parent");
             return locate({...data, label: target.label, scopeElement:parent}, (err, foundElements) => {
+                if(foundElements.indexOf(previousParent) != -1) {
+                    return resultHandler(null, [previousParent]);
+                }
+
                 return browserExecute(function (node, handler) {
-                    return handler(null, { parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
+                    return handler(null, { node: node, parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
                 }, parent, (err, result) => {
                     if(result.continue)
-                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, target, data, resultHandler);
+                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, target, data, resultHandler);
 
                     return resultHandler(null, elements);
                 });

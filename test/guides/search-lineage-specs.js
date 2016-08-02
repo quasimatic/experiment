@@ -199,7 +199,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search({targets:parser.parse("reference 1>parent>target"), scopeElement, config}).should.deep.equal([dom.get('target')]);
+        lineageGuide.search({targets:parser.parse("reference 1 > parent > target"), scopeElement, config}).should.deep.equal([dom.get('target')]);
     });
 
     it("Should get duplicates within multiple scopes", function () {

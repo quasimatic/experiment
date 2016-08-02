@@ -21,7 +21,7 @@ export default class SearchLineage {
     static processLevel(data, resultHandler) {
         Extensions.beforeScopeEvent(data);
 
-        return Locator.locate(data, (err, elements) => Filter.filter({...data, elements}, resultHandler));
+        return Locator.locate(data, resultHandler);
     }
 
     static traverseScopes(data, resultHandler) {
@@ -35,25 +35,37 @@ export default class SearchLineage {
             return SearchLineage.processLevel({
                 ...data,
                 scopeElement
-            }, (err, foundItems) => reduceeCallback(err, result.concat(foundItems)));
+            }, (err, foundItems) => {
+                result.push({scopeElement: scopeElement, elements: foundItems});
+                return reduceeCallback(err, result)
+            });
         };
 
-        return reduce(elements, [], processLevel, (err, newTargets) => {
-            return unique(newTargets, (err, uniqueTargets) => {
-                let positionalElements = Positional.filter({...data, elements: uniqueTargets});
+        return reduce(elements, [], processLevel, (err, locatedTargets) => {
+            var targetInfo = locatedTargets.reduce((result, info) => {
+                result.elements = result.elements.concat(info.elements);
+                result.scopeElements.push(info.scopeElement);
+                return result;
+            }, {elements:[], scopeElements:[]});
 
-                Extensions.afterScopeEvent({...data, elements: positionalElements});
+            return Filter.filter({...data, ...targetInfo}, (err, newTargets) => {
+                return unique(newTargets, (err, uniqueTargets) => {
+                    let positionalElements = Positional.filter({...data, elements: uniqueTargets});
 
-                if (SearchLineage.isLastLabel(targets, target)) {
-                    return resultHandler(err, positionalElements);
-                }
-                else {
-                    return SearchLineage.traverseScopes({
-                        ...data,
-                        elements: positionalElements,
-                        target: targets[target.scopeIndex + 1]
-                    }, resultHandler);
-                }
+                    Extensions.afterScopeEvent({...data, elements: positionalElements});
+
+                    if (SearchLineage.isLastLabel(targets, target)) {
+                        return resultHandler(err, positionalElements);
+                    }
+                    else {
+                        return SearchLineage.traverseScopes({
+                            ...data,
+                            elements: positionalElements,
+                            target: targets[target.scopeIndex + 1]
+                        }, resultHandler);
+                    }
+                });
+
             });
         });
     }
