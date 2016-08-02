@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/quasimatic/glance-selector#readme",
   "devDependencies": {
-    "@walkerrandolphsmith/escape-css-selector": "^1.1.0",
     "babel": "^6.5.2",
     "babel-cli": "^6.11.4",
     "babel-eslint": "^6.1.2",
@@ -49,6 +48,9 @@
     "react-dom": "^15.3.0",
     "wallaby-webpack": "0.0.22",
     "webpack": "^1.13.1"
+  },
+  "dependencies": {
+    "@walkerrandolphsmith/escape-css-selector": "^1.1.0"
   },
   "babel": {
     "presets": [
