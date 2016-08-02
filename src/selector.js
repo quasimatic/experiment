@@ -1,12 +1,12 @@
 import defaultGuide from "./guides/search-lineage"
 import Parser from "./parser";
 import log from "./logger";
-import defaultExtensions from './extensions/default';
-import defaultProperties from './default-properties';
+import DefaultExtensions from './extensions/default';
+import DefaultProperties from './default-properties';
 
 function GlanceSelector(options) {
     let _selector = {};
-    _selector.defaultExtensions = options.defaultExtensions || defaultExtensions;
+    _selector.defaultExtensions = options.defaultExtensions || DefaultExtensions;
     _selector.extensions = options.extensions ? _selector.defaultExtensions.concat(options.extensions) : _selector.defaultExtensions;
     _selector.properties = options.properties || {};
     _selector.hooks = options.hooks || {};
@@ -32,9 +32,9 @@ function GlanceSelector(options) {
             }
         }
 
-        config.defaultExtensions = config.defaultExtensions || defaultExtensions;
+        config.defaultExtensions = config.defaultExtensions || DefaultExtensions;
         config.extensions = config.extensions ? config.defaultExtensions.concat(config.extensions) : config.defaultExtensions;
-        config.defaultProperties = defaultProperties;
+        config.defaultProperties = DefaultProperties;
 
         log.setLogLevel(config.logLevel || 'info');
 
@@ -82,5 +82,5 @@ function GlanceSelector(options) {
     return selector;
 }
 
-export {Parser};
+export {Parser, DefaultExtensions, DefaultProperties};
 export default GlanceSelector({guideFactory: () => new defaultGuide()});
