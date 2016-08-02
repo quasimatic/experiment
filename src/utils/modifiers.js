@@ -8,17 +8,23 @@ export default class Modifiers {
     }
 
     static beforePositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {elements, position})), elements);
+        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {
+            elements,
+            position
+        })), elements);
     }
 
     static afterPositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {elements, position})), elements);
+        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {
+            elements,
+            position
+        })), elements);
     }
 
     static getFilters(target, extensions) {
         let filters = [];
         let labels = Modifiers.labels(extensions);
-        let properties = Modifiers.properties(extensions)
+        let properties = Modifiers.properties(extensions);
 
         if (labels[target.label] && labels[target.label].filter) {
             filters = filters.concat(labels[target.label].filter);
@@ -64,6 +70,12 @@ export default class Modifiers {
         let properties = Modifiers.properties(extensions);
 
         if (labels[target.label]) {
+            if (typeof(labels[target.label]) == 'string') {
+                locators = locators.concat(function ({glance}, handler) {
+                    return handler(null, glance(labels[target.label]));
+                });
+            }
+
             if (typeof(labels[target.label]) == 'function') {
                 locators = locators.concat(labels[target.label]);
             }
@@ -77,7 +89,14 @@ export default class Modifiers {
             let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
 
             if (propertiesWithlocators.length != 0) {
-                locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
+                locators = locators.concat(propertiesWithlocators.map(name => {
+                    if (typeof(properties[name].locate) == 'string')
+                        return function ({glance}, handler) {
+                            return handler(null, glance(properties[name].locate));
+                        };
+                    else
+                        return properties[name].locate;
+                }));
             }
         }
 

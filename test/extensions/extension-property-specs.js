@@ -10,6 +10,7 @@ describe("Extensions: property", function () {
                 <div className='item'></div>
                 <div className='item' id="target-2"></div>
                 <div className='item'></div>
+                <input className='custom-input' id="target-3"/>
             </div>
         );
     });
@@ -40,5 +41,31 @@ describe("Extensions: property", function () {
         });
 
         return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
+    });
+
+    it("should locate elements with a property", function () {
+        glance.addExtension({
+            properties: {
+                "custom-property": {
+                    locate: function({glance}, resultHandler) {
+                        return resultHandler(null, glance("custom-input"));
+                    }
+                }
+            }
+        });
+
+        return glance("ignored:custom-property").should.deep.equal(dom.get("target-3"));
+    });
+
+    it("should locate elements for a custom property as a glance selector", function () {
+        glance.addExtension({
+            properties: {
+                "custom-property": {
+                    locate: "custom-input"
+                }
+            }
+        });
+
+        return glance("ignored:custom-property").should.deep.equal(dom.get("target-3"));
     });
 });
