@@ -1,18 +1,12 @@
-import findByCSS from "./lib/css"
-import escapeCSS from '@walkerrandolphsmith/escape-css-selector'
+import findByXPath from "./lib/xpath"
 
 export default {
     properties: {
         searchasid: {
             locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
-                try {
                     log.debug("Searching by id:", label);
 
-                    return findByCSS(`#${escapeCSS(label)}`, scopeElement, resultHandler);
-                }
-                catch (err) {
-                    return resultHandler(err, []);
-                }
+                    return findByXPath(".//*[translate(@id, 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz')=translate('" + label + "', 'ABCDEFGHJIKLMNOPQRSTUVWXYZ', 'abcdefghjiklmnopqrstuvwxyz')]", scopeElement, resultHandler);
             }
         }
     }
