@@ -40,7 +40,6 @@ export default class Locator {
 
     static locateInParent(locate, elements, parent, previousParent, target, data, resultHandler) {
         if (parent && elements.length == 0) {
-            log.debug("Elements not found, trying parent");
             return locate({...data, label: target.label, scopeElement:parent}, (err, foundElements) => {
                 if(foundElements.indexOf(previousParent) != -1) {
                     return resultHandler(null, [previousParent]);
@@ -49,10 +48,13 @@ export default class Locator {
                 return browserExecute(function (node, handler) {
                     return handler(null, { node: node, parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
                 }, parent, (err, result) => {
-                    if(result.continue)
+                    let flattenedElements = [].concat(foundElements);
+                    if(result.continue && flattenedElements.length == 0) {
+                        log.debug("Elements not found, trying parent");
                         return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, target, data, resultHandler);
+                    }
 
-                    return resultHandler(null, elements);
+                    return resultHandler(null, flattenedElements);
                 });
 
             });
