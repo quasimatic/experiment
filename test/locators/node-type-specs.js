@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/nodetype';
+import extension from '../../src/extensions/search-as-nodetype';
 
 describe("Locator: Exact Match", function () {
-    let findByNodeType = extension.properties.nodetype.locate;
+    let findByNodeType = extension.properties.searchasnodetype.locate;
     beforeEach(function () {
         document.body.innerHTML = "";
     });

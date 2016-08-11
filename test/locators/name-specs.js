@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/name';
+import extension from '../../src/extensions/search-in-name';
 
 describe("Locator: Name Match", function() {
-    let findByName = extension.properties.name.locate;
+    let findByName = extension.properties.searchinname.locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

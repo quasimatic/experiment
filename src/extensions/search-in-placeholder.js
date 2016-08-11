@@ -2,7 +2,7 @@ import findByXPath from "./lib/xpath"
 
 export default {
     properties: {
-        placeholder: {
+        searchinplaceholder: {
             locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
                 log.debug("Searching in placeholder:", label);
 

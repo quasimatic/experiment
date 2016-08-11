@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/value';
+import extension from '../../src/extensions/search-in-value';
 
 describe("Locator: Value Match", function() {
-    let findByValue = extension.properties.value.locate;
+    let findByValue = extension.properties.searchinvalue.locate;
 
     beforeEach(function(){
         document.body.innerHTML = "";

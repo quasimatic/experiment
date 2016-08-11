@@ -4,7 +4,7 @@
  */
 export default {
     properties: {
-        value: {
+        searchinvalue: {
             locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
                 try {
                     log.debug("Searching in value:", label);

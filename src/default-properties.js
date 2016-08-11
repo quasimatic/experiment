@@ -1,1 +1,1 @@
-export default ['contains','value','placeholder','id','classname','name','alt','nodetype','visible','inputafter'];
+export default ['searchintext','searchinvalue','searchinplaceholder','searchasid','searchasclassname','searchinname','searchinalt','searchasnodetype','visible','inputafter'];

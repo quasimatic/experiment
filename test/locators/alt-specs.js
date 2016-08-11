@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/alt';
+import extension from '../../src/extensions/search-in-alt';
 
 describe("Locator: Image Match", function() {
-    let findByAlt = extension.properties.alt.locate;
+    let findByAlt = extension.properties.searchinalt.locate;
     
     beforeEach(function(){
         document.body.innerHTML = "";

@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/placeholder';
+import extension from '../../src/extensions/search-in-placeholder';
 
 describe("Locator: Placeholder Match", function() {
-    let findByPlaceholder = extension.properties.placeholder.locate;
+    let findByPlaceholder = extension.properties.searchinplaceholder.locate;
 
     beforeEach(function(){
         document.body.innerHTML = "";
