@@ -299,4 +299,16 @@ describe('Selector should apply property', function () {
 
         return glance("bcd:exact-match").should.deep.equal(dom.get("target"));
     });
+
+    it("should still use default filters if specified properties don't have filters", function () {
+        dom.render(<span id="target"></span>)
+
+        glance.addExtension({
+            properties: {
+                "propertywithoutfilter": {}
+            }
+        });
+
+        return glance("span:propertywithoutfilter").should.deep.equal(dom.get('target'));
+    });
 });
