@@ -18,10 +18,4 @@ describe("Locator: Exact Match", function () {
 
         findByID({label: "missing-id", scopeElement: document.body}).should.deep.equal([]);
     });
-
-    it("should find special character", function () {
-        dom.render(<div id="#hashed-id"></div>);
-
-        findByID({label: '#hashed-id', scopeElement: document.body}).should.deep.equal([dom.get('#hashed-id')]);
-    });
 });

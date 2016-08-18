@@ -9,5 +9,6 @@ import searchAsNodeType from './search-as-nodetype';
 import searchAsCss from './search-as-css';
 import visible from './visible';
 import inputafter from './inputafter';
+import shortestscopeandcontainerpath from './shortest-scope-and-container-path';
 
-export default [searchInText,searchInValue,searchInPlaceholder,searchAsId,searchAsClassName,searchInName,searchInAlt,searchAsNodeType,searchAsCss,visible,inputafter];
+export default [searchInText,searchInValue,searchInPlaceholder,searchAsId,searchAsClassName,searchInName,searchInAlt,searchAsNodeType,searchAsCss,visible,inputafter,shortestscopeandcontainerpath];
