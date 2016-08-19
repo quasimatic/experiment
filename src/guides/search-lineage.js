@@ -36,12 +36,19 @@ export default class SearchLineage {
                 ...data,
                 scopeElement
             }, (err, foundItems) => {
+                if(err) {
+                    reduceeCallback(err, []);
+                }
                 result.push({scopeElement: scopeElement, elements: foundItems});
                 return reduceeCallback(err, result)
             });
         };
 
         return reduce(elements, [], processLevel, (err, locatedTargets) => {
+            if(err) {
+                return resultHandler(err, []);
+            }
+
             var targetInfo = locatedTargets.reduce((result, info) => {
                 result.elements = result.elements.concat(info.elements);
                 result.scopeElements.push(info.scopeElement);

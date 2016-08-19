@@ -9,13 +9,15 @@ export default {
                 try {
                     log.debug("Searching in value:", label);
 
-                    let results = scopeElement.querySelectorAll("button,input,option,param");
+                    return browserExecute(function (scope, l, handler) {
+                        let results = scope.querySelectorAll("button,input,option,param");
 
-                    return browserExecute(function (elements, l, handler) {
+                        var elements = Array.prototype.slice.apply(results);
+
                         return handler(null, elements.filter(function (input) {
                             return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
                         }));
-                    }, Array.prototype.slice.apply(results), label, resultHandler);
+                    }, scopeElement, label, resultHandler);
                 }
                 catch (error) {
                     return resultHandler(error, []);

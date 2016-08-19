@@ -2,6 +2,10 @@ export function reduce(collection, memo, iteratee, resultHandler) {
     function process(i, collection, memo, iteratee, handler) {
         if (i < collection.length) {
             return iteratee(memo, collection[i], function(err, result){
+                if(err) {
+                    return handler(err, memo);
+                }
+
                 return process(++i, collection, result, iteratee, handler);
             });
         }

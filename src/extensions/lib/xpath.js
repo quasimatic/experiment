@@ -1,6 +1,6 @@
-export default function(label, scopeElement, resultHandler) {
-    try {
-        return browserExecute(function(label, scopeElement, handler){
+export default function (label, scopeElement, resultHandler) {
+    return browserExecute(function (label, scopeElement, handler) {
+        try {
             var results = [];
 
             var xpathResult = document.evaluate(label, scopeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
@@ -10,14 +10,14 @@ export default function(label, scopeElement, resultHandler) {
             }
 
             return handler(null, results);
-        }, label, scopeElement, (err, result)=>{
-            if(err)
-                return resultHandler(err, []);
+        }
+        catch (err) {
+            return handler(err, []);
+        }
+    }, label, scopeElement, (err, result)=> {
+        if (err)
+            return resultHandler(err, []);
 
-            return resultHandler(null, result);
-        });
-    }
-    catch (err) {
-        return resultHandler(err, []);
-    }
+        return resultHandler(null, result);
+    });
 }
