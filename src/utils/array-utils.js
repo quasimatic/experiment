@@ -18,9 +18,14 @@ export function reduce(collection, memo, iteratee, resultHandler) {
 
 export function unique(array, resultHandler) {
     return browserExecute(function(array, handler){
-        return handler(null, array.filter(function(x, i) {
-            return array.indexOf(x) === i;
-        }));
+        try {
+            return handler(null, array.filter(function (x, i) {
+                return array.indexOf(x) === i;
+            }));
+        }
+        catch(err) {
+            return handler(err, []);
+        }
     }, array, resultHandler);
 
 }

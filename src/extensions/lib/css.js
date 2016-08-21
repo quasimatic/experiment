@@ -10,10 +10,5 @@ export default function (label, scopeElement, resultHandler = (err, result) => r
             else
                 return handler(e, []);
         }
-    }, label, scopeElement, (err, result)=> {
-        if (err)
-            return resultHandler(err, []);
-
-        return resultHandler(err, result);
-    });
+    }, label, scopeElement, resultHandler);
 }

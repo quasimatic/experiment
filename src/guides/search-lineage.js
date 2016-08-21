@@ -56,6 +56,10 @@ export default class SearchLineage {
             }, {elements:[], scopeElements:[]});
 
             return Filter.filter({...data, ...targetInfo}, (err, newTargets) => {
+                if(err) {
+                    return resultHandler(err, []);
+                }
+
                 return unique(newTargets, (err, uniqueTargets) => {
                     let positionalElements = Positional.filter({...data, elements: uniqueTargets});
 
