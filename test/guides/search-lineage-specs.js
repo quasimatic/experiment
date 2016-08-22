@@ -266,4 +266,14 @@ describe("Guide: Search lineage", function () {
 
         lineageGuide.search({scopes:parser.parse("item > another A#2"), scopeElement, config}).should.deep.equal([dom.get('target')]);
     });
+
+    it("Should not have a scope match the end target", function() {
+        dom.render(
+            <div>
+                <div className="thing">item </div>
+            </div>
+        );
+
+        lineageGuide.search({scopes:parser.parse("thing > item"), scopeElement, config}).should.deep.equal([]);
+    });
 });

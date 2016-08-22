@@ -15,7 +15,7 @@ export default class SearchLineage {
             extensions: config.extensions
         };
 
-        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target:scopes[0][0]}, callback);
+        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target:scopes[0][0], scopeElements: []}, callback);
     }
 
     static processLevel(data, resultHandler) {
@@ -71,6 +71,7 @@ export default class SearchLineage {
                     else {
                         return SearchLineage.traverseScopes({
                             ...data,
+                            scopeElements: positionalElements,
                             elements: positionalElements,
                             target: scopes[target.scopeIndex + 1][0]
                         }, resultHandler);
