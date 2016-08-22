@@ -14,6 +14,7 @@ EscapeChar = "\\"
 
 Scope
  = targets:Targets ScopeChar? {
+	scopeIndex++;
  	scope += text()
     return targets;
  }
@@ -25,13 +26,12 @@ Targets
 
 Target
  = label:RawLabel IntersectionChar? {
-	label.path = (scope + text()).trim();
     return label;
  }
 
 RawLabel
   = label:Label position:Index? properties:Properties? Whitespace? {
-	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex++, path: (scope + text()).trim() }
+	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex, path: (scope + text()).trim() }
   }
 Label
  = chars:LabelCharacter+ { return chars.join('') }

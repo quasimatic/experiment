@@ -50,6 +50,7 @@ module.exports = (function() {
         peg$c11 = "\\",
         peg$c12 = { type: "literal", value: "\\", description: "\"\\\\\"" },
         peg$c13 = function(targets) {
+        	scopeIndex++;
          	scope += text()
             return targets;
          },
@@ -57,11 +58,10 @@ module.exports = (function() {
          	return targets
          },
         peg$c15 = function(label) {
-        	label.path = (scope + text()).trim();
             return label;
          },
         peg$c16 = function(label, position, properties) {
-        	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex++, path: (scope + text()).trim() }
+        	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex, path: (scope + text()).trim() }
           },
         peg$c17 = function(chars) { return chars.join('') },
         peg$c18 = function(c) { return c },

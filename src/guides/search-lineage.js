@@ -15,37 +15,60 @@ export default class SearchLineage {
             extensions: config.extensions
         };
 
-        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target:scopes[0][0], scopeElements: []}, callback);
+        return SearchLineage.traverseScopes({
+            ...data,
+            elements: [scopeElement],
+            targets: scopes[0],
+            scopeElements: []
+        }, callback);
     }
 
     static processLevel(data, resultHandler) {
         Extensions.beforeScopeEvent(data);
 
-        return Locator.locate(data, resultHandler);
+        var first = true;
+        return reduce(data.targets, [], (result, target, handler) => {
+            return Locator.locate({...data, target}, (err, located)=> {
+                var intersectingElements;
+                if(first) {
+                    intersectingElements = located;
+                    first = false;
+                }
+                else {
+                    intersectingElements = located.filter(e => result.indexOf(e) != -1);
+                }
+
+                return handler(err, intersectingElements);
+            });
+        }, (err, results)=> {
+            return resultHandler(err, results);
+        });
     }
 
     static traverseScopes(data, resultHandler) {
         let {
-            target,
+            targets,
             elements,
             scopes
         } = data;
+
+        let target = data.target = targets[0];
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
             return SearchLineage.processLevel({
                 ...data,
                 scopeElement
             }, (err, foundItems) => {
-                if(err) {
+                if (err) {
                     reduceeCallback(err, []);
                 }
                 result.push({scopeElement: scopeElement, elements: foundItems});
-                return reduceeCallback(err, result)
+                return reduceeCallback(err, result);
             });
         };
 
         return reduce(elements, [], processLevel, (err, locatedTargets) => {
-            if(err) {
+            if (err) {
                 return resultHandler(err, []);
             }
 
@@ -53,10 +76,10 @@ export default class SearchLineage {
                 result.elements = result.elements.concat(info.elements);
                 result.scopeElements.push(info.scopeElement);
                 return result;
-            }, {elements:[], scopeElements:[]});
+            }, {elements: [], scopeElements: []});
 
             return Filter.filter({...data, ...targetInfo}, (err, newTargets) => {
-                if(err) {
+                if (err) {
                     return resultHandler(err, []);
                 }
 
@@ -73,7 +96,7 @@ export default class SearchLineage {
                             ...data,
                             scopeElements: positionalElements,
                             elements: positionalElements,
-                            target: scopes[target.scopeIndex + 1][0]
+                            targets: scopes[target.scopeIndex + 1]
                         }, resultHandler);
                     }
                 });
