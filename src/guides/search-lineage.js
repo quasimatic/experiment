@@ -7,7 +7,7 @@ import {reduce, unique} from "../utils/array-utils";
 
 export default class SearchLineage {
     search(data, callback = (err, result) => result) {
-        let {targets, scopeElement, config = {}} = data;
+        let {scopes, scopeElement, config = {}} = data;
         config.extensions = config.extensions || [];
 
         data = {
@@ -15,7 +15,7 @@ export default class SearchLineage {
             extensions: config.extensions
         };
 
-        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target: targets[0]}, callback);
+        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target:scopes[0][0]}, callback);
     }
 
     static processLevel(data, resultHandler) {
@@ -28,7 +28,7 @@ export default class SearchLineage {
         let {
             target,
             elements,
-            targets
+            scopes
         } = data;
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
@@ -65,14 +65,14 @@ export default class SearchLineage {
 
                     Extensions.afterScopeEvent({...data, elements: positionalElements});
 
-                    if (SearchLineage.isLastLabel(targets, target)) {
+                    if (SearchLineage.isLastLabel(scopes, target)) {
                         return resultHandler(err, positionalElements);
                     }
                     else {
                         return SearchLineage.traverseScopes({
                             ...data,
                             elements: positionalElements,
-                            target: targets[target.scopeIndex + 1]
+                            target: scopes[target.scopeIndex + 1][0]
                         }, resultHandler);
                     }
                 });
@@ -81,7 +81,7 @@ export default class SearchLineage {
         });
     }
 
-    static isLastLabel(targets, {scopeIndex}) {
-        return scopeIndex + 1 === targets.length;
+    static isLastLabel(scopes, {scopeIndex}) {
+        return scopeIndex + 1 === scopes.length;
     }
 }

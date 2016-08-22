@@ -49,7 +49,7 @@ function GlanceSelector(options) {
             };
 
         selector.find = function(reference, resultHandler) {
-            let targets = Parser.parse(reference);
+            let scopes = Parser.parse(reference);
 
             log.debug("Selector:", reference);
 
@@ -59,7 +59,7 @@ function GlanceSelector(options) {
                 glance: config.glance,
                 glanceSelector: config.glanceSelector,
                 scopeElement: config.rootElement,
-                targets,
+                scopes,
                 config,
                 extensions: config.extensions,
                 log: log
