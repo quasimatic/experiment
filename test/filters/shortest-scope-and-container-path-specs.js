@@ -33,11 +33,6 @@ describe("Shortest scope and container path", function () {
         dom.render(
             <div>
                 <div>
-                    <div>scope</div>
-                    <div id="target">item</div>
-                </div>
-
-                <div>
                     <div>
                         <div>scope</div>
                     </div>
@@ -46,6 +41,10 @@ describe("Shortest scope and container path", function () {
                             <div>item</div>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <div>scope</div>
+                    <div id="target">item</div>
                 </div>
             </div>
         );

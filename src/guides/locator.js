@@ -1,6 +1,7 @@
 import log from '../logger';
 import Modifiers from "../utils/modifiers";
 import {reduce} from "../utils/array-utils";
+import isDescendant from "../utils/is-descendant";
 
 export default class Locator {
     static locate(data, resultHandler) {
@@ -61,7 +62,8 @@ export default class Locator {
                     }
 
                     let flattenedElements = [].concat(foundElements);
-                    flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1);
+
+                    flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
 
                     if(result.continue && flattenedElements.length == 0) {
                         log.debug("Elements not found, trying parent");
@@ -74,7 +76,8 @@ export default class Locator {
             });
         }
         else {
-            elements = elements.filter(e => scopeElements.indexOf(e) == -1);
+            elements = elements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
+
             return resultHandler(null, elements);
         }
     }

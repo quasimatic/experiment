@@ -287,4 +287,14 @@ describe("Guide: Search lineage", function () {
 
         lineageGuide.search({scopes:parser.parse("block^wide > item"), scopeElement, config}).should.deep.equal([dom.get('target')]);
     });
+
+    it("should find a non intersecting element even if the scope collides", function () {
+        dom.render(<div>
+            <div className="item">
+                <span id="target">item</span>
+            </div>
+        </div>);
+
+        lineageGuide.search({scopes:parser.parse("item > target"), scopeElement, config}).should.deep.equal([dom.get('target')]);
+    });
 });

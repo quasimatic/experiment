@@ -29,16 +29,17 @@ export default class SearchLineage {
         var first = true;
         return reduce(data.targets, [], (result, target, handler) => {
             return Locator.locate({...data, target}, (err, located)=> {
-                var intersectingElements;
                 if(first) {
-                    intersectingElements = located;
                     first = false;
+                    return handler(null, located);
                 }
                 else {
-                    intersectingElements = located.filter(e => result.indexOf(e) != -1);
+                    return browserExecute(function(located, result, handler){
+                        return handler(null, located.filter(function(e) {
+                            return result.indexOf(e) != -1;
+                        }));
+                    }, located, result, (err, intersectingElements) => handler(err, intersectingElements));
                 }
-
-                return handler(err, intersectingElements);
             });
         }, (err, results)=> {
             return resultHandler(err, results);
@@ -49,10 +50,11 @@ export default class SearchLineage {
         let {
             targets,
             elements,
-            scopes
+            scopes,
+            log
         } = data;
 
-        let target = data.target = targets[0];
+        let target = data.target = targets[targets.length - 1];
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
             return SearchLineage.processLevel({
