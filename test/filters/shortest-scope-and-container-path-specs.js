@@ -33,11 +33,6 @@ describe("Shortest scope and container path", function () {
         dom.render(
             <div>
                 <div>
-                    <div>scope</div>
-                    <div id="target">item</div>
-                </div>
-
-                <div>
                     <div>
                         <div>scope</div>
                     </div>
@@ -46,6 +41,10 @@ describe("Shortest scope and container path", function () {
                             <div>item</div>
                         </div>
                     </div>
+                </div>
+                <div>
+                    <div>scope</div>
+                    <div id="target">item</div>
                 </div>
             </div>
         );
@@ -71,17 +70,17 @@ describe("Shortest scope and container path", function () {
         return glance("scope > item A").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should return the item that is the scope", function () {
+    it("should not return the item that is the scope", function () {
         dom.render(
             <div>
                 <div>
-                    <div id="target" className="item-class">item</div>
+                    <div className="item-class">item</div>
                 </div>
 
                 <div>
                     <div className="item-class"></div>
                     <div>
-                        <div>item</div>
+                        <div id="target">item</div>
                     </div>
                 </div>
             </div>

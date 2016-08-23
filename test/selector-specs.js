@@ -311,4 +311,23 @@ describe('Selector should apply property', function () {
 
         return glance("span:propertywithoutfilter").should.deep.equal(dom.get('target'));
     });
+
+    it("should narrow down element with inner selectors", function () {
+        dom.render(<div>
+            <span id="target" className="block">item</span>
+            <span>item</span>
+        </div>);
+
+        return glance("item ^ block").should.deep.equal(dom.get('target'));
+    });
+
+    it("should narrow down elements with inner selectors", function () {
+        dom.render(<div>
+            <span id="target-1" className="block">item</span>
+            <span>item</span>
+            <span id="target-2" className="block">item</span>
+        </div>);
+
+        return glance("item ^ block").should.deep.equal(dom.get('target-1', 'target-2'));
+    });
 });

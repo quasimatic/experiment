@@ -7,7 +7,7 @@ import {reduce, unique} from "../utils/array-utils";
 
 export default class SearchLineage {
     search(data, callback = (err, result) => result) {
-        let {targets, scopeElement, config = {}} = data;
+        let {scopes, scopeElement, config = {}} = data;
         config.extensions = config.extensions || [];
 
         data = {
@@ -15,37 +15,62 @@ export default class SearchLineage {
             extensions: config.extensions
         };
 
-        return SearchLineage.traverseScopes({...data, elements: [scopeElement], target: targets[0]}, callback);
+        return SearchLineage.traverseScopes({
+            ...data,
+            elements: [scopeElement],
+            targets: scopes[0],
+            scopeElements: []
+        }, callback);
     }
 
     static processLevel(data, resultHandler) {
         Extensions.beforeScopeEvent(data);
 
-        return Locator.locate(data, resultHandler);
+        var first = true;
+        return reduce(data.targets, [], (result, target, handler) => {
+            return Locator.locate({...data, target}, (err, located)=> {
+                if(first) {
+                    first = false;
+                    return handler(null, located);
+                }
+                else {
+                    return browserExecute(function(located, result, handler){
+                        return handler(null, located.filter(function(e) {
+                            return result.indexOf(e) != -1;
+                        }));
+                    }, located, result, (err, intersectingElements) => handler(err, intersectingElements));
+                }
+            });
+        }, (err, results)=> {
+            return resultHandler(err, results);
+        });
     }
 
     static traverseScopes(data, resultHandler) {
         let {
-            target,
+            targets,
             elements,
-            targets
+            scopes,
+            log
         } = data;
+
+        let target = data.target = targets[targets.length - 1];
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
             return SearchLineage.processLevel({
                 ...data,
                 scopeElement
             }, (err, foundItems) => {
-                if(err) {
+                if (err) {
                     reduceeCallback(err, []);
                 }
                 result.push({scopeElement: scopeElement, elements: foundItems});
-                return reduceeCallback(err, result)
+                return reduceeCallback(err, result);
             });
         };
 
         return reduce(elements, [], processLevel, (err, locatedTargets) => {
-            if(err) {
+            if (err) {
                 return resultHandler(err, []);
             }
 
@@ -53,10 +78,10 @@ export default class SearchLineage {
                 result.elements = result.elements.concat(info.elements);
                 result.scopeElements.push(info.scopeElement);
                 return result;
-            }, {elements:[], scopeElements:[]});
+            }, {elements: [], scopeElements: []});
 
             return Filter.filter({...data, ...targetInfo}, (err, newTargets) => {
-                if(err) {
+                if (err) {
                     return resultHandler(err, []);
                 }
 
@@ -65,14 +90,15 @@ export default class SearchLineage {
 
                     Extensions.afterScopeEvent({...data, elements: positionalElements});
 
-                    if (SearchLineage.isLastLabel(targets, target)) {
+                    if (SearchLineage.isLastLabel(scopes, target)) {
                         return resultHandler(err, positionalElements);
                     }
                     else {
                         return SearchLineage.traverseScopes({
                             ...data,
+                            scopeElements: positionalElements,
                             elements: positionalElements,
-                            target: targets[target.scopeIndex + 1]
+                            targets: scopes[target.scopeIndex + 1]
                         }, resultHandler);
                     }
                 });
@@ -81,7 +107,7 @@ export default class SearchLineage {
         });
     }
 
-    static isLastLabel(targets, {scopeIndex}) {
-        return scopeIndex + 1 === targets.length;
+    static isLastLabel(scopes, {scopeIndex}) {
+        return scopeIndex + 1 === scopes.length;
     }
 }

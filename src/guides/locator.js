@@ -1,10 +1,11 @@
 import log from '../logger';
 import Modifiers from "../utils/modifiers";
 import {reduce} from "../utils/array-utils";
+import isDescendant from "../utils/is-descendant";
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let {target, scopeElement, config, extensions} = data;
+        let {target, scopeElement, scopeElements, config, extensions} = data;
         let parent = scopeElement;
 
         var locators = Modifiers.getLocators(target, extensions) || Modifiers.getDefaultLocators(extensions, config.defaultProperties);
@@ -34,7 +35,7 @@ export default class Locator {
 
         beforeLocate.forEach(before => before({label: target.label}));
 
-        return Locator.locateInParent(locate, [], parent, null, target, data, function (err, elements) {
+        return Locator.locateInParent(locate, [], parent, null, scopeElements, target, data, function (err, elements) {
             if(err) {
                 return resultHandler(err, []);
             }
@@ -46,15 +47,11 @@ export default class Locator {
         });
     }
 
-    static locateInParent(locate, elements, parent, previousParent, target, data, resultHandler) {
+    static locateInParent(locate, elements, parent, previousParent, scopeElements, target, data, resultHandler) {
         if (parent && elements.length == 0) {
             return locate({...data, label: target.label, scopeElement:parent}, (err, foundElements) => {
                 if(err) {
                     return resultHandler(err, []);
-                }
-
-                if(foundElements.indexOf(previousParent) != -1) {
-                    return resultHandler(null, [previousParent]);
                 }
 
                 return browserExecute(function (node, handler) {
@@ -65,9 +62,12 @@ export default class Locator {
                     }
 
                     let flattenedElements = [].concat(foundElements);
+
+                    flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
+
                     if(result.continue && flattenedElements.length == 0) {
                         log.debug("Elements not found, trying parent");
-                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, target, data, resultHandler);
+                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, scopeElements, target, data, resultHandler);
                     }
 
                     return resultHandler(null, flattenedElements);
@@ -76,6 +76,8 @@ export default class Locator {
             });
         }
         else {
+            elements = elements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
+
             return resultHandler(null, elements);
         }
     }

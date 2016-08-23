@@ -4,15 +4,34 @@ export default {
             filter: function closestdom({elements, scopeElements, target}, resultHandler) {
                 return browserExecute(function (elements, scopeElements, scopeIndex, handler) {
                     try {
-                        if(scopeIndex == 0) return handler(null, elements);
+                        var elementsForDistance = [];
+                        var distanceToScopeLookup = {};
+
+                        function addToLookup(element, distance) {
+                            elementsForDistance.push(element);
+                            var i = elementsForDistance.indexOf(element);
+                            distanceToScopeLookup[i] = distance;
+                        }
+
+                        function lookup(element) {
+                            var i = elementsForDistance.indexOf(element);
+                            if(i == -1) return null;
+
+                            return distanceToScopeLookup[i];
+                        }
+
+
+                        if (scopeIndex == 0) return handler(null, elements);
 
                         scopeElements.forEach(function (v) {
                             var p = v;
                             var i = 0;
 
                             while (p != null && p.outerHTML != null) {
-                                if (!p.distantToScope || i < p.distantToScope) {
-                                    p.distantToScope = i;
+                                var distanceToScope = lookup(p);
+
+                                if (!distanceToScope || i < distanceToScope) {
+                                    addToLookup(p, i);
                                 }
 
                                 ++i;
@@ -27,18 +46,21 @@ export default {
                         elements.forEach(function (element) {
                             var parent = element;
 
-                            while ((closestLevel == -1 || !parent.distantToScope || parent.distantToScope  <= closestLevel) && parent != null && parent.outerHTML != null) {
-                                if (parent.distantToScope || parent.distantToScope === 0) {
-                                     if (parent.distantToScope < closestLevel) {
-                                         closestElements = [];
-                                     }
+                            var distanceToScope = lookup(parent);
 
-                                    closestLevel = parent.distantToScope;
+                            while ((closestLevel == -1 || !distanceToScope || distanceToScope <= closestLevel) && parent != null && parent.outerHTML != null) {
+                                if (distanceToScope || distanceToScope === 0) {
+                                    if (distanceToScope < closestLevel) {
+                                        closestElements = [];
+                                    }
+
+                                    closestLevel = distanceToScope;
                                     closestElements.push(element);
                                     break;
                                 }
 
                                 parent = parent.parentNode;
+                                distanceToScope = lookup(parent);
                             }
                         });
 
