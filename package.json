@@ -46,7 +46,7 @@
     "phantomjs2-ext": "^0.2.2",
     "react": "^15.3.1",
     "react-dom": "^15.3.1",
-    "wallaby-webpack": "0.0.22",
+    "wallaby-webpack": "0.0.23",
     "webpack": "^1.13.2"
   },
   "dependencies": {},
