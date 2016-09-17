@@ -4,7 +4,7 @@
   "description": "Glance selector library",
   "main": "lib/selector.js",
   "scripts": {
-    "build": "rm -rf lib && node_modules/.bin/pegjs src/glance.pegjs src/parser.js && babel src -d lib",
+    "build": "rm -rf lib && node_modules/.bin/pegjs -o src/parser.js src/glance.pegjs && babel src -d lib",
     "test": "echo 'Please test using wallaby'",
     "prepublish": "npm run build",
     "docs:prepare": "gitbook install",
