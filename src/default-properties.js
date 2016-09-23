@@ -1,1 +1,1 @@
-export default ['searchintext','searchinvalue','searchinplaceholder','searchinname','searchasid','searchasclassname','searchinalt','searchasnodetype','visible', 'inputafter', 'shortestscopeandcontainerpath'];
+export default ['searchintext','searchinvalue','searchinplaceholder','searchinname','searchasid','searchasclassname','searchinalt','searchintype','searchasnodetype','visible', 'inputafter', 'shortestscopeandcontainerpath'];
