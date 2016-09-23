@@ -1,6 +1,6 @@
 {
   "name": "glance-selector",
-  "version": "0.7.12",
+  "version": "0.7.13",
   "description": "Glance selector library",
   "main": "lib/selector.js",
   "scripts": {
