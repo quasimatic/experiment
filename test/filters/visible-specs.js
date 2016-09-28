@@ -28,4 +28,15 @@ describe("Filter: Visible", function () {
 
         return glance("item").should.deep.equal(dom.get("target"));
     });
+
+    it("should find for text nodes", function () {
+        dom.render(
+            <div>
+                <div id="target" style={{position: "fixed"}}>item</div>
+                <div style={{display: "none"}}>item</div>
+            </div>
+        );
+
+        return glance("item").should.deep.equal(dom.get("target"));
+    });
 });
