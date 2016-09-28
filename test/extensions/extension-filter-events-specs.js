@@ -16,12 +16,12 @@ describe("Extensions: beforeFilters event", function () {
         glance.addExtension({
             properties: {
                 "one": {
-                    filter: function(elements) {
-                        return [elements[0]];
+                    filter: function({elements}, resultHandler) {
+                        return resultHandler(null, [elements[0]]);
                     }
                 }
             },
-            beforeFilters: function (elements) {
+            beforeFilters: function ({elements}) {
                 elementsInEvent = elements;
                 return elements;
             }
@@ -48,7 +48,7 @@ describe("Extensions: afterFilters event", function () {
         );
 
         glance.addExtension({
-            afterFilters: function (elements) {
+            afterFilters: function ({elements}) {
                 elementsInEvent = elements;
                 return elements;
             }

@@ -1,11 +1,13 @@
 import defaultGuide from "./guides/search-lineage"
-import defaultLocator from "./locators/default"
 import Parser from "./parser";
 import log from "./logger";
+import DefaultExtensions from './extensions/default';
+import DefaultProperties from './default-properties';
 
 function GlanceSelector(options) {
     let _selector = {};
-    _selector.extensions = [];
+    _selector.defaultExtensions = options.defaultExtensions || DefaultExtensions;
+    _selector.extensions = options.extensions ? _selector.defaultExtensions.concat(options.extensions) : _selector.defaultExtensions;
     _selector.properties = options.properties || {};
     _selector.hooks = options.hooks || {};
 
@@ -30,35 +32,48 @@ function GlanceSelector(options) {
             }
         }
 
-        if (config.logLevel) {
-            log.setLogLevel(config.logLevel);
-        }
-        config.rootElement = config.rootElement || document;
+        config.defaultExtensions = config.defaultExtensions || DefaultExtensions;
+        config.extensions = config.extensions ? config.defaultExtensions.concat(config.extensions) : config.defaultExtensions;
+        config.defaultProperties = DefaultProperties;
+
+        log.setLogLevel(config.logLevel || 'info');
+
+        config.rootElement = config.rootElement || document.body;
+        config.glance = config.glance || selector;
+        config.glanceSelector = config.glanceSelector || selector;
 
         var globalScope = global || window;
 
-        globalScope.customExecute = config.execute || function (func, ...args) {
+        globalScope.browserExecute = config.browserExecute || function (func, ...args) {
                 return func(...args);
             };
 
-        _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll(reference));
+        selector.find = function(reference, resultHandler) {
+            let scopes = Parser.parse(reference);
 
-        let data = Parser.parse(reference);
+            log.debug("Selector:", reference);
 
-        log.trace("Selector:", reference)
+            _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
-        return _selector.guideFactory(Object.assign({}, {
-            extensions: _selector.extensions,
-            locator: defaultLocator,
-            glance: selector
-        }, config)).search(data, config.rootElement, function (err, elements) {
-            _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
+            return _selector.guideFactory().search({
+                glance: config.glance,
+                glanceSelector: config.glanceSelector,
+                scopeElement: config.rootElement,
+                scopes,
+                config,
+                extensions: config.extensions,
+                log: log
+            }, function (err, elements) {
+                _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
-            if (elements.length === 1)
-                return resultHandler(err, elements[0]);
-            else
-                return resultHandler(err, elements);
-        });
+                if (elements.length === 1)
+                    return resultHandler(err, elements[0]);
+                else
+                    return resultHandler(err, elements);
+            });
+        }
+
+        return selector.find(reference, resultHandler);
     };
 
     selector.addExtension = function (extension) {
@@ -72,5 +87,5 @@ function GlanceSelector(options) {
     return selector;
 }
 
-export {Parser};
-export default GlanceSelector({guideFactory: (config) => new defaultGuide(config)});
+export {Parser, DefaultExtensions, DefaultProperties};
+export default GlanceSelector({guideFactory: () => new defaultGuide()});

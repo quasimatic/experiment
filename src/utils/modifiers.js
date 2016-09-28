@@ -1,24 +1,30 @@
 export default class Modifiers {
     static beforeFilters(elements, extensions, data) {
-        return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(elements, data), elements);
+        return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(Object.assign(data, {elements})), elements);
     }
 
     static afterFilters(elements, extensions, data) {
-        return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(elements, data), elements);
+        return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), elements);
     }
 
     static beforePositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(elements, position, data), elements);
+        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {
+            elements,
+            position
+        })), elements);
     }
 
     static afterPositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(elements, position, data), elements);
+        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {
+            elements,
+            position
+        })), elements);
     }
 
     static getFilters(target, extensions) {
         let filters = [];
         let labels = Modifiers.labels(extensions);
-        let properties = Modifiers.properties(extensions)
+        let properties = Modifiers.properties(extensions);
 
         if (labels[target.label] && labels[target.label].filter) {
             filters = filters.concat(labels[target.label].filter);
@@ -35,6 +41,21 @@ export default class Modifiers {
         return filters.length > 0 ? filters : null;
     }
 
+    static getDefaultFilters(extensions, defaultProperties) {
+        let filters = [];
+        let properties = Modifiers.properties(extensions);
+
+        if (defaultProperties.length > 0) {
+            let propertiesWithFilters = defaultProperties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
+
+            if (propertiesWithFilters.length != 0) {
+                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
+            }
+        }
+
+        return filters;
+    }
+
     static labels(extensions) {
         return extensions.filter(e => e.labels).reduce((m, e) => Object.assign({}, m, e.labels), {});
     }
@@ -42,23 +63,59 @@ export default class Modifiers {
     static properties(extensions) {
         return extensions.filter(e => e.properties).reduce((m, e) => Object.assign({}, m, e.properties), {});
     }
-    
-    static getLocator(target, extensions) {
+
+    static getLocators(target, extensions) {
+        let locators = [];
         let labels = Modifiers.labels(extensions);
-        let properties = Modifiers.properties(extensions)
+        let properties = Modifiers.properties(extensions);
+
+        if (labels[target.label]) {
+            if (typeof(labels[target.label]) == 'string') {
+                locators = locators.concat(function ({glanceSelector}, handler) {
+                    return glanceSelector(labels[target.label],handler);
+                });
+            }
+
+            if (typeof(labels[target.label]) == 'function') {
+                locators = locators.concat(labels[target.label]);
+            }
+
+            if (labels[target.label].locate) {
+                locators = locators.concat(labels[target.label].locate);
+            }
+        }
 
         if (target.properties.length > 0) {
-            let propertyNames = target.properties.filter(name => properties[name] && properties[name].locate);
-            
-            if (propertyNames.length > 0)
-                return properties[propertyNames[propertyNames.length - 1]].locate;
+            let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
+
+            if (propertiesWithlocators.length != 0) {
+                locators = locators.concat(propertiesWithlocators.map(name => {
+                    if (typeof(properties[name].locate) == 'string')
+                        return function ({glanceSelector}, handler) {
+                            return glanceSelector(properties[name].locate, handler);
+                        };
+                    else
+                        return properties[name].locate;
+                }));
+            }
         }
 
-        if(labels[target.label] && labels[target.label].locate || typeof(labels[target.label]) == 'function') {
-            return typeof(labels[target.label]) == 'function' ? labels[target.label] : labels[target.label].locate;
+        return locators.length > 0 ? locators : null;
+    }
+
+    static getDefaultLocators(extensions, defaultProperties) {
+        let locators = [];
+        let properties = Modifiers.properties(extensions);
+
+        if (defaultProperties.length > 0) {
+            let propertiesWithlocators = defaultProperties.filter(name => properties[name] && (properties[name].locate));
+
+            if (propertiesWithlocators.length != 0) {
+                locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
+            }
         }
 
-        return null;
+        return locators;
     }
 
     static locatorForLabel(key, extensions) {

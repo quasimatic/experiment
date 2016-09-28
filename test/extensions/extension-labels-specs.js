@@ -1,8 +1,8 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: labels", function() {
-    beforeEach(function() {
+describe("Extensions: labels", function () {
+    beforeEach(function () {
         document.body.innerHTML = "";
 
         dom.render(
@@ -16,8 +16,8 @@ describe("Extensions: labels", function() {
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    locate: function(label, scope, config) {
-                        return config.glance("target");
+                    locate: function ({glance}, resultHandler) {
+                        return resultHandler(null, glance("target"));
                     }
                 }
             }
@@ -29,8 +29,8 @@ describe("Extensions: labels", function() {
     it("should locate elements for a custom label as a function", function () {
         glance.addExtension({
             labels: {
-                "custom-label": function (label, scope, config) {
-                    return config.glance("target");
+                "custom-label": function ({glance}, resultHandler) {
+                    return resultHandler(null, glance("target"));
                 }
             }
         });
@@ -38,12 +38,22 @@ describe("Extensions: labels", function() {
         return glance("custom-label").should.deep.equal(dom.get("target"));
     });
 
-    it("should have beforeLocate", function() {
+    it("should locate elements for a custom label as a glance selector", function () {
+        glance.addExtension({
+            labels: {
+                "custom-label": "target"
+            }
+        });
+
+        return glance("custom-label").should.deep.equal(dom.get("target"));
+    });
+
+    it("should have beforeLocate", function () {
         let actualLabel;
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    beforeLocate: function({label}) {
+                    beforeLocate: function ({label}) {
                         actualLabel = label;
                     }
                 }
@@ -55,12 +65,12 @@ describe("Extensions: labels", function() {
         return actualLabel.should.deep.equal("custom-label");
     });
 
-    it("should have afterLocate", function() {
+    it("should have afterLocate", function () {
         let actualLabel;
         glance.addExtension({
             labels: {
                 "custom-label": {
-                    afterLocate: function({label}) {
+                    afterLocate: function ({label}) {
                         actualLabel = label;
                     }
                 }

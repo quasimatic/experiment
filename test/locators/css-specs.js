@@ -1,5 +1,5 @@
 import dom from "../dom"
-import findByCSS from '../../src/locators/css';
+import findByCSS from '../../src/extensions/lib/css';
 
 describe("Locator: Exact Match", function() {
     beforeEach(function(){

@@ -119,8 +119,8 @@ describe("Glance", function () {
         glance.addExtension({
             labels: {
                 "customlabel": {
-                    locate: function (label, scope, config) {
-                        return config.glance("random>div#2");
+                    locate: function ({glance}, resultHandler) {
+                        return resultHandler(null, glance("random>div#2"));
                     }
                 }
             }
@@ -138,27 +138,6 @@ describe("Glance", function () {
         );
 
         return glance("Duplicate").should.deep.equal(dom.get("target-1"));
-    });
-
-    it("should limit to next sibling", function () {
-        dom.render(
-            <div>
-                <div>
-                    <label>name</label>
-                    <input id="target-1"/>
-                    <label>another</label>
-                    <input />
-                </div>
-                <div>
-                    <label>name</label>
-                    <input id="target-2"/>
-                    <label >another</label>
-                    <input />
-                </div>
-            </div>
-        );
-
-        return glance("name>input").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
     it("should find text in select option", function () {
@@ -235,10 +214,8 @@ describe('Selector Nth', function () {
 
         glance.addExtension({
             properties: {
-                "custom-mod": {
-                    filter: function (elements, data, resultHandler) {
-                        return resultHandler(null, [elements[0]]);
-                    }
+                "custom-mod": function ({elements}, resultHandler) {
+                    return resultHandler(null, [elements[0]]);
                 }
             }
         })
@@ -264,10 +241,8 @@ describe('Selector should apply property', function () {
 
         glance.addExtension({
             properties: {
-                "lessthan3characters": {
-                    filter: function (elements, data, resultHandler) {
-                        return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
-                    }
+                "lessthan3characters": function ({elements}, resultHandler) {
+                    return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
                 }
             }
         });
@@ -287,10 +262,8 @@ describe('Selector should apply property', function () {
 
         glance.addExtension({
             properties: {
-                "include-hidden": {
-                    filter: function (elements) {
-                        return elements;
-                    }
+                "include-hidden": function ({elements}, resultHandler) {
+                    return resultHandler(null, elements);
                 }
             }
         });
@@ -311,8 +284,8 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "exact-match": {
-                    locate: function (label, scope, config, callback) {
-                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scope, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                    locate: function ({label, scopeElement}, callback) {
+                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scopeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
                             results.push(xpathResult.snapshotItem(i));
@@ -325,5 +298,36 @@ describe('Selector should apply property', function () {
         });
 
         return glance("bcd:exact-match").should.deep.equal(dom.get("target"));
+    });
+
+    it("should still use default filters if specified properties don't have filters", function () {
+        dom.render(<span id="target"></span>)
+
+        glance.addExtension({
+            properties: {
+                "propertywithoutfilter": {}
+            }
+        });
+
+        return glance("span:propertywithoutfilter").should.deep.equal(dom.get('target'));
+    });
+
+    it("should narrow down element with inner selectors", function () {
+        dom.render(<div>
+            <span id="target" className="block">item</span>
+            <span>item</span>
+        </div>);
+
+        return glance("item ^ block").should.deep.equal(dom.get('target'));
+    });
+
+    it("should narrow down elements with inner selectors", function () {
+        dom.render(<div>
+            <span id="target-1" className="block">item</span>
+            <span>item</span>
+            <span id="target-2" className="block">item</span>
+        </div>);
+
+        return glance("item ^ block").should.deep.equal(dom.get('target-1', 'target-2'));
     });
 });

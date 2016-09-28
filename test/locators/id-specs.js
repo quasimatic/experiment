@@ -1,20 +1,21 @@
 import dom from "../dom"
-import findByID from '../../src/locators/id';
+import extension from '../../src/extensions/search-as-id';
 
-describe("Locator: Exact Match", function() {
-    beforeEach(function(){
+describe("Locator: Exact Match", function () {
+    let findByID = extension.properties.searchasid.locate;
+    beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it("should find by id", function() {
+    it("should find by id", function () {
         dom.render(<div id="unique-id">text</div>);
 
-        findByID("unique-id", document).should.deep.equal([dom.get("unique-id")]);
+        findByID({label: "unique-id", scopeElement: document.body}).should.deep.equal([dom.get("unique-id")]);
     });
 
-    it("should not find by id", function() {
-        dom.render(<div id="unique-id"></div>)
+    it("should not find by id", function () {
+        dom.render(<div id="unique-id"></div>);
 
-        findByID("missing-id", document).should.deep.equal([]);
+        findByID({label: "missing-id", scopeElement: document.body}).should.deep.equal([]);
     });
 });

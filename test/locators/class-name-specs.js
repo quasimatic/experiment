@@ -1,7 +1,8 @@
 import dom from "../dom"
-import findByClassName from '../../src/locators/class-name';
+import extension from '../../src/extensions/search-as-class-name';
 
 describe("Locator: Exact Match", function() {
+    let findByClassName = extension.properties.searchasclassname.locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });
@@ -9,12 +10,12 @@ describe("Locator: Exact Match", function() {
     it("should find by class name", function() {
         dom.render(<div className="class-name" id="target">text</div>);
 
-        findByClassName("class-name", document).should.deep.equal([dom.get("target")]);
+        findByClassName({label:"class-name", scopeElement:document.body}).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find by class name", function() {
         dom.render(<div className="class-name">text</div>);
 
-        findByClassName("missing-class", document).should.deep.equal([]);
+        findByClassName({label:"missing-class", scopeElement:document.body}).should.deep.equal([]);
     });
 });

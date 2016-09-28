@@ -15,7 +15,7 @@ describe("Extensions: beforePositional event", function () {
         );
 
         glance.addExtension({
-            beforePositional: function (elements, position) {
+            beforePositional: function ({elements, position}) {
                 elementsInEvent = elements;
                 positionInEvent = position;
                 return elements;
@@ -48,7 +48,7 @@ describe("Extensions: afterPositional event", function () {
         );
 
         glance.addExtension({
-            afterPositional: function (elements, position) {
+            afterPositional: function ({elements, position}) {
                 elementsInEvent = elements;
                 positionInEvent = position;
                 return elements;

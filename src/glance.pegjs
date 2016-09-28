@@ -1,29 +1,43 @@
 {
 	var scope = "";
+	var scopeIndex = 0;
 }
 
 Start = scopes:Scope* { return scopes }
 
 ScopeChar = ">"
+IntersectionChar = "^"
 PropertyChar = ":"
 PropertySeparator = ","
 IndexChar = "#"
 EscapeChar = "\\"
 
 Scope
- = target:Target ScopeChar? {
+ = targets:Targets ScopeChar? {
+	scopeIndex++;
  	scope += text()
- 	return target;
+    return targets;
+ }
+
+Targets
+ = targets:Target+ {
+ 	return targets
  }
 
 Target
- = label:Label position:Index? properties:Properties? Whitespace? { return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), path: (scope + text()).trim() } }
+ = label:RawLabel IntersectionChar? {
+    return label;
+ }
 
+RawLabel
+  = label:Label position:Index? properties:Properties? Whitespace? {
+	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex, path: (scope + text()).trim() }
+  }
 Label
  = chars:LabelCharacter+ { return chars.join('') }
 
 LabelCharacter
-   = !(EscapeChar / ScopeChar / IndexChar / PropertyChar) c:Character { return c }
+   = !(EscapeChar / ScopeChar / IndexChar / PropertyChar / IntersectionChar) c:Character { return c }
    / c:EscapedSequence { return c }
 
 Character
@@ -33,7 +47,7 @@ Whitespace
  = [ \t\r\n]+
 
 EscapedSequence
- = EscapeChar c:(EscapeChar / IndexChar / ScopeChar / PropertyChar) { return c; }
+ = EscapeChar c:(EscapeChar / IndexChar / ScopeChar / PropertyChar / IntersectionChar) { return c; }
 
 Index
  = IndexChar position:Position { return position; }
@@ -51,4 +65,4 @@ PropertyName
  = thing:PropertyCharacter+ { return thing.join("") }
 
 PropertyCharacter
-  = !(ScopeChar / PropertySeparator) c:Character { return c }
+  = !(ScopeChar / IntersectionChar / PropertySeparator) c:Character { return c }
