@@ -7,20 +7,6 @@ export default class Modifiers {
         return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), elements);
     }
 
-    static beforePositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {
-            elements,
-            position
-        })), elements);
-    }
-
-    static afterPositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {
-            elements,
-            position
-        })), elements);
-    }
-
     static getFilters(target, extensions) {
         let filters = [];
         let labels = Modifiers.labels(extensions);
@@ -30,30 +16,42 @@ export default class Modifiers {
             filters = filters.concat(labels[target.label].filter);
         }
 
-        if (target.properties.length > 0) {
-            let propertiesWithFilters = target.properties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
-
-            if (propertiesWithFilters.length != 0) {
-                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
+        target.properties.forEach(name => {
+            if (properties[name] && (properties[name].filter || typeof(properties[name]) == "function")) {
+                filters = filters.concat(typeof(properties[name]) == "function" ? properties[name] : properties[name].filter);
             }
-        }
+            else {
+                let catchAlls = extensions.filter(e => e.filter);
+                if(catchAlls.length > 0) {
+                    filters = filters.concat(catchAlls.map(e => e.filter));
+                }
+            }
+        });
 
         return filters.length > 0 ? filters : null;
     }
 
     static getDefaultFilters(extensions, defaultProperties) {
-        let filters = [];
         let properties = Modifiers.properties(extensions);
 
         if (defaultProperties.length > 0) {
+            let filters = extensions.filter(e => e.filter).map(e => {
+                return (data, callback) => {
+                    let target = data.target;
+                    return e.filter({...data, target: {...target, properties: defaultProperties}}, callback);
+                };
+            });
+
             let propertiesWithFilters = defaultProperties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
 
             if (propertiesWithFilters.length != 0) {
                 filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
             }
+
+            return filters;
         }
 
-        return filters;
+        return [];
     }
 
     static labels(extensions) {
@@ -110,7 +108,7 @@ export default class Modifiers {
             let locators = extensions.filter(e => e.locate).map(e => {
                 return (data, callback) => {
                     let target = data.target;
-                    return e.locate({...data, target: {...target, properties:defaultProperties}}, callback);
+                    return e.locate({...data, target: {...target, properties: defaultProperties}}, callback);
                 };
             });
 

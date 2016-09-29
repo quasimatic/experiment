@@ -8,5 +8,6 @@ import attribute from './attribute';
 import visible from './visible';
 import inputafter from './inputafter';
 import shortestscopeandcontainerpath from './shortest-scope-and-container-path';
+import index from './index';
 
-export default [contains,exactText,value,className,attribute,nodeType,css,visible,inputafter,shortestscopeandcontainerpath];
+export default [contains,exactText,value,className,attribute,nodeType,css,visible,inputafter,shortestscopeandcontainerpath,index];

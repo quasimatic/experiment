@@ -10,5 +10,6 @@ export default [
     'node-type',
     'visible',
     'inputafter',
-    'shortestscopeandcontainerpath'
+    'shortestscopeandcontainerpath',
+    'index'
 ];

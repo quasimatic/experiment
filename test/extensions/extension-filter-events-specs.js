@@ -57,7 +57,7 @@ describe("Extensions: afterFilters event", function () {
         glance("item#2");
     });
 
-    it("should get called before positional", function () {
-        elementsInEvent.should.deep.equal(dom.get("target-1","target-2"));
+    it("should get called after filters", function () {
+        elementsInEvent.should.deep.equal([dom.get("target-2")]);
     });
 });
