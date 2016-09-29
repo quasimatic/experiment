@@ -189,25 +189,26 @@ describe("Parsing", function () {
         ]);
     });
 
-    // it("should support intersecting labels", function () {
-    //     parser.parse(" label 1^label 2 ").should.deep.equal([
-    //
-    //         {
-    //             label: 'label 1',
-    //             position: null,
-    //             properties: [],
-    //             scope: '',
-    //             scopeIndex: 0,
-    //             path: 'label 1'
-    //         },
-    //         {
-    //             label: 'label 2',
-    //             position: null,
-    //             properties: [],
-    //             scope: '',
-    //             scopeIndex: 0,
-    //             path: 'label 2'
-    //         }
-    //     ]);
-    // });
+    it("should support intersecting labels", function () {
+        parser.parse(" label 1^label 2 ").should.deep.equal([
+            {
+                label: 'label 1',
+                properties: [],
+                transforms: [],
+                scope: '',
+                scopeIndex: 0,
+                path: 'label 1',
+                type: 'intersect'
+            },
+            {
+                label: 'label 2',
+                properties: [],
+                transforms: [],
+                scope: 'label 1',
+                scopeIndex: 1,
+                path: 'label 1^label 2',
+                type: 'target'
+            }
+        ]);
+    });
 });

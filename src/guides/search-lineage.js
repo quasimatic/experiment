@@ -18,7 +18,6 @@ export default class SearchLineage {
         return SearchLineage.traverseScopes({
             ...data,
             elements: [scopeElement],
-            targets: scopes,
             target: scopes[0],
             scopeElements: []
         }, callback);
@@ -26,46 +25,27 @@ export default class SearchLineage {
 
     static processLevel(data, resultHandler) {
         Extensions.beforeScopeEvent(data);
-        return Locator.locate(data, (err, located) => resultHandler(null, located));
 
-        // return reduce(data.targets, [], (result, target, handler) => {
-        //     return Locator.locate({...data, target}, (err, located) => {
-        //         return handler(null, located);
-        //     });
-        // }, (err, results) => {
-        //     return resultHandler(err, results);
-        // });
+        return Locator.locate(data, (err, located) => {
+            if (data.intersectElements) {
+                return browserExecute(function (located, previous, handler) {
+                    return handler(null, located.filter(function (e) {
+                        return previous.indexOf(e) != -1;
+                    }));
+                }, located, data.intersectElements, resultHandler);
+            }
 
-        // var first = true;
-        // return reduce(data.targets, [], (result, target, handler) => {
-        //     return Locator.locate({...data, target}, (err, located)=> {
-        //         if(first) {
-        //             first = false;
-        //             return handler(null, located);
-        //         }
-        //         else {
-        //             return browserExecute(function(located, result, handler){
-        //                 return handler(null, located.filter(function(e) {
-        //                     return result.indexOf(e) != -1;
-        //                 }));
-        //             }, located, result, (err, intersectingElements) => handler(err, intersectingElements));
-        //         }
-        //     });
-        // }, (err, results)=> {
-        //     return resultHandler(err, results);
-        // });
+            return resultHandler(null, located);
+        });
     }
 
     static traverseScopes(data, resultHandler) {
         let {
-            targets,
             elements,
             scopes,
             target,
             log
         } = data;
-
-        //let target = data.target = scopes[scopes.length - 1];
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
             return SearchLineage.processLevel({
@@ -105,13 +85,23 @@ export default class SearchLineage {
                         return resultHandler(err, positionalElements);
                     }
                     else {
-                        return SearchLineage.traverseScopes({
-                            ...data,
-                            scopeElements: positionalElements,
-                            elements: positionalElements,
-                            //targets: scopes[target.scopeIndex + 1]
-                            target: scopes[target.scopeIndex + 1]
-                        }, resultHandler);
+                        if(target.type == "intersect") {
+                            return SearchLineage.traverseScopes({
+                                ...data,
+                                intersectElements: positionalElements,
+                                elements: positionalElements,
+                                target: scopes[target.scopeIndex + 1]
+                            }, resultHandler);
+                        }
+                        else {
+                            return SearchLineage.traverseScopes({
+                                ...data,
+                                intersectElements: null,
+                                scopeElements: positionalElements,
+                                elements: positionalElements,
+                                target: scopes[target.scopeIndex + 1]
+                            }, resultHandler);
+                        }
                     }
                 });
 

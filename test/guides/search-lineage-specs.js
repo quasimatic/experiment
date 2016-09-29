@@ -277,16 +277,16 @@ describe("Guide: Search lineage", function () {
         lineageGuide.search({scopes:parser.parse("thing > item"), scopeElement, config}).should.deep.equal([]);
     });
 
-    // it("should narrow down scope elements with inner selectors", function () {
-    //     dom.render(<div>
-    //         <span className="block wide">
-    //             <div id="target">item</div>
-    //         </span>
-    //         <span>item</span>
-    //     </div>);
-    //
-    //     lineageGuide.search({scopes:parser.parse("block^wide > item"), scopeElement, config}).should.deep.equal([dom.get('target')]);
-    // });
+    it("should narrow down scope elements with inner selectors", function () {
+        dom.render(<div>
+            <span className="block wide">
+                <div id="target">item</div>
+            </span>
+            <span>item</span>
+        </div>);
+
+        lineageGuide.search({scopes:parser.parse("block^wide > item"), scopeElement, config}).should.deep.equal([dom.get('target')]);
+    });
 
     it("should find a non intersecting element even if the scope collides", function () {
         dom.render(<div>
