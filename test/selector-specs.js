@@ -8,16 +8,16 @@ describe("Glance", function () {
 
     it('should find nothing with an empty selector', function () {
         try {
-            glance()
-            throw new Error("Didn't throw error")
+            glance();
+            throw new Error("Didn't throw error");
         }
         catch (err) {
-            err.message.should.equal("Selector required")
+            err.message.should.equal("Selector required");
         }
-    })
+    });
 
     it("should look by exact text match", function (done) {
-        dom.render(<div id="target">Content Item</div>)
+        dom.render(<div id="target">Content Item</div>);
         glance("Content Item", function (err, result) {
             result.should.deep.equal(dom.get("target"));
             done();
@@ -26,23 +26,23 @@ describe("Glance", function () {
     });
 
     it("should look by content as contains", function () {
-        dom.render(<div id="target">Item Contains stuff</div>)
+        dom.render(<div id="target">Item Contains stuff</div>);
         return glance("Item Contains").should.deep.equal(dom.get("target"));
     });
 
     it('will look by id', function () {
         dom.render(<div id="label-id"></div>);
-        return glance("label-id").should.deep.equal(dom.get('label-id'))
+        return glance("label-id").should.deep.equal(dom.get('label-id'));
     });
 
     it("should look by class", function () {
-        dom.render(<div id="target" className="div-class"></div>)
+        dom.render(<div id="target" className="div-class"></div>);
         return glance("div-class").should.deep.equal(dom.get("target"));
     });
 
     it("should look by node type", function () {
-        dom.render(<button id="target"></button>)
-        return glance("button").should.deep.equal(dom.get("target"))
+        dom.render(<button id="target"></button>);
+        return glance("button").should.deep.equal(dom.get("target"));
     });
 
     it("should support an indexer", function () {
@@ -51,8 +51,8 @@ describe("Glance", function () {
                 <div>foo</div>
                 <div id="target">foo</div>
             </div>
-        )
-        return glance("foo#2").should.deep.equal(dom.get("target"))
+        );
+        return glance("foo#2").should.deep.equal(dom.get("target"));
     });
 
     it("should support a parent indexer", function () {
@@ -65,7 +65,7 @@ describe("Glance", function () {
                     <div id="target">Shared Title</div>
                 </h2>
             </div>
-        )
+        );
         return glance("h2#2>Shared Title").should.deep.equal(dom.get("target"));
     });
 
@@ -75,9 +75,9 @@ describe("Glance", function () {
                 text and nodes
                 <div>this is something</div>
             </div>
-        )
+        );
 
-        return glance("text and nodes").should.deep.equal(dom.get("target"))
+        return glance("text and nodes").should.deep.equal(dom.get("target"));
     });
 
     it("should get duplicates", function () {
@@ -86,7 +86,7 @@ describe("Glance", function () {
                 <div id="target-1">Duplicate</div>
                 <div id="target-2">Duplicate</div>
             </div>
-        )
+        );
         return glance("Duplicate").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
@@ -151,7 +151,7 @@ describe("Glance", function () {
         );
 
         return glance("select-1>text1").should.deep.equal(dom.get("target-1"));
-    })
+    });
 });
 
 describe('Selector Nth', function () {
@@ -202,26 +202,26 @@ describe('Selector Nth', function () {
         return glance("Item A > Item B#1").should.deep.equal(dom.get("target"));
     });
 
-    it("should get the nth item with multiple scopes and property", function () {
-        dom.render(
-            <div>
-                <div>Item A</div>
-                <div id="target">Item B</div>
-                <div>Item B</div>
-                <div>Item A</div>
-            </div>
-        );
-
-        glance.addExtension({
-            properties: {
-                "custom-mod": function ({elements}, resultHandler) {
-                    return resultHandler(null, [elements[0]]);
-                }
-            }
-        })
-
-        return glance("Item A > Item B:custom-mod").should.deep.equal(dom.get("target"));
-    });
+    // it("should get the nth item with multiple scopes and property", function () {
+    //     dom.render(
+    //         <div>
+    //             <div>Item A</div>
+    //             <div id="target">Item B</div>
+    //             <div>Item B</div>
+    //             <div>Item A</div>
+    //         </div>
+    //     );
+    //
+    //     glance.addExtension({
+    //         properties: {
+    //             "custom-mod": function ({elements}, resultHandler) {
+    //                 return resultHandler(null, [elements[0]]);
+    //             }
+    //         }
+    //     })
+    //
+    //     return glance("Item A > Item B:custom-mod").should.deep.equal(dom.get("target"));
+    // });
 });
 
 describe('Selector should apply property', function () {
@@ -242,12 +242,12 @@ describe('Selector should apply property', function () {
         glance.addExtension({
             properties: {
                 "lessthan3characters": function ({elements}, resultHandler) {
-                    return resultHandler(null, elements.filter(e => e.innerHTML.length < 3))
+                    return resultHandler(null, elements.filter(e => e.innerHTML.length < 3));
                 }
             }
         });
 
-        return glance("1:lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
+        return glance("1#lessthan3characters").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
     it("should ignore default properties", function () {
@@ -268,7 +268,7 @@ describe('Selector should apply property', function () {
             }
         });
 
-        return glance("1:include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
+        return glance("1#include-hidden").should.deep.equal(dom.get("target-1", "target-2", "target-3", "target-4"));
     });
 
     it("should support setting the locator", function () {
@@ -297,7 +297,7 @@ describe('Selector should apply property', function () {
             }
         });
 
-        return glance("bcd:exact-match").should.deep.equal(dom.get("target"));
+        return glance("bcd#exact-match").should.deep.equal(dom.get("target"));
     });
 
     it("should still use default filters if specified properties don't have filters", function () {
@@ -309,25 +309,25 @@ describe('Selector should apply property', function () {
             }
         });
 
-        return glance("span:propertywithoutfilter").should.deep.equal(dom.get('target'));
+        return glance("span#propertywithoutfilter").should.deep.equal(dom.get('target'));
     });
 
-    it("should narrow down element with inner selectors", function () {
-        dom.render(<div>
-            <span id="target" className="block">item</span>
-            <span>item</span>
-        </div>);
+    // it("should narrow down element with inner selectors", function () {
+    //     dom.render(<div>
+    //         <span id="target" className="block">item</span>
+    //         <span>item</span>
+    //     </div>);
+    //
+    //     return glance("item ^ block").should.deep.equal(dom.get('target'));
+    // });
 
-        return glance("item ^ block").should.deep.equal(dom.get('target'));
-    });
-
-    it("should narrow down elements with inner selectors", function () {
-        dom.render(<div>
-            <span id="target-1" className="block">item</span>
-            <span>item</span>
-            <span id="target-2" className="block">item</span>
-        </div>);
-
-        return glance("item ^ block").should.deep.equal(dom.get('target-1', 'target-2'));
-    });
+    // it("should narrow down elements with inner selectors", function () {
+    //     dom.render(<div>
+    //         <span id="target-1" className="block">item</span>
+    //         <span>item</span>
+    //         <span id="target-2" className="block">item</span>
+    //     </div>);
+    //
+    //     return glance("item ^ block").should.deep.equal(dom.get('target-1', 'target-2'));
+    // });
 });

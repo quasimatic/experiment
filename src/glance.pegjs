@@ -1,68 +1,72 @@
 {
 	var scope = "";
 	var scopeIndex = 0;
+
+	function tryParseInt(str) {
+      if (!isNaN(str)) {
+        return parseInt(str);
+      }
+      return str;
+    }
 }
 
-Start = scopes:Scope* { return scopes }
+Start = references:Reference* { return references }
 
 ScopeChar = ">"
-IntersectionChar = "^"
-PropertyChar = ":"
-PropertySeparator = ","
-IndexChar = "#"
-EscapeChar = "\\"
+IntersectChar = "^"
+PropertyChar = "#"
+SeparatorChar = ","
+TransformChar = ":"
 
-Scope
- = targets:Targets ScopeChar? {
+EscapeChar = "\\"
+EscapableChars = EscapeChar / ScopeChar / TransformChar / PropertyChar / IntersectChar
+EscapedSequence = EscapeChar c:(EscapableChars) { return c; }
+
+Reference
+ = target:Target ScopeChar {
 	scopeIndex++;
  	scope += text()
-    return targets;
+    target.type = "scope";
+    return target;
+ }
+ / target:Target IntersectChar {
+	scopeIndex++;
+ 	scope += text()
+    target.type = "intersect";
+    return target;
+ }
+ / target:Target {
+	scopeIndex++;
+ 	scope += text()
+    target.type = "target";
+    return target;
  }
 
-Targets
- = targets:Target+ {
- 	return targets
- }
+Target = label:Label { return label }
 
-Target
- = label:RawLabel IntersectionChar? {
-    return label;
- }
-
-RawLabel
-  = label:Label position:Index? properties:Properties? Whitespace? {
-	return { label: label.trim(), position: position, properties: properties || [], scope: scope.slice(0,-1), scopeIndex: scopeIndex, path: (scope + text()).trim() }
-  }
 Label
- = chars:LabelCharacter+ { return chars.join('') }
+  = label:LabelCharacter+ properties:Properties? transforms:Transforms? Whitespace? {
+    return {
+      label: label.join('').trim(),
+      properties: properties || [],
+      transforms: transforms || [],
+      scope: scope.slice(0,-1).trim(),
+      scopeIndex: scopeIndex,
+      path: (scope + text()).trim()
+    }
+  }
 
 LabelCharacter
-   = !(EscapeChar / ScopeChar / IndexChar / PropertyChar / IntersectionChar) c:Character { return c }
-   / c:EscapedSequence { return c }
+ = !(EscapableChars) c:. { return c }
+ / EscapedSequence
 
-Character
- = .
+Properties = PropertyChar properties:Property* { return properties; }
 
-Whitespace
- = [ \t\r\n]+
+Property = name:Character+ SeparatorChar? { return tryParseInt(name.join("").trim()) }
 
-EscapedSequence
- = EscapeChar c:(EscapeChar / IndexChar / ScopeChar / PropertyChar / IntersectionChar) { return c; }
+Transforms = TransformChar transforms:Transform* { return transforms; }
+Transform = name:Character+ SeparatorChar? { return name.join("").trim() }
 
-Index
- = IndexChar position:Position { return position; }
+Character = !(EscapableChars / SeparatorChar) c:. { return c }
 
-Position
- = [0-9]+ { return parseInt(text(), 10); }
-
-Properties
- = PropertyChar properties:Property* { return properties; }
-
-Property
- = name:PropertyName PropertySeparator? { return name.trim() }
-
-PropertyName
- = thing:PropertyCharacter+ { return thing.join("") }
-
-PropertyCharacter
-  = !(ScopeChar / IntersectionChar / PropertySeparator) c:Character { return c }
+Whitespace = [ \t\r\n]+

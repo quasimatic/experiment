@@ -27,7 +27,7 @@ describe("Extensions: property", function () {
             }
         });
 
-        return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
+        return glance("item#every-other").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
     it("should filter elements as a function", function () {
@@ -40,7 +40,7 @@ describe("Extensions: property", function () {
             }
         });
 
-        return glance("item:every-other").should.deep.equal(dom.get("target-1", "target-2"));
+        return glance("item#every-other").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
     it("should locate elements with a property", function () {
@@ -54,7 +54,7 @@ describe("Extensions: property", function () {
             }
         });
 
-        return glance("ignored:custom-property").should.deep.equal(dom.get("target-3"));
+        return glance("ignored#custom-property").should.deep.equal(dom.get("target-3"));
     });
 
     it("should locate elements for a custom property as a glance selector", function () {
@@ -66,6 +66,6 @@ describe("Extensions: property", function () {
             }
         });
 
-        return glance("ignored:custom-property").should.deep.equal(dom.get("target-3"));
+        return glance("ignored#custom-property").should.deep.equal(dom.get("target-3"));
     });
 });
