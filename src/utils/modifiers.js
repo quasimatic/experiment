@@ -72,7 +72,7 @@ export default class Modifiers {
         if (labels[target.label]) {
             if (typeof(labels[target.label]) == 'string') {
                 locators = locators.concat(function ({glanceSelector}, handler) {
-                    return glanceSelector(labels[target.label],handler);
+                    return glanceSelector(labels[target.label], handler);
                 });
             }
 
@@ -104,18 +104,26 @@ export default class Modifiers {
     }
 
     static getDefaultLocators(extensions, defaultProperties) {
-        let locators = [];
         let properties = Modifiers.properties(extensions);
 
         if (defaultProperties.length > 0) {
+            let locators = extensions.filter(e => e.locate).map(e => {
+                return (data, callback) => {
+                    let target = data.target;
+                    return e.locate({...data, target: {...target, properties:defaultProperties}}, callback);
+                };
+            });
+
             let propertiesWithlocators = defaultProperties.filter(name => properties[name] && (properties[name].locate));
 
             if (propertiesWithlocators.length != 0) {
                 locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
             }
+
+            return locators;
         }
 
-        return locators;
+        return [];
     }
 
     static locatorForLabel(key, extensions) {
