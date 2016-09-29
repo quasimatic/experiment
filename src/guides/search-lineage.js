@@ -81,7 +81,7 @@ export default class SearchLineage {
 
                     Extensions.afterScopeEvent({...data, elements: positionalElements});
 
-                    if (SearchLineage.isLastLabel(scopes, target)) {
+                    if (target.type == "target") {
                         return resultHandler(err, positionalElements);
                     }
                     else {
@@ -107,9 +107,5 @@ export default class SearchLineage {
 
             });
         });
-    }
-
-    static isLastLabel(scopes, {scopeIndex}) {
-        return scopeIndex + 1 === scopes.length;
     }
 }
