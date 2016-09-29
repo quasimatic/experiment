@@ -6,7 +6,7 @@ export default [
     'attribute-id',
     'searchasclassname',
     'attribute-alt',
-    'searchintype',
+    'attribute-type',
     'searchasnodetype',
     'visible',
     'inputafter',
