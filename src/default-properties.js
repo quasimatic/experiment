@@ -2,7 +2,7 @@ export default [
     'searchintext',
     'searchinvalue',
     'attribute-placeholder',
-    'searchinname',
+    'attribute-name',
     'attribute-id',
     'searchasclassname',
     'attribute-alt',
