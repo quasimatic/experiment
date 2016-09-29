@@ -18,54 +18,45 @@ export default class SearchLineage {
         return SearchLineage.traverseScopes({
             ...data,
             elements: [scopeElement],
-            targets: scopes[0],
+            target: scopes[0],
             scopeElements: []
         }, callback);
     }
 
-    static processLevel(data, resultHandler) {
-        Extensions.beforeScopeEvent(data);
-
-        var first = true;
-        return reduce(data.targets, [], (result, target, handler) => {
-            return Locator.locate({...data, target}, (err, located)=> {
-                if(first) {
-                    first = false;
-                    return handler(null, located);
-                }
-                else {
-                    return browserExecute(function(located, result, handler){
-                        return handler(null, located.filter(function(e) {
-                            return result.indexOf(e) != -1;
-                        }));
-                    }, located, result, (err, intersectingElements) => handler(err, intersectingElements));
-                }
-            });
-        }, (err, results)=> {
-            return resultHandler(err, results);
-        });
-    }
-
     static traverseScopes(data, resultHandler) {
         let {
-            targets,
             elements,
             scopes,
+            target,
             log
         } = data;
 
-        let target = data.target = targets[targets.length - 1];
-
         let processLevel = (result, scopeElement, reduceeCallback) => {
-            return SearchLineage.processLevel({
+            var tempData = {
                 ...data,
                 scopeElement
-            }, (err, foundItems) => {
+            };
+
+            Extensions.beforeScopeEvent(tempData);
+
+            function resultHandler(err, located) {
                 if (err) {
-                    reduceeCallback(err, []);
+                    return reduceeCallback(err, []);
                 }
-                result.push({scopeElement: scopeElement, elements: foundItems});
+                result.push({scopeElement: scopeElement, elements: located});
                 return reduceeCallback(err, result);
+            }
+
+            return Locator.locate(tempData, (err, located) => {
+                if (tempData.intersectElements) {
+                    return browserExecute(function (located, previous, handler) {
+                        return handler(null, located.filter(function (e) {
+                            return previous.indexOf(e) != -1;
+                        }));
+                    }, located, tempData.intersectElements, resultHandler);
+                }
+
+                return resultHandler(null, located);
             });
         };
 
@@ -90,24 +81,31 @@ export default class SearchLineage {
 
                     Extensions.afterScopeEvent({...data, elements: positionalElements});
 
-                    if (SearchLineage.isLastLabel(scopes, target)) {
+                    if (target.type == "target") {
                         return resultHandler(err, positionalElements);
                     }
                     else {
-                        return SearchLineage.traverseScopes({
-                            ...data,
-                            scopeElements: positionalElements,
-                            elements: positionalElements,
-                            targets: scopes[target.scopeIndex + 1]
-                        }, resultHandler);
+                        if (target.type == "intersect") {
+                            return SearchLineage.traverseScopes({
+                                ...data,
+                                intersectElements: positionalElements,
+                                elements: positionalElements,
+                                target: scopes[target.scopeIndex + 1]
+                            }, resultHandler);
+                        }
+                        else {
+                            return SearchLineage.traverseScopes({
+                                ...data,
+                                intersectElements: null,
+                                scopeElements: positionalElements,
+                                elements: positionalElements,
+                                target: scopes[target.scopeIndex + 1]
+                            }, resultHandler);
+                        }
                     }
                 });
 
             });
         });
-    }
-
-    static isLastLabel(scopes, {scopeIndex}) {
-        return scopeIndex + 1 === scopes.length;
     }
 }

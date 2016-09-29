@@ -88,7 +88,7 @@ describe("Extensions: labels", function () {
     });
 
     it("should call events in correct order", function () {
-        glance("scope > custom label:custom-property > item 1:another-property");
+        glance("scope > custom label#custom-property > item 1#another-property");
         calledEvents.should.deep.equal([
             'beforeScope',
             'beforeLocate',

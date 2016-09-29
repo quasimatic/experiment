@@ -5,10 +5,12 @@ export default class Positional {
     static filter(data) {
         let {elements, target, extensions} = data;
 
-        var beforePositionalElements = Modifiers.beforePositional(elements, target.position, extensions, data);
+        var index = target.properties.length == 1 && !isNaN(target.properties[0]) ? target.properties[0] : null;
 
-        var positionalElements = nthFilter(beforePositionalElements, target.position);
+        var beforePositionalElements = Modifiers.beforePositional(elements, index, extensions, data);
 
-        return Modifiers.afterPositional(positionalElements, target.position, extensions, data);
+        var positionalElements = nthFilter(beforePositionalElements, index);
+
+        return Modifiers.afterPositional(positionalElements, index, extensions, data);
     }
 }
