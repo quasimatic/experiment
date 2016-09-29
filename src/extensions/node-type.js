@@ -2,10 +2,10 @@ import findByCSS from "./lib/css"
 
 export default {
     properties: {
-        searchascss: {
+        "node-type": {
             locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
                 try {
-                    log.debug("Searching as css:", label);
+                    log.debug("Searching by node type:", label);
 
                     return findByCSS(`${label}`, scopeElement, resultHandler);
                 }

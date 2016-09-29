@@ -1,13 +1,13 @@
 export default [
-    'searchintext',
-    'searchinvalue',
+    'contains',
+    'value',
     'attribute-placeholder',
     'attribute-name',
     'attribute-id',
-    'searchasclassname',
+    'class',
     'attribute-alt',
     'attribute-type',
-    'searchasnodetype',
+    'node-type',
     'visible',
     'inputafter',
     'shortestscopeandcontainerpath'
