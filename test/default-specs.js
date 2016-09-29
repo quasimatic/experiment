@@ -37,3 +37,19 @@ describe("Default: Attribute id", function () {
         return glance("missing-id").should.deep.equal([]);
     });
 });
+
+describe("Default: Attribute placeholder", function() {
+    beforeEach(function(){
+        document.body.innerHTML = "";
+    });
+
+    it("should find in placeholder", function() {
+        dom.render(<input placeholder="enter name" id="target"/>);
+        return glance("enter name").should.deep.equal(dom.get("target"));
+    });
+
+    it("should find in placeholder case insensitive", function() {
+        dom.render(<input placeholder="eNter namE" id="target"/>)
+        return glance("enteR naMe").should.deep.equal(dom.get("target"));
+    });
+});

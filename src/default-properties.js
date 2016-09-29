@@ -1,7 +1,7 @@
 export default [
     'searchintext',
     'searchinvalue',
-    'searchinplaceholder',
+    'attribute-placeholder',
     'searchinname',
     'attribute-id',
     'searchasclassname',
