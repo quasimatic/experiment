@@ -29,21 +29,3 @@ export function unique(array, resultHandler) {
     }, array, resultHandler);
 
 }
-
-export function until(collection, check, resultHandler) {
-    function process(i, collection, check, handler) {
-        if (i < collection.length) {
-            return collection[i]((err, result) => {
-                if (check(result)) {
-                    return handler(err, result);
-                } else {
-                    return process(++i, collection, check, handler);
-                }
-            });
-        }
-
-        return handler(null, null);
-    }
-
-    return process(0, collection, check, resultHandler);
-}
