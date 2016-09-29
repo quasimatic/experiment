@@ -23,22 +23,6 @@ export default class SearchLineage {
         }, callback);
     }
 
-    static processLevel(data, resultHandler) {
-        Extensions.beforeScopeEvent(data);
-
-        return Locator.locate(data, (err, located) => {
-            if (data.intersectElements) {
-                return browserExecute(function (located, previous, handler) {
-                    return handler(null, located.filter(function (e) {
-                        return previous.indexOf(e) != -1;
-                    }));
-                }, located, data.intersectElements, resultHandler);
-            }
-
-            return resultHandler(null, located);
-        });
-    }
-
     static traverseScopes(data, resultHandler) {
         let {
             elements,
@@ -48,15 +32,31 @@ export default class SearchLineage {
         } = data;
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
-            return SearchLineage.processLevel({
+            var tempData = {
                 ...data,
                 scopeElement
-            }, (err, foundItems) => {
+            };
+
+            Extensions.beforeScopeEvent(tempData);
+
+            function resultHandler(err, located) {
                 if (err) {
-                    reduceeCallback(err, []);
+                    return reduceeCallback(err, []);
                 }
-                result.push({scopeElement: scopeElement, elements: foundItems});
+                result.push({scopeElement: scopeElement, elements: located});
                 return reduceeCallback(err, result);
+            }
+
+            return Locator.locate(tempData, (err, located) => {
+                if (tempData.intersectElements) {
+                    return browserExecute(function (located, previous, handler) {
+                        return handler(null, located.filter(function (e) {
+                            return previous.indexOf(e) != -1;
+                        }));
+                    }, located, tempData.intersectElements, resultHandler);
+                }
+
+                return resultHandler(null, located);
             });
         };
 
@@ -85,7 +85,7 @@ export default class SearchLineage {
                         return resultHandler(err, positionalElements);
                     }
                     else {
-                        if(target.type == "intersect") {
+                        if (target.type == "intersect") {
                             return SearchLineage.traverseScopes({
                                 ...data,
                                 intersectElements: positionalElements,
