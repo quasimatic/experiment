@@ -7,7 +7,7 @@ export default class Modifiers {
         return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), elements);
     }
 
-    static getFilters(target, extensions) {
+    static getFilters(target, extensions, defaultProperties) {
         let filters = [];
         let labels = Modifiers.labels(extensions);
         let properties = Modifiers.properties(extensions);
@@ -23,7 +23,11 @@ export default class Modifiers {
             else {
                 let catchAlls = extensions.filter(e => e.filter);
                 if (catchAlls.length > 0) {
-                    filters = filters.concat(catchAlls.map(e => e.filter));
+                    if(filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
+                        filters = filters.concat(Modifiers.getDefaultFilters(extensions, defaultProperties))
+                    }
+
+                    filters = filters.concat(catchAlls.map(e => e.filter.apply));
                 }
             }
         });
@@ -38,7 +42,7 @@ export default class Modifiers {
             let filters = extensions.filter(e => e.filter).map(e => {
                 return (data, callback) => {
                     let target = data.target;
-                    return e.filter({...data, target: {...target, properties: defaultProperties}}, callback);
+                    return e.filter.apply({...data, target: {...target, properties: defaultProperties}}, callback);
                 };
             });
 
