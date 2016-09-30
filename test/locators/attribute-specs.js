@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/attribute';
 
 describe("Locator: Search in attributes", function() {
-    let locate = extension.locate;
+    let locate = extension.locator.locate;
     
     beforeEach(function(){
         document.body.innerHTML = "";

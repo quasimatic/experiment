@@ -22,7 +22,7 @@ export default class Modifiers {
             }
             else {
                 let catchAlls = extensions.filter(e => e.filter);
-                if(catchAlls.length > 0) {
+                if (catchAlls.length > 0) {
                     filters = filters.concat(catchAlls.map(e => e.filter));
                 }
             }
@@ -83,20 +83,29 @@ export default class Modifiers {
             }
         }
 
-        if (target.properties.length > 0) {
-            let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
-
-            if (propertiesWithlocators.length != 0) {
-                locators = locators.concat(propertiesWithlocators.map(name => {
-                    if (typeof(properties[name].locate) == 'string')
-                        return function ({glanceSelector}, handler) {
-                            return glanceSelector(properties[name].locate, handler);
-                        };
-                    else
-                        return properties[name].locate;
-                }));
+        target.properties.forEach(name => {
+            if (properties[name] && (properties[name].locate)) {
+                if (typeof(properties[name].locate) == 'string')
+                    locators = locators.concat(function ({glanceSelector}, handler) {
+                        return glanceSelector(properties[name].locate, handler);
+                    });
+                else
+                    locators = locators.concat(properties[name].locate);
             }
-        }
+            else {
+                let catchAlls = extensions.filter(e => {
+                    if(e.locator) {
+                        return e.locator.check({label:target.label, target});
+                    }
+
+                    return false;
+                });
+
+                if (catchAlls.length > 0) {
+                    locators = locators.concat(catchAlls.map(e => e.locator.locate));
+                }
+            }
+        });
 
         return locators.length > 0 ? locators : null;
     }
@@ -105,10 +114,10 @@ export default class Modifiers {
         let properties = Modifiers.properties(extensions);
 
         if (defaultProperties.length > 0) {
-            let locators = extensions.filter(e => e.locate).map(e => {
+            let locators = extensions.filter(e => e.locator).map(e => {
                 return (data, callback) => {
                     let target = data.target;
-                    return e.locate({...data, target: {...target, properties: defaultProperties}}, callback);
+                    return e.locator.locate({...data, target: {...target, properties: defaultProperties}}, callback);
                 };
             });
 
