@@ -2,13 +2,15 @@ import findByCSS from "./lib/css"
 
 export default {
     properties: {
-        searchasclassname: {
+        "css": {
             locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
                 try {
-                    return findByCSS(`.${label}`, scopeElement, resultHandler);
+                    log.debug("Searching as css:", label);
+
+                    return findByCSS(`${label}`, scopeElement, resultHandler);
                 }
-                catch (e) {
-                    return resultHandler(null, []);
+                catch (err) {
+                    return resultHandler(err, []);
                 }
             }
         }

@@ -1,7 +1,6 @@
 import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
-import Positional from "./positional";
 
 import {reduce, unique} from "../utils/array-utils";
 
@@ -71,25 +70,25 @@ export default class SearchLineage {
                 return result;
             }, {elements: [], scopeElements: []});
 
-            return Filter.filter({...data, ...targetInfo}, (err, newTargets) => {
-                if (err) {
-                    return resultHandler(err, []);
-                }
+            return unique(targetInfo.elements, (err, uniqueTargets) => {
+                targetInfo.elements = uniqueTargets;
 
-                return unique(newTargets, (err, uniqueTargets) => {
-                    let positionalElements = Positional.filter({...data, elements: uniqueTargets});
+                return Filter.filter({...data, ...targetInfo}, (err, filteredElements) => {
+                    if (err) {
+                        return resultHandler(err, []);
+                    }
 
-                    Extensions.afterScopeEvent({...data, elements: positionalElements});
+                    Extensions.afterScopeEvent({...data, elements: filteredElements});
 
                     if (target.type == "target") {
-                        return resultHandler(err, positionalElements);
+                        return resultHandler(err, filteredElements);
                     }
                     else {
                         if (target.type == "intersect") {
                             return SearchLineage.traverseScopes({
                                 ...data,
-                                intersectElements: positionalElements,
-                                elements: positionalElements,
+                                intersectElements: filteredElements,
+                                elements: filteredElements,
                                 target: scopes[target.scopeIndex + 1]
                             }, resultHandler);
                         }
@@ -97,14 +96,13 @@ export default class SearchLineage {
                             return SearchLineage.traverseScopes({
                                 ...data,
                                 intersectElements: null,
-                                scopeElements: positionalElements,
-                                elements: positionalElements,
+                                scopeElements: filteredElements,
+                                elements: filteredElements,
                                 target: scopes[target.scopeIndex + 1]
                             }, resultHandler);
                         }
                     }
                 });
-
             });
         });
     }

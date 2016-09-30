@@ -1,8 +1,8 @@
 import dom from "../dom"
-import extension from '../../src/extensions/search-exact-text';
+import extension from '../../src/extensions/exact-text';
 
 describe("Locator: Exact Match", function() {
-    let findExactText = extension.properties.searchexacttext.locate;
+    let findExactText = extension.properties["exact-text"].locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

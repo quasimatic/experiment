@@ -1,1 +1,15 @@
-export default ['searchintext','searchinvalue','searchinplaceholder','searchinname','searchasid','searchasclassname','searchinalt','searchintype','searchasnodetype','visible', 'inputafter', 'shortestscopeandcontainerpath'];
+export default [
+    'contains',
+    'value',
+    'attribute-placeholder',
+    'attribute-name',
+    'attribute-id',
+    'class',
+    'attribute-alt',
+    'attribute-type',
+    'node-type',
+    'visible',
+    'inputafter',
+    'shortestscopeandcontainerpath',
+    'index'
+];

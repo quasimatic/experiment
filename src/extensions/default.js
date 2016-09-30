@@ -1,16 +1,13 @@
-import searchInText from './search-in-text';
-import searchExactText from './search-exact-text';
-import searchInValue from './search-in-value';
-import searchInPlaceholder from './search-in-placeholder';
-import searchAsId from './search-as-id';
-import searchAsClassName from './search-as-class-name';
-import searchInName from './search-in-name';
-import searchInAlt from './search-in-alt';
-import searchInType from './search-in-type';
-import searchAsNodeType from './search-as-nodetype';
-import searchAsCss from './search-as-css';
+import contains from './contains';
+import exactText from './exact-text';
+import value from './value';
+import className from './class';
+import nodeType from './node-type';
+import css from './css';
+import attribute from './attribute';
 import visible from './visible';
 import inputafter from './inputafter';
 import shortestscopeandcontainerpath from './shortest-scope-and-container-path';
+import index from './index';
 
-export default [searchInText,searchExactText,searchInValue,searchInPlaceholder,searchAsId,searchAsClassName,searchInName,searchInAlt,searchInType,searchAsNodeType,searchAsCss,visible,inputafter,shortestscopeandcontainerpath];
+export default [contains,exactText,value,className,attribute,nodeType,css,visible,inputafter,shortestscopeandcontainerpath,index];

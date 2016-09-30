@@ -154,6 +154,32 @@ describe("Glance", function () {
     });
 });
 
+describe('Selector filter', function () {
+    beforeEach(function () {
+        document.body.innerHTML = "";
+    });
+
+    it("should find within specified attribute value", function () {
+        dom.render(
+            <div id="target" data-key="random"></div>
+        );
+
+        return glance("random#attribute-data-key").should.deep.equal(dom.get("target"));
+    });
+
+    it("should apply default filters before an index filter if index filter is first", function () {
+        dom.render(
+            <div>
+                <div style={{display: 'none'}}>item 1</div>
+                <div>item 2</div>
+                <div id="target">item 3</div>
+            </div>
+        );
+
+        return glance("item#2").should.deep.equal(dom.get("target"));
+    });
+});
+
 describe('Selector Nth', function () {
     beforeEach(function () {
         document.body.innerHTML = "";

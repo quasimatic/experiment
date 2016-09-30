@@ -73,16 +73,6 @@ describe("Extensions: labels", function () {
 
             afterLocate() {
                 calledEvents.push('afterLocate');
-            },
-
-            beforePositional({elements}) {
-                calledEvents.push('beforePositional');
-                return elements;
-            },
-
-            afterPositional({elements}) {
-                calledEvents.push('afterPositional');
-                return elements;
             }
         });
     });
@@ -95,8 +85,6 @@ describe("Extensions: labels", function () {
             'afterLocate',
             'beforeFilters',
             'afterFilters',
-            'beforePositional',
-            'afterPositional',
             'afterScope',
             'beforeScope',
             'beforeLocate',
@@ -107,8 +95,6 @@ describe("Extensions: labels", function () {
             'label filter',
             'property filter',
             'afterFilters',
-            'beforePositional',
-            'afterPositional',
             'afterScope',
             'beforeScope',
             'beforeLocate',
@@ -116,8 +102,6 @@ describe("Extensions: labels", function () {
             'afterLocate',
             'beforeFilters',
             'afterFilters',
-            'beforePositional',
-            'afterPositional',
-            'afterScope']);
+            'afterScope' ]);
     });
 });

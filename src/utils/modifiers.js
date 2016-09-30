@@ -7,21 +7,7 @@ export default class Modifiers {
         return extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), elements);
     }
 
-    static beforePositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.beforePositional).reduce((elements, e) => e.beforePositional(Object.assign(data, {
-            elements,
-            position
-        })), elements);
-    }
-
-    static afterPositional(elements, position, extensions, data) {
-        return extensions.filter(e => e.afterPositional).reduce((elements, e) => e.afterPositional(Object.assign(data, {
-            elements,
-            position
-        })), elements);
-    }
-
-    static getFilters(target, extensions) {
+    static getFilters(target, extensions, defaultProperties) {
         let filters = [];
         let labels = Modifiers.labels(extensions);
         let properties = Modifiers.properties(extensions);
@@ -30,30 +16,46 @@ export default class Modifiers {
             filters = filters.concat(labels[target.label].filter);
         }
 
-        if (target.properties.length > 0) {
-            let propertiesWithFilters = target.properties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
-
-            if (propertiesWithFilters.length != 0) {
-                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
+        target.properties.forEach(name => {
+            if (properties[name] && (properties[name].filter || typeof(properties[name]) == "function")) {
+                filters = filters.concat(typeof(properties[name]) == "function" ? properties[name] : properties[name].filter);
             }
-        }
+            else {
+                let catchAlls = extensions.filter(e => e.filter);
+                if (catchAlls.length > 0) {
+                    if(filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
+                        filters = filters.concat(Modifiers.getDefaultFilters(extensions, defaultProperties))
+                    }
+
+                    filters = filters.concat(catchAlls.map(e => e.filter.apply));
+                }
+            }
+        });
 
         return filters.length > 0 ? filters : null;
     }
 
     static getDefaultFilters(extensions, defaultProperties) {
-        let filters = [];
         let properties = Modifiers.properties(extensions);
 
         if (defaultProperties.length > 0) {
+            let filters = extensions.filter(e => e.filter).map(e => {
+                return (data, callback) => {
+                    let target = data.target;
+                    return e.filter.apply({...data, target: {...target, properties: defaultProperties}}, callback);
+                };
+            });
+
             let propertiesWithFilters = defaultProperties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
 
             if (propertiesWithFilters.length != 0) {
                 filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
             }
+
+            return filters;
         }
 
-        return filters;
+        return [];
     }
 
     static labels(extensions) {
@@ -72,7 +74,7 @@ export default class Modifiers {
         if (labels[target.label]) {
             if (typeof(labels[target.label]) == 'string') {
                 locators = locators.concat(function ({glanceSelector}, handler) {
-                    return glanceSelector(labels[target.label],handler);
+                    return glanceSelector(labels[target.label], handler);
                 });
             }
 
@@ -85,37 +87,54 @@ export default class Modifiers {
             }
         }
 
-        if (target.properties.length > 0) {
-            let propertiesWithlocators = target.properties.filter(name => properties[name] && (properties[name].locate));
-
-            if (propertiesWithlocators.length != 0) {
-                locators = locators.concat(propertiesWithlocators.map(name => {
-                    if (typeof(properties[name].locate) == 'string')
-                        return function ({glanceSelector}, handler) {
-                            return glanceSelector(properties[name].locate, handler);
-                        };
-                    else
-                        return properties[name].locate;
-                }));
+        target.properties.forEach(name => {
+            if (properties[name] && (properties[name].locate)) {
+                if (typeof(properties[name].locate) == 'string')
+                    locators = locators.concat(function ({glanceSelector}, handler) {
+                        return glanceSelector(properties[name].locate, handler);
+                    });
+                else
+                    locators = locators.concat(properties[name].locate);
             }
-        }
+            else {
+                let catchAlls = extensions.filter(e => {
+                    if(e.locator) {
+                        return e.locator.check({label:target.label, target});
+                    }
+
+                    return false;
+                });
+
+                if (catchAlls.length > 0) {
+                    locators = locators.concat(catchAlls.map(e => e.locator.locate));
+                }
+            }
+        });
 
         return locators.length > 0 ? locators : null;
     }
 
     static getDefaultLocators(extensions, defaultProperties) {
-        let locators = [];
         let properties = Modifiers.properties(extensions);
 
         if (defaultProperties.length > 0) {
+            let locators = extensions.filter(e => e.locator).map(e => {
+                return (data, callback) => {
+                    let target = data.target;
+                    return e.locator.locate({...data, target: {...target, properties: defaultProperties}}, callback);
+                };
+            });
+
             let propertiesWithlocators = defaultProperties.filter(name => properties[name] && (properties[name].locate));
 
             if (propertiesWithlocators.length != 0) {
                 locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
             }
+
+            return locators;
         }
 
-        return locators;
+        return [];
     }
 
     static locatorForLabel(key, extensions) {
