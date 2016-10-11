@@ -1,5 +1,5 @@
 import log from '../logger';
-import Modifiers from "../utils/modifiers";
+import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 
@@ -85,8 +85,8 @@ export default class Locator {
 
     static getLocators(target, extensions) {
         let locators = [];
-        let labels = Modifiers.labels(extensions);
-        let properties = Modifiers.properties(extensions);
+        let labels = Extensions.labels(extensions);
+        let properties = Extensions.properties(extensions);
 
         if (labels[target.label]) {
             if (typeof(labels[target.label]) == 'string') {
@@ -132,7 +132,7 @@ export default class Locator {
     }
 
     static getDefaultLocators(extensions, defaultProperties) {
-        let properties = Modifiers.properties(extensions);
+        let properties = Extensions.properties(extensions);
 
         if (defaultProperties.length > 0) {
             let locators = extensions.filter(e => e.locator).map(e => {
