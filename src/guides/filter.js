@@ -7,17 +7,11 @@ export default class Filter {
         let filters = Filter.getFilters(target, extensions, config.defaultProperties) || Filter.getDefaultFilters(extensions, config.defaultProperties);
 
         let beforeFilterElements = Filter.beforeFilters(unfilteredElements, extensions, data);
-        let executeFilter = Filter.executeFilters(data);
         let afterFilters = Filter.afterFilters(callback, extensions, data);
 
-        return reduce(filters, beforeFilterElements, executeFilter, afterFilters);
-    }
-
-    static executeFilters(data) {
-        return (filteredElements, filter, executeCallback) => filter({
-            ...data,
-            elements: filteredElements
-        }, executeCallback);
+        return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
+            return filter({...data, elements: filteredElements}, executeCallback);
+        }, afterFilters);
     }
 
     static beforeFilters(elements, extensions, data) {
@@ -33,7 +27,7 @@ export default class Filter {
         let labels = Extensions.labels(extensions);
         let properties = Extensions.properties(extensions);
 
-        if (labels[target.label] && labels[target.label].filter) {
+        if (labels[target.label] && Object.prototype.toString.call(labels[target.label]) !== '[object Array]' && labels[target.label].filter) {
             filters = filters.concat(labels[target.label].filter);
         }
 
@@ -44,7 +38,7 @@ export default class Filter {
             else {
                 let catchAlls = extensions.filter(e => e.filter);
                 if (catchAlls.length > 0) {
-                    if(filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
+                    if (filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
                         filters = filters.concat(Filter.getDefaultFilters(extensions, defaultProperties))
                     }
 

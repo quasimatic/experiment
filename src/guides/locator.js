@@ -13,7 +13,7 @@ export default class Locator {
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
                 return locator(target, function (err, e) {
-                    if(err) {
+                    if (err) {
                         return handler(err, []);
                     }
 
@@ -36,7 +36,7 @@ export default class Locator {
         beforeLocate.forEach(before => before({label: target.label}));
 
         return Locator.locateInParent(locate, [], parent, null, scopeElements, target, data, function (err, elements) {
-            if(err) {
+            if (err) {
                 return resultHandler(err, []);
             }
 
@@ -49,15 +49,19 @@ export default class Locator {
 
     static locateInParent(locate, elements, parent, previousParent, scopeElements, target, data, resultHandler) {
         if (parent && elements.length == 0) {
-            return locate({...data, label: target.label, scopeElement:parent}, (err, foundElements) => {
-                if(err) {
+            return locate({...data, label: target.label, scopeElement: parent}, (err, foundElements) => {
+                if (err) {
                     return resultHandler(err, []);
                 }
 
                 return browserExecute(function (node, handler) {
-                    return handler(null, { node: node, parentNode: node.parentNode, continue: node.parentNode != null && node.parentNode.outerHTML != null});
+                    return handler(null, {
+                        node: node,
+                        parentNode: node.parentNode,
+                        continue: node.parentNode != null && node.parentNode.outerHTML != null
+                    });
                 }, parent, (err, result) => {
-                    if(err) {
+                    if (err) {
                         return resultHandler(err, []);
                     }
 
@@ -65,7 +69,7 @@ export default class Locator {
 
                     flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
 
-                    if(result.continue && flattenedElements.length == 0) {
+                    if (result.continue && flattenedElements.length == 0) {
                         log.debug("Elements not found, trying parent");
                         return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, scopeElements, target, data, resultHandler);
                     }
@@ -89,17 +93,22 @@ export default class Locator {
         let properties = Extensions.properties(extensions);
 
         if (labels[target.label]) {
-            if (typeof(labels[target.label]) == 'string') {
+            if (Object.prototype.toString.call(labels[target.label]) === '[object Array]') {
+                locators = locators.concat(labels[target.label].reduce(function (tempLocators, label) {
+                    return tempLocators.concat(function ({glanceSelector}, handler) {
+                        return glanceSelector(label, handler);
+                    });
+                }, []));
+            }
+            else if (typeof(labels[target.label]) == 'string') {
                 locators = locators.concat(function ({glanceSelector}, handler) {
                     return glanceSelector(labels[target.label], handler);
                 });
             }
-
-            if (typeof(labels[target.label]) == 'function') {
+            else if (typeof(labels[target.label]) == 'function') {
                 locators = locators.concat(labels[target.label]);
             }
-
-            if (labels[target.label].locate) {
+            else if (labels[target.label].locate) {
                 locators = locators.concat(labels[target.label].locate);
             }
         }
@@ -115,8 +124,8 @@ export default class Locator {
             }
             else {
                 let catchAlls = extensions.filter(e => {
-                    if(e.locator) {
-                        return e.locator.check({label:target.label, target});
+                    if (e.locator) {
+                        return e.locator.check({label: target.label, target});
                     }
 
                     return false;

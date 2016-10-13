@@ -8,6 +8,7 @@ describe("Extensions: labels", function () {
         dom.render(
             <div>
                 <div id="target"></div>
+                <div id="something-else"></div>
             </div>
         );
     });
@@ -46,6 +47,16 @@ describe("Extensions: labels", function () {
         });
 
         return glance("custom-label").should.deep.equal(dom.get("target"));
+    });
+
+    it("should locate elements for a custom label as an array", function () {
+        glance.addExtension({
+            labels: {
+                "custom-label": ["target", "something-else"]
+            }
+        });
+
+        return glance("custom-label").should.deep.equal(dom.get("target", "something-else"));
     });
 
     it("should have beforeLocate", function () {
