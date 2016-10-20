@@ -8,6 +8,7 @@ describe("Extensions: labels", function () {
         dom.render(
             <div>
                 <div id="target"></div>
+                <div id="another"></div>
                 <div id="something-else"><div id="item-1"></div></div>
             </div>
         );
@@ -52,11 +53,11 @@ describe("Extensions: labels", function () {
     it("should locate elements for a custom label as an array", function () {
         glance.addExtension({
             labels: {
-                "custom-label": ["missing", "target", "something-else"]
+                "custom-label": ["missing", "target", "another"]
             }
         });
 
-        return glance("custom-label").should.deep.equal(dom.get("target", "something-else"));
+        return glance("custom-label").should.deep.equal(dom.get("target", "another"));
     });
 
     it("should locate elements with a scope as a custom label as an array", function () {

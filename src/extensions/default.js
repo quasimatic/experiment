@@ -6,8 +6,9 @@ import nodeType from './node-type';
 import css from './css';
 import attribute from './attribute';
 import visible from './visible';
+import targetIsLeafNode from './target-is-leaf-node';
 import inputafter from './inputafter';
 import shortestscopeandcontainerpath from './shortest-scope-and-container-path';
 import index from './index';
 
-export default [contains,exactText,value,className,attribute,nodeType,css,visible,inputafter,shortestscopeandcontainerpath,index];
+export default [contains,exactText,value,className,attribute,nodeType,css,visible,targetIsLeafNode,inputafter,shortestscopeandcontainerpath,index];
