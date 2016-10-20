@@ -86,6 +86,25 @@ export default class Locator {
         }
     }
 
+    static getLocator(locator) {
+        if (Object.prototype.toString.call(locator) === '[object Array]') {
+            return locator.map(function (label) {
+                return function ({glanceSelector}, handler) {
+                    return glanceSelector(label, handler);
+                }
+            });
+        }
+        else if (typeof(locator) == 'string') {
+            return [function ({glanceSelector}, handler) {
+                return glanceSelector(locator, handler);
+            }];
+        }
+        else if (typeof(locator) == 'function') {
+            return [locator];
+        }
+
+        return [];
+    }
 
     static getLocators(target, extensions) {
         let locators = [];
@@ -93,34 +112,17 @@ export default class Locator {
         let properties = Extensions.properties(extensions);
 
         if (labels[target.label]) {
-            if (Object.prototype.toString.call(labels[target.label]) === '[object Array]') {
-                locators = locators.concat(labels[target.label].reduce(function (tempLocators, label) {
-                    return tempLocators.concat(function ({glanceSelector}, handler) {
-                        return glanceSelector(label, handler);
-                    });
-                }, []));
+            if (labels[target.label].locate) {
+                locators = Locator.getLocator(labels[target.label].locate)
             }
-            else if (typeof(labels[target.label]) == 'string') {
-                locators = locators.concat(function ({glanceSelector}, handler) {
-                    return glanceSelector(labels[target.label], handler);
-                });
-            }
-            else if (typeof(labels[target.label]) == 'function') {
-                locators = locators.concat(labels[target.label]);
-            }
-            else if (labels[target.label].locate) {
-                locators = locators.concat(labels[target.label].locate);
+            else {
+                locators = Locator.getLocator(labels[target.label])
             }
         }
 
         target.properties.forEach(name => {
-            if (properties[name] && (properties[name].locate)) {
-                if (typeof(properties[name].locate) == 'string')
-                    locators = locators.concat(function ({glanceSelector}, handler) {
-                        return glanceSelector(properties[name].locate, handler);
-                    });
-                else
-                    locators = locators.concat(properties[name].locate);
+            if (properties[name] && properties[name].locate) {
+                locators = locators.concat(Locator.getLocator(properties[name].locate))
             }
             else {
                 let catchAlls = extensions.filter(e => {
