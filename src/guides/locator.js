@@ -1,4 +1,4 @@
-import log from '../logger';
+import log from '../log';
 import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";

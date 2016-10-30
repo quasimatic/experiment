@@ -1,9 +1,10 @@
 import {reduce} from "../utils/array-utils"
+import log from "../log"
 
 export default {
     filter: {
         useDefaultFiltersIfFirst: true,
-        apply: function ({elements, target, log = {debug: () => {}}}, resultHandler = (err, result) => result) {
+        apply: function ({elements, target}, resultHandler = (err, result) => result) {
             let attributes = target.properties.filter(p => !isNaN(p));
 
             if (attributes.length > 0) {

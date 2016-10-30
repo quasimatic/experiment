@@ -1,7 +1,9 @@
+import log from "../log"
+
 export default {
     properties: {
         "visible": {
-            filter: function visible({elements, log={debug:()=>{}}}, resultHandler) {
+            filter: function visible({elements}, resultHandler) {
                 log.debug("Filtering for visible elements");
 
                 return browserExecute(function (elements, handler) {

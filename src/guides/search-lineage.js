@@ -26,8 +26,7 @@ export default class SearchLineage {
         let {
             elements,
             scopes,
-            target,
-            log
+            target
         } = data;
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
