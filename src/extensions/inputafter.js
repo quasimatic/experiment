@@ -1,7 +1,11 @@
+import log from "../log"
+
 export default {
     properties: {
         "inputafter": {
             filter: function inputafter({elements, scopeElements}, resultHandler) {
+                log.debug("Filtering for sibling input next to scope");
+
                 return browserExecute(function (elements, scopeElements, handler) {
                     let siblings = elements.filter(function (e) {
                         if (e.nodeName.toLowerCase() == "input") {

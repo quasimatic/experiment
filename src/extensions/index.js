@@ -5,6 +5,8 @@ export default {
     filter: {
         useDefaultFiltersIfFirst: true,
         apply: function ({elements, target}, resultHandler = (err, result) => result) {
+            log.debug("Filtering by index");
+
             let attributes = target.properties.filter(p => !isNaN(p));
 
             if (attributes.length > 0) {

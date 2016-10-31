@@ -1,7 +1,11 @@
+import log from "../log"
+
 export default {
     properties: {
         "shortestscopeandcontainerpath": {
             filter: function closestdom({elements, scopeElements, target}, resultHandler) {
+                log.debug("Filtering for shortest scope and target");
+
                 return browserExecute(function (elements, scopeElements, scopeIndex, handler) {
                     try {
                         var elementsForDistance = [];

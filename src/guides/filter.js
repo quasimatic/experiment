@@ -1,5 +1,6 @@
 import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
+import log from "../log";
 
 export default class Filter {
     static filter(data, callback) {
@@ -10,7 +11,10 @@ export default class Filter {
         let afterFilters = Filter.afterFilters(callback, extensions, data);
 
         return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
-            return filter({...data, elements: filteredElements}, executeCallback);
+            return filter({...data, elements: filteredElements}, function(err, results){
+                log.debug("Filtered count:", results.length);
+                return executeCallback(err, results);
+            });
         }, afterFilters);
     }
 
