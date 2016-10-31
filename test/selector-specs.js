@@ -358,3 +358,21 @@ describe('Selector should apply property', function () {
         return glance("item ^ block").should.deep.equal(dom.get('target-1', 'target-2'));
     });
 });
+
+describe('Intersection tests', function () {
+    beforeEach(function () {
+        document.body.innerHTML = "";
+    });
+    it("should interesect on class even if one is a leaf node", function () {
+        dom.render(<div id="target" className="blue circle">
+            <svg>
+                <circle></circle>
+            </svg>
+        </div>);
+
+        return Promise.all([
+            glance("blue ^ circle").should.deep.equal(dom.get("target")),
+            glance("circle ^ blue").should.deep.equal(dom.get("target"))
+        ])
+    });
+});
