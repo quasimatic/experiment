@@ -1,15 +1,13 @@
+import log from "../log"
+
 export default {
     properties: {
         "target-is-leaf-node": {
-            filter: function visible({
-                target, elements, log = {
-                debug: () => {
-                }
-            }
-            }, resultHandler) {
+            filter: function visible({target, elements} , resultHandler) {
+                log.debug("Filtering for leaf node targets");
+
                 if (target.type != "target") return resultHandler(null, elements);
 
-                log.debug("Filtering target is a leaf node");
                 return browserExecute(function (elements, handler) {
                     try {
                         var filteredElements = elements.filter(function (e) {

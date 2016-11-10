@@ -1,6 +1,7 @@
 import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
+import log from "../log";
 
 import {reduce, unique} from "../utils/array-utils";
 
@@ -26,8 +27,7 @@ export default class SearchLineage {
         let {
             elements,
             scopes,
-            target,
-            log
+            target
         } = data;
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
@@ -48,11 +48,16 @@ export default class SearchLineage {
 
             return Locator.locate(tempData, (err, located) => {
                 if (tempData.intersectElements) {
+                    log.debug("Finding intersections");
+
                     return browserExecute(function (located, previous, handler) {
                         return handler(null, located.filter(function (e) {
                             return previous.indexOf(e) != -1;
                         }));
-                    }, located, tempData.intersectElements, resultHandler);
+                    }, located, tempData.intersectElements, function(err, result){
+                        log.debug("Intersection count:", result.length);
+                        return resultHandler(err, result);
+                    });
                 }
 
                 return resultHandler(null, located);

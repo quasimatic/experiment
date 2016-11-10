@@ -1,5 +1,6 @@
 import findByXPath from "./lib/xpath"
 import {reduce} from "../utils/array-utils"
+import log from "../log"
 
 export default {
     locator : {
@@ -7,7 +8,7 @@ export default {
             let attributes = target.properties.filter(p => isNaN(p) && p.indexOf("attribute-") > -1);
             return attributes.length > 0;
         },
-        locate: function ({label, target, scopeElement, log = {debug: () => {}}}, resultHandler = (err, result) => result) {
+        locate: function ({label, target, scopeElement}, resultHandler = (err, result) => result) {
             let attributes = target.properties.filter(p => isNaN(p) && p.indexOf("attribute-") > -1);
 
             if (attributes.length > 0) {

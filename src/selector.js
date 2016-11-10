@@ -1,6 +1,6 @@
 import defaultGuide from "./guides/search-lineage"
 import Parser from "./parser";
-import log from "./logger";
+import log from "./log";
 import DefaultExtensions from './extensions/default';
 import DefaultProperties from './default-properties';
 
@@ -61,8 +61,7 @@ function GlanceSelector(options) {
                 scopeElement: config.rootElement,
                 scopes,
                 config,
-                extensions: config.extensions,
-                log: log
+                extensions: config.extensions
             }, function (err, elements) {
                 _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 

@@ -1,9 +1,10 @@
 import findByCSS from "./lib/css"
+import log from "../log"
 
 export default {
     properties: {
         "node-type": {
-            locate: function ({label, scopeElement, log={debug:()=>{}}}, resultHandler = (err, result) => result) {
+            locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
                 try {
                     log.debug("Searching by node type:", label);
 
