@@ -12,7 +12,11 @@ export default class Filter {
 
         return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
             return filter({...data, elements: filteredElements}, function(err, results){
+                if(typeof(results) == 'undefined')
+                    results = [];
+
                 log.debug("Filtered count:", results.length);
+
                 return executeCallback(err, results);
             });
         }, afterFilters);
