@@ -1,7 +1,7 @@
 {
-  "name": "glance-selector",
+  "name": "glance-dom-selector",
   "version": "0.8.6",
-  "description": "Glance selector library",
+  "description": "Glance DOM selector library",
   "main": "lib/selector.js",
   "scripts": {
     "build": "rm -rf lib && node_modules/.bin/pegjs -o src/parser.js src/glance.pegjs && babel src -d lib",
@@ -22,11 +22,11 @@
     "test"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
-    "url": "https://github.com/quasimatic/glance-selector/issues"
+    "url": "https://github.com/quasimatic/glance-dom-selector-js/issues"
   },
-  "homepage": "https://github.com/quasimatic/glance-selector#readme",
+  "homepage": "https://github.com/quasimatic/glance-dom-selector-js#readme",
   "devDependencies": {
     "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
