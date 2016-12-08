@@ -1,24 +1,4 @@
 {
   "gitbook": "3.2.2",
-  "title": "Glance Selector - Javascript",
-  "description": "Glance selector for javascript",
-  "plugins": [
-    "prism",
-    "-highlight",
-    "github",
-    "-search",
-    "codeblock-disable-glossary",
-    "collapsible-menu",
-    "anchors",
-    "codepen"
-  ],
-  "pluginsConfig": {
-    "edit-link": {
-      "base": "https://github.com/quasimatic/glance-selector-js/tree/develop",
-      "label": "Edit This Page"
-    },
-    "github": {
-      "url": "https://github.com/quasimatic/glance-selector-js/"
-    }
-  }
+  "title": "Glance DOM Selector"
 }
