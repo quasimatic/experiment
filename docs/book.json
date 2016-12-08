@@ -1,5 +1,5 @@
 {
-  "gitbook": "2.5.2",
+  "gitbook": "3.2.2",
   "title": "Glance Selector - Javascript",
   "description": "Glance selector for javascript",
   "plugins": [
@@ -14,11 +14,11 @@
   ],
   "pluginsConfig": {
     "edit-link": {
-      "base": "https://github.com/quasimatic/glance-selector-js/tree/master",
+      "base": "https://github.com/quasimatic/glance-selector-js/tree/develop",
       "label": "Edit This Page"
     },
     "github": {
-      "url": "https://github.com/quasimatic/glance-selector/"
+      "url": "https://github.com/quasimatic/glance-selector-js/"
     }
   }
 }
