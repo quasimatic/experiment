@@ -1,6 +1,6 @@
-import findByXPath from "./lib/xpath"
-import {reduce} from "../utils/array-utils"
-import log from "../log"
+import findByXPath from "../lib/xpath"
+import {reduce} from "../../utils/array-utils"
+import log from "../../log"
 
 export default {
     locator : {

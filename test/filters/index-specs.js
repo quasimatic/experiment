@@ -1,5 +1,5 @@
 import dom from '../dom'
-import extension from '../../src/extensions/index';
+import extension from '../../src/extensions/filters/index';
 
 describe("Locator: Search in attributes", function () {
     let filter = extension.filter.apply;

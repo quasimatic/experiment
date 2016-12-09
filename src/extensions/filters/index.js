@@ -1,5 +1,5 @@
-import {reduce} from "../utils/array-utils"
-import log from "../log"
+import {reduce} from "../../utils/array-utils"
+import log from "../../log"
 
 export default {
     filter: {

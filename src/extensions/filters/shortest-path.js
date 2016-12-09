@@ -1,9 +1,9 @@
-import log from "../log"
-import browserExecute from '../browser-execute'
+import log from "../../log"
+import browserExecute from '../../browser-execute'
 
 export default {
     options: {
-        "shortestscopeandcontainerpath": {
+        "shortest-path": {
             filter: function closestdom({elements, scopeElements, target}, resultHandler) {
                 log.debug("Filtering for shortest scope and target");
 

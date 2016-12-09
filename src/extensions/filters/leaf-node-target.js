@@ -1,9 +1,9 @@
-import log from "../log"
-import browserExecute from '../browser-execute'
+import log from "../../log"
+import browserExecute from '../../browser-execute'
 
 export default {
     options: {
-        "target-is-leaf-node": {
+        "leaf-node-target": {
             filter: function visible({target, elements} , resultHandler) {
                 log.debug("Filtering for leaf node targets");
 

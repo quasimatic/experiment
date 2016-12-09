@@ -1,5 +1,5 @@
 import dom from "../dom"
-import extension from '../../src/extensions/contains';
+import extension from '../../src/extensions/locators/contains';
 
 describe("Locator: Contains Match", function () {
     let findContainsText = extension.options["contains"].locate;

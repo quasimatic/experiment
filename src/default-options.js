@@ -9,8 +9,8 @@ export default [
     'attribute-type',
     'node-type',
     'visible',
-    'target-is-leaf-node',
-    'inputafter',
-    'shortestscopeandcontainerpath',
+    'leaf-node-target',
+    'input-after',
+    'shortest-path',
     'index'
 ];

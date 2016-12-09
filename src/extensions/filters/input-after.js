@@ -1,9 +1,9 @@
-import log from "../log"
-import browserExecute from '../browser-execute'
+import log from "../../log"
+import browserExecute from '../../browser-execute'
 
 export default {
     options: {
-        "inputafter": {
+        "input-after": {
             filter: function inputafter({elements, scopeElements}, resultHandler) {
                 log.debug("Filtering for sibling input next to scope");
 

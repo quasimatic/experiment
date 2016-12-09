@@ -1,12 +1,12 @@
-import findByCSS from "./lib/css"
-import log from "../log"
+import findByCSS from "../lib/css"
+import log from "../../log"
 
 export default {
     options: {
-        "node-type": {
+        "css": {
             locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
                 try {
-                    log.debug("Searching by node type:", label);
+                    log.debug("Searching as css:", label);
 
                     return findByCSS(`${label}`, scopeElement, resultHandler);
                 }

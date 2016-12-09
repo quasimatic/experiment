@@ -1,5 +1,5 @@
-import log from "../log"
-import browserExecute from '../browser-execute'
+import log from "../../log"
+import browserExecute from '../../browser-execute'
 
 /*
  Searching the dom by xpath or css for value only gets the default. Inputs dynamically set don't update the dom which

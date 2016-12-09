@@ -1,5 +1,5 @@
 import dom from "../dom"
-import extension from '../../src/extensions/value';
+import extension from '../../src/extensions/locators/value';
 
 describe("Locator: Value Match", function() {
     let findByValue = extension.options["value"].locate;
