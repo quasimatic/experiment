@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/exact-text';
 
 describe("Locator: Exact Match", function() {
-    let findExactText = extension.properties["exact-text"].locate;
+    let findExactText = extension.options["exact-text"].locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

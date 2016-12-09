@@ -1,7 +1,7 @@
 import log from "../log"
 
 export default {
-    properties: {
+    options: {
         "inputafter": {
             filter: function inputafter({elements, scopeElements}, resultHandler) {
                 log.debug("Filtering for sibling input next to scope");

@@ -1,7 +1,7 @@
 import glance from '../../src/selector';
 import dom from "../dom";
 
-describe("Extensions: property", function () {
+describe("Extensions: option", function () {
     beforeEach(function () {
         document.body.innerHTML = "";
         dom.render(
@@ -17,7 +17,7 @@ describe("Extensions: property", function () {
 
     it("should filter elements", function () {
         glance.addExtension({
-            properties: {
+            options: {
                 "every-other": {
                     filter: function ({elements}, resultHandler) {
                         let i = 0;
@@ -32,7 +32,7 @@ describe("Extensions: property", function () {
 
     it("should filter elements as a function", function () {
         glance.addExtension({
-            properties: {
+            options: {
                 "every-other": function ({elements}, resultHandler) {
                     let i = 0;
                     return resultHandler(null, elements.filter(e => ++i % 2));
@@ -43,10 +43,10 @@ describe("Extensions: property", function () {
         return glance("item#every-other").should.deep.equal(dom.get("target-1", "target-2"));
     });
 
-    it("should locate elements with a property", function () {
+    it("should locate elements with a option", function () {
         glance.addExtension({
-            properties: {
-                "custom-property": {
+            options: {
+                "custom-option": {
                     locate: function({glance}, resultHandler) {
                         return resultHandler(null, glance("custom-input"));
                     }
@@ -54,18 +54,18 @@ describe("Extensions: property", function () {
             }
         });
 
-        return glance("ignored#custom-property").should.deep.equal(dom.get("target-3"));
+        return glance("ignored#custom-option").should.deep.equal(dom.get("target-3"));
     });
 
-    it("should locate elements for a custom property as a glance selector", function () {
+    it("should locate elements for a custom option as a glance selector", function () {
         glance.addExtension({
-            properties: {
-                "custom-property": {
+            options: {
+                "custom-option": {
                     locate: "custom-input"
                 }
             }
         });
 
-        return glance("ignored#custom-property").should.deep.equal(dom.get("target-3"));
+        return glance("ignored#custom-option").should.deep.equal(dom.get("target-3"));
     });
 });

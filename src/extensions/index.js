@@ -7,7 +7,7 @@ export default {
         apply: function ({elements, target}, resultHandler = (err, result) => result) {
             log.debug("Filtering by index");
 
-            let attributes = target.properties.filter(p => !isNaN(p));
+            let attributes = target.options.filter(p => !isNaN(p));
 
             if (attributes.length > 0) {
                 return reduce(attributes, [], (result, attribute, callback) => {

@@ -17,7 +17,7 @@ describe("Locator: Search in attributes", function () {
 
         filter({
             elements: dom.get("target-1", "target-2", "target-3"),
-            target: {properties: []}
+            target: {options: []}
         }).should.deep.equal(dom.get("target-1", "target-2", "target-3"));
     });
 
@@ -30,7 +30,7 @@ describe("Locator: Search in attributes", function () {
 
         filter({
             elements: dom.get("item-1", "target", "item-3"),
-            target: {properties: [2]}
+            target: {options: [2]}
         }).should.deep.equal([dom.get("target")]);
     });
 
@@ -43,7 +43,7 @@ describe("Locator: Search in attributes", function () {
 
         filter({
             elements: dom.get("target", "item-2", "item-3"),
-            target: {properties: [1]}
+            target: {options: [1]}
         }).should.deep.equal([dom.get("target")]);
     });
 });

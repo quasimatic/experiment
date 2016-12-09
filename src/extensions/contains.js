@@ -2,7 +2,7 @@ import findByXPath from "./lib/xpath"
 import log from "../log"
 
 export default {
-    properties: {
+    options: {
         "contains": {
             locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
                 log.debug("Searching for text that contains:", label);

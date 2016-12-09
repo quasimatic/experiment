@@ -15,9 +15,9 @@ export default class Extensions {
             .reduce((l, e) => Object.assign(l, e.labels), {});
     }
 
-    static properties(extensions) {
+    static options(extensions) {
         return extensions
-            .filter(e => e.properties)
-            .reduce((l, e) => Object.assign(l, e.properties), {});
+            .filter(e => e.options)
+            .reduce((l, e) => Object.assign(l, e.options), {});
     }
 }

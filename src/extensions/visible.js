@@ -1,7 +1,7 @@
 import log from "../log"
 
 export default {
-    properties: {
+    options: {
         "visible": {
             filter: function visible({elements}, resultHandler) {
                 log.debug("Filtering for visible elements");

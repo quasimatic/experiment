@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/node-type';
 
 describe("Locator: Exact Match", function () {
-    let findByNodeType = extension.properties["node-type"].locate;
+    let findByNodeType = extension.options["node-type"].locate;
     beforeEach(function () {
         document.body.innerHTML = "";
     });

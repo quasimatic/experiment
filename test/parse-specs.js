@@ -5,7 +5,7 @@ describe("Parsing", function () {
         parser.parse("label").should.deep.equal(
             [{
                 label: 'label',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -19,7 +19,7 @@ describe("Parsing", function () {
         parser.parse("label#10").should.deep.equal([
                 {
                     label: 'label',
-                    properties: [10],
+                    options: [10],
                     transforms: [],
                     scope: '',
                     scopeIndex: 0,
@@ -34,7 +34,7 @@ describe("Parsing", function () {
         parser.parse("scope>label").should.deep.equal([
             {
                 label: 'scope',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -43,7 +43,7 @@ describe("Parsing", function () {
             },
             {
                 label: 'label',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: 'scope',
                 scopeIndex: 1,
@@ -53,11 +53,11 @@ describe("Parsing", function () {
         ]);
     });
 
-    it("should support property", function () {
+    it("should support option", function () {
         parser.parse("label:text").should.deep.equal([
                 {
                     label: 'label',
-                    properties: [],
+                    options: [],
                     transforms: ['text'],
                     scope: '',
                     scopeIndex: 0,
@@ -72,7 +72,7 @@ describe("Parsing", function () {
         parser.parse("label\\#10").should.deep.equal([
             {
                 label: 'label#10',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -86,7 +86,7 @@ describe("Parsing", function () {
         parser.parse("label\\>test").should.deep.equal([
             {
                 label: 'label>test',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -96,11 +96,11 @@ describe("Parsing", function () {
         ]);
     });
 
-    it("should escape property character", function () {
+    it("should escape option character", function () {
         parser.parse("label\\:test").should.deep.equal([
             {
                 label: 'label:test',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -114,7 +114,7 @@ describe("Parsing", function () {
         parser.parse("label\\\\test").should.deep.equal([
             {
                 label: 'label\\test',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -128,7 +128,7 @@ describe("Parsing", function () {
         parser.parse(" label ").should.deep.equal([
             {
                 label: 'label',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -142,7 +142,7 @@ describe("Parsing", function () {
         parser.parse(" label > label2 ").should.deep.equal([
             {
                 label: 'label',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -151,7 +151,7 @@ describe("Parsing", function () {
             },
             {
                 label: 'label2',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: 'label',
                 scopeIndex: 1,
@@ -165,7 +165,7 @@ describe("Parsing", function () {
         parser.parse(" label#1 ").should.deep.equal([
             {
                 label: 'label',
-                properties: [1],
+                options: [1],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -176,14 +176,14 @@ describe("Parsing", function () {
     });
 
     it("should support spaces before and after a label", function () {
-        parser.parse(" label:property ").should.deep.equal([
+        parser.parse(" label:option ").should.deep.equal([
             {
                 label: 'label',
-                properties: [],
-                transforms: ['property'],
+                options: [],
+                transforms: ['option'],
                 scope: '',
                 scopeIndex: 0,
-                path: 'label:property',
+                path: 'label:option',
                 type: 'target'
             }
         ]);
@@ -193,7 +193,7 @@ describe("Parsing", function () {
         parser.parse(" label 1^label 2 ").should.deep.equal([
             {
                 label: 'label 1',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: '',
                 scopeIndex: 0,
@@ -202,7 +202,7 @@ describe("Parsing", function () {
             },
             {
                 label: 'label 2',
-                properties: [],
+                options: [],
                 transforms: [],
                 scope: 'label 1',
                 scopeIndex: 1,

@@ -30,20 +30,20 @@ describe("Extensions: labels", function () {
                 }
             },
 
-            properties: {
-                "custom-property": {
+            options: {
+                "custom-option": {
                     locate: function (target, callback) {
-                        calledEvents.push('property locate');
+                        calledEvents.push('option locate');
                         return callback(null, [dom.get('custom-label')]);
                     },
                     filter: function ({elements}, resultHandler) {
-                        calledEvents.push('property filter');
+                        calledEvents.push('option filter');
                         return resultHandler(null, elements);
                     }
                 },
-                "another-property": {
+                "another-option": {
                     locate: function (target, callback) {
-                        calledEvents.push('property locate');
+                        calledEvents.push('option locate');
                         return callback(null, [dom.get('custom-label')]);
                     }
                 }
@@ -78,7 +78,7 @@ describe("Extensions: labels", function () {
     });
 
     it("should call events in correct order", function () {
-        glance("scope > custom label#custom-property > item 1#another-property");
+        glance("scope > custom label#custom-option > item 1#another-option");
         calledEvents.should.deep.equal([
             'beforeScope',
             'beforeLocate',
@@ -89,16 +89,16 @@ describe("Extensions: labels", function () {
             'beforeScope',
             'beforeLocate',
             'label locate',
-            'property locate',
+            'option locate',
             'afterLocate',
             'beforeFilters',
             'label filter',
-            'property filter',
+            'option filter',
             'afterFilters',
             'afterScope',
             'beforeScope',
             'beforeLocate',
-            'property locate',
+            'option locate',
             'afterLocate',
             'beforeFilters',
             'afterFilters',

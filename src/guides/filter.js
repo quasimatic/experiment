@@ -5,7 +5,7 @@ import log from "../log";
 export default class Filter {
     static filter(data, callback) {
         let {target, elements:unfilteredElements, extensions, config} = data;
-        let filters = Filter.getFilters(target, extensions, config.defaultProperties) || Filter.getDefaultFilters(extensions, config.defaultProperties);
+        let filters = Filter.getFilters(target, extensions, config.defaultOptions) || Filter.getDefaultFilters(extensions, config.defaultOptions);
 
         let beforeFilterElements = Filter.beforeFilters(unfilteredElements, extensions, data);
         let afterFilters = Filter.afterFilters(callback, extensions, data);
@@ -30,24 +30,24 @@ export default class Filter {
         return (err, filteredElements) => callback(err, extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), filteredElements));
     }
 
-    static getFilters(target, extensions, defaultProperties) {
+    static getFilters(target, extensions, defaultOptions) {
         let filters = [];
         let labels = Extensions.labels(extensions);
-        let properties = Extensions.properties(extensions);
+        let options = Extensions.options(extensions);
 
         if (labels[target.label] && Object.prototype.toString.call(labels[target.label]) !== '[object Array]' && labels[target.label].filter) {
             filters = filters.concat(labels[target.label].filter);
         }
 
-        target.properties.forEach(name => {
-            if (properties[name] && (properties[name].filter || typeof(properties[name]) == "function")) {
-                filters = filters.concat(typeof(properties[name]) == "function" ? properties[name] : properties[name].filter);
+        target.options.forEach(name => {
+            if (options[name] && (options[name].filter || typeof(options[name]) == "function")) {
+                filters = filters.concat(typeof(options[name]) == "function" ? options[name] : options[name].filter);
             }
             else {
                 let catchAlls = extensions.filter(e => e.filter);
                 if (catchAlls.length > 0) {
                     if (filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
-                        filters = filters.concat(Filter.getDefaultFilters(extensions, defaultProperties))
+                        filters = filters.concat(Filter.getDefaultFilters(extensions, defaultOptions))
                     }
 
                     filters = filters.concat(catchAlls.map(e => e.filter.apply));
@@ -58,21 +58,21 @@ export default class Filter {
         return filters.length > 0 ? filters : null;
     }
 
-    static getDefaultFilters(extensions, defaultProperties) {
-        let properties = Extensions.properties(extensions);
+    static getDefaultFilters(extensions, defaultOptions) {
+        let options = Extensions.options(extensions);
 
-        if (defaultProperties.length > 0) {
+        if (defaultOptions.length > 0) {
             let filters = extensions.filter(e => e.filter).map(e => {
                 return (data, callback) => {
                     let target = data.target;
-                    return e.filter.apply({...data, target: {...target, properties: defaultProperties}}, callback);
+                    return e.filter.apply({...data, target: {...target, options: defaultOptions}}, callback);
                 };
             });
 
-            let propertiesWithFilters = defaultProperties.filter(name => properties[name] && (properties[name].filter || typeof(properties[name]) == "function"));
+            let optionsWithFilters = defaultOptions.filter(name => options[name] && (options[name].filter || typeof(options[name]) == "function"));
 
-            if (propertiesWithFilters.length != 0) {
-                filters = filters.concat(propertiesWithFilters.map(name => typeof(properties[name]) == "function" ? properties[name] : properties[name].filter));
+            if (optionsWithFilters.length != 0) {
+                filters = filters.concat(optionsWithFilters.map(name => typeof(options[name]) == "function" ? options[name] : options[name].filter));
             }
 
             return filters;

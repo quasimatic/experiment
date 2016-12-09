@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/value';
 
 describe("Locator: Value Match", function() {
-    let findByValue = extension.properties["value"].locate;
+    let findByValue = extension.options["value"].locate;
 
     beforeEach(function(){
         document.body.innerHTML = "";

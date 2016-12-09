@@ -14,12 +14,12 @@ Start = references:Reference* { return references }
 
 ScopeChar = ">"
 IntersectChar = "^"
-PropertyChar = "#"
+OptionChar = "#"
 SeparatorChar = ","
 TransformChar = ":"
 
 EscapeChar = "\\"
-EscapableChars = EscapeChar / ScopeChar / TransformChar / PropertyChar / IntersectChar
+EscapableChars = EscapeChar / ScopeChar / TransformChar / OptionChar / IntersectChar
 EscapedSequence = EscapeChar c:(EscapableChars) { return c; }
 
 Reference
@@ -45,10 +45,10 @@ Reference
 Target = label:Label { return label }
 
 Label
-  = label:LabelCharacter+ properties:Properties? transforms:Transforms? Whitespace? {
+  = label:LabelCharacter+ options:Options? transforms:Transforms? Whitespace? {
     return {
       label: label.join('').trim(),
-      properties: properties || [],
+      options: options || [],
       transforms: transforms || [],
       scope: scope.slice(0,-1).trim(),
       scopeIndex: scopeIndex,
@@ -60,9 +60,9 @@ LabelCharacter
  = !(EscapableChars) c:. { return c }
  / EscapedSequence
 
-Properties = PropertyChar properties:Property* { return properties; }
+Options = OptionChar options:Option* { return options; }
 
-Property = name:Character+ SeparatorChar? { return tryParseInt(name.join("").trim()) }
+Option = name:Character+ SeparatorChar? { return tryParseInt(name.join("").trim()) }
 
 Transforms = TransformChar transforms:Transform* { return transforms; }
 Transform = name:Character+ SeparatorChar? { return name.join("").trim() }

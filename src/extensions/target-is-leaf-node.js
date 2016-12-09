@@ -1,7 +1,7 @@
 import log from "../log"
 
 export default {
-    properties: {
+    options: {
         "target-is-leaf-node": {
             filter: function visible({target, elements} , resultHandler) {
                 log.debug("Filtering for leaf node targets");

@@ -1,7 +1,7 @@
 import log from "../log"
 
 export default {
-    properties: {
+    options: {
         "shortestscopeandcontainerpath": {
             filter: function closestdom({elements, scopeElements, target}, resultHandler) {
                 log.debug("Filtering for shortest scope and target");

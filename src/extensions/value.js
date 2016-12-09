@@ -4,7 +4,7 @@ import log from "../log"
  xpath and css won't find. The method is used to get search those dynamic values as well.
  */
 export default {
-    properties: {
+    options: {
         "value": {
             locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
                 try {

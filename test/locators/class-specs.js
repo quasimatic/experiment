@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/class';
 
 describe("Locator: Class", function() {
-    let findByClass = extension.properties["class"].locate;
+    let findByClass = extension.options["class"].locate;
     beforeEach(function(){
         document.body.innerHTML = "";
     });

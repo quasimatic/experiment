@@ -2,7 +2,7 @@ import dom from "../dom"
 import extension from '../../src/extensions/contains';
 
 describe("Locator: Contains Match", function () {
-    let findContainsText = extension.properties["contains"].locate;
+    let findContainsText = extension.options["contains"].locate;
     beforeEach(function () {
         document.body.innerHTML = "";
     });

@@ -8,7 +8,7 @@ export default class Locator {
         let {target, scopeElement, scopeElements, config, extensions} = data;
         let parent = scopeElement;
 
-        var locators = Locator.getLocators(target, extensions) || Locator.getDefaultLocators(extensions, config.defaultProperties);
+        var locators = Locator.getLocators(target, extensions) || Locator.getDefaultLocators(extensions, config.defaultOptions);
 
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
@@ -109,7 +109,7 @@ export default class Locator {
     static getLocators(target, extensions) {
         let locators = [];
         let labels = Extensions.labels(extensions);
-        let properties = Extensions.properties(extensions);
+        let options = Extensions.options(extensions);
 
         if (labels[target.label]) {
             if (labels[target.label].locate) {
@@ -120,9 +120,9 @@ export default class Locator {
             }
         }
 
-        target.properties.forEach(name => {
-            if (properties[name] && properties[name].locate) {
-                locators = locators.concat(Locator.getLocator(properties[name].locate))
+        target.options.forEach(name => {
+            if (options[name] && options[name].locate) {
+                locators = locators.concat(Locator.getLocator(options[name].locate))
             }
             else {
                 let catchAlls = extensions.filter(e => {
@@ -142,21 +142,21 @@ export default class Locator {
         return locators.length > 0 ? locators : null;
     }
 
-    static getDefaultLocators(extensions, defaultProperties) {
-        let properties = Extensions.properties(extensions);
+    static getDefaultLocators(extensions, defaultOptions) {
+        let options = Extensions.options(extensions);
 
-        if (defaultProperties.length > 0) {
+        if (defaultOptions.length > 0) {
             let locators = extensions.filter(e => e.locator).map(e => {
                 return (data, callback) => {
                     let target = data.target;
-                    return e.locator.locate({...data, target: {...target, properties: defaultProperties}}, callback);
+                    return e.locator.locate({...data, target: {...target, options: defaultOptions}}, callback);
                 };
             });
 
-            let propertiesWithlocators = defaultProperties.filter(name => properties[name] && (properties[name].locate));
+            let optionsWithlocators = defaultOptions.filter(name => options[name] && (options[name].locate));
 
-            if (propertiesWithlocators.length != 0) {
-                locators = locators.concat(propertiesWithlocators.map(name => properties[name].locate));
+            if (optionsWithlocators.length != 0) {
+                locators = locators.concat(optionsWithlocators.map(name => options[name].locate));
             }
 
             return locators;

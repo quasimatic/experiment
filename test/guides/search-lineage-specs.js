@@ -1,5 +1,5 @@
 import defaultExtensions from '../../src/extensions/default';
-import defaultProperties from '../../src/default-properties';
+import defaultOptions from '../../src/default-options';
 import LineageGuide from '../../src/guides/search-lineage';
 import parser from "../../src/parser";
 import dom from "../dom";
@@ -8,7 +8,7 @@ describe("Guide: Search lineage", function () {
     let lineageGuide;
     let scopeElement;
     let config = {
-        defaultProperties:defaultProperties,
+        defaultOptions:defaultOptions,
         extensions: defaultExtensions.concat({
             labels: {
                 "customlabel": function (data, callback) {

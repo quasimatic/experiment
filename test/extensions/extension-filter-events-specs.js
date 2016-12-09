@@ -14,7 +14,7 @@ describe("Extensions: beforeFilters event", function () {
         );
 
         glance.addExtension({
-            properties: {
+            options: {
                 "one": {
                     filter: function({elements}, resultHandler) {
                         return resultHandler(null, [elements[0]]);
