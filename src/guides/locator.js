@@ -2,6 +2,7 @@ import log from '../log';
 import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
+import browserExecute from '../browser-execute'
 
 export default class Locator {
     static locate(data, resultHandler) {

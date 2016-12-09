@@ -1,3 +1,5 @@
+import browserExecute from '../../browser-execute'
+
 export default function (label, scopeElement, resultHandler) {
     return browserExecute(function (label, scopeElement, handler) {
         try {

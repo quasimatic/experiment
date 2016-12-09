@@ -1,4 +1,6 @@
 import log from "../log"
+import browserExecute from '../browser-execute'
+
 /*
  Searching the dom by xpath or css for value only gets the default. Inputs dynamically set don't update the dom which
  xpath and css won't find. The method is used to get search those dynamic values as well.

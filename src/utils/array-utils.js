@@ -1,3 +1,5 @@
+import browserExecute from '../browser-execute'
+
 export function reduce(collection, memo, iteratee, resultHandler) {
     function process(i, collection, memo, iteratee, handler) {
         if (i < collection.length) {

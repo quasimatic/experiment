@@ -1,8 +1,9 @@
 import ReactDOM from 'react-dom';
+import browserExecute from '../src/browser-execute'
 
-window.browserExecute = function (func, ...args) {
+browserExecute.configure(function (func, ...args) {
     return func(...args);
-};
+});
 
 export default {
     get(...ids) {

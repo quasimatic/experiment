@@ -2,7 +2,7 @@ import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
 import log from "../log";
-
+import browserExecute from '../browser-execute'
 import {reduce, unique} from "../utils/array-utils";
 
 export default class SearchLineage {

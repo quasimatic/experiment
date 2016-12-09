@@ -3,6 +3,7 @@ import Parser from "./parser";
 import log from "./log";
 import DefaultExtensions from './extensions/default';
 import DefaultOptions from './default-options';
+import browserExecute from './browser-execute'
 
 function GlanceSelector(options) {
     let _selector = {};
@@ -42,11 +43,8 @@ function GlanceSelector(options) {
         config.glance = config.glance || selector;
         config.glanceSelector = config.glanceSelector || selector;
 
-        var globalScope = global || window;
-
-        globalScope.browserExecute = config.browserExecute || function (func, ...args) {
-                return func(...args);
-            };
+        if(config.browserExecute)
+            browserExecute.configure(config.browserExecute);
 
         selector.find = function(reference, resultHandler) {
             let scopes = Parser.parse(reference);
