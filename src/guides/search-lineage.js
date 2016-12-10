@@ -5,62 +5,46 @@ import log from "../log";
 import browserExecute from '../browser-execute'
 import {reduce, unique} from "../utils/array-utils";
 
-export default class SearchLineage {
-    search(data, callback = (err, result) => result) {
-        let {scopes, scopeElement, config = {}} = data;
-        config.extensions = config.extensions || [];
+function filterIntersectingElements(intersectElements, scopeElement, result, located, reduceeCallback ) {
+    log.debug("Finding intersections");
 
-        data = {
-            ...data,
-            extensions: config.extensions
-        };
-
-        return SearchLineage.traverseScopes({
-            ...data,
-            elements: [scopeElement],
-            target: scopes[0],
-            scopeElements: []
-        }, callback);
+    function resultHandler(err, located) {
+        if (err) {
+            return reduceeCallback(err, []);
+        }
+        result.push({scopeElement, elements: located});
+        return reduceeCallback(err, result);
     }
 
+    if (intersectElements) {
+
+        return browserExecute(function (located, previous, handler) {
+            return handler(null, located.filter(function (e) {
+                return previous.indexOf(e) != -1;
+            }));
+        }, located, intersectElements, function (err, result) {
+            log.debug("Intersection count:", result.length);
+            return resultHandler(err, result);
+        });
+    }
+
+    return resultHandler(null, located);
+}
+
+class SearchLineage {
     static traverseScopes(data, resultHandler) {
         let {
             elements,
             scopes,
-            target
+            target,
+            intersectElements
         } = data;
 
         let processLevel = (result, scopeElement, reduceeCallback) => {
-            var tempData = {
-                ...data,
-                scopeElement
-            };
+            Extensions.beforeScopeEvent({...data, scopeElement});
 
-            Extensions.beforeScopeEvent(tempData);
-
-            function resultHandler(err, located) {
-                if (err) {
-                    return reduceeCallback(err, []);
-                }
-                result.push({scopeElement: scopeElement, elements: located});
-                return reduceeCallback(err, result);
-            }
-
-            return Locator.locate(tempData, (err, located) => {
-                if (tempData.intersectElements) {
-                    log.debug("Finding intersections");
-
-                    return browserExecute(function (located, previous, handler) {
-                        return handler(null, located.filter(function (e) {
-                            return previous.indexOf(e) != -1;
-                        }));
-                    }, located, tempData.intersectElements, function(err, result){
-                        log.debug("Intersection count:", result.length);
-                        return resultHandler(err, result);
-                    });
-                }
-
-                return resultHandler(null, located);
+            return Locator.locate({...data, scopeElement}, (err, located) => {
+                return filterIntersectingElements(intersectElements, scopeElement, result, located, reduceeCallback);
             });
         };
 
@@ -111,4 +95,25 @@ export default class SearchLineage {
             });
         });
     }
+}
+
+export default class DomQuery {
+    search(data, callback = (err, result) => result) {
+        let {scopes, scopeElement, config = {}} = data;
+        config.extensions = config.extensions || [];
+
+        data = {
+            ...data,
+            extensions: config.extensions
+        };
+
+        return SearchLineage.traverseScopes({
+            ...data,
+            elements: [scopeElement],
+            target: scopes[0],
+            scopeElements: []
+        }, callback);
+    }
+
+
 }
