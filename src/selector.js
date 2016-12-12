@@ -1,4 +1,4 @@
-import defaultGuide from "./guides/search-lineage"
+import domQuery from "./dom-query"
 import Parser from "./parser";
 import log from "./log";
 import DefaultExtensions from './extensions/default';
@@ -85,4 +85,4 @@ function GlanceSelector(options) {
 }
 
 export {Parser, DefaultExtensions, DefaultOptions};
-export default GlanceSelector({guideFactory: () => new defaultGuide()});
+export default GlanceSelector({guideFactory: () => new domQuery()});

@@ -1,6 +1,6 @@
 import defaultExtensions from '../../src/extensions/default';
 import defaultOptions from '../../src/default-options';
-import LineageGuide from '../../src/guides/search-lineage';
+import LineageGuide from '../../src/dom-query';
 import parser from "../../src/parser";
 import dom from "../dom";
 
