@@ -1,11 +1,12 @@
 import log from "../log";
 import browserExecute from '../browser-execute'
 import Locator from "./locator";
+import emptyOnError from '../empty-on-error';
 
 export default function(data, intersectElements, scopeElement, result, resultHandler) {
     log.debug("Finding intersections");
 
-    return Locator.locate({...data, scopeElement}, (err, located) => {
+    return Locator.locate({...data, scopeElement}, emptyOnError((err, located) => {
         return browserExecute(function (located, previous, handler) {
             return handler(null, located.filter(function (e) {
                 return previous.indexOf(e) != -1;
@@ -16,5 +17,5 @@ export default function(data, intersectElements, scopeElement, result, resultHan
         });
 
         return resultHandler(null, located);
-    });
+    }));
 }
