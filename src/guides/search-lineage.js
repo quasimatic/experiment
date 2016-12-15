@@ -1,26 +1,8 @@
 import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
-import log from "../log";
-import browserExecute from '../browser-execute'
 import {reduce, unique} from "../utils/array-utils";
-
-function locateIntersectingElements(data, intersectElements, scopeElement, result, resultHandler) {
-    log.debug("Finding intersections");
-
-    return Locator.locate({...data, scopeElement}, (err, located) => {
-        return browserExecute(function (located, previous, handler) {
-            return handler(null, located.filter(function (e) {
-                return previous.indexOf(e) != -1;
-            }));
-        }, located, intersectElements, function (err, result) {
-            log.debug("Intersection count:", result.length);
-            return resultHandler(err, result);
-        });
-
-        return resultHandler(null, located);
-    });
-}
+import locateIntersections from "./locate-intersections";
 
 export default class SearchLineage {
     static traverseScopes(data, resultHandler) {
@@ -40,8 +22,9 @@ export default class SearchLineage {
                 result.push({scopeElement, elements: located});
                 return reduceeCallback(err, result);
             }
+
             if (intersectElements) {
-                return locateIntersectingElements(data, intersectElements, scopeElement, result, resultHandler);
+                return locateIntersections(data, intersectElements, scopeElement, result, resultHandler);
             }
             else {
                 return Locator.locate({...data, scopeElement}, resultHandler)
@@ -72,25 +55,23 @@ export default class SearchLineage {
                     if (target.type == "target") {
                         return resultHandler(err, filteredElements);
                     }
-                    else {
-                        if (target.type == "intersect") {
-                            return SearchLineage.traverseScopes({
-                                ...data,
-                                intersectElements: filteredElements,
-                                elements: filteredElements,
-                                target: scopes[target.scopeIndex + 1]
-                            }, resultHandler);
-                        }
-                        else {
-                            return SearchLineage.traverseScopes({
-                                ...data,
-                                intersectElements: null,
-                                scopeElements: filteredElements,
-                                elements: filteredElements,
-                                target: scopes[target.scopeIndex + 1]
-                            }, resultHandler);
-                        }
+
+                    if (target.type == "intersect") {
+                        return SearchLineage.traverseScopes({
+                            ...data,
+                            intersectElements: filteredElements,
+                            elements: filteredElements,
+                            target: scopes[target.scopeIndex + 1]
+                        }, resultHandler);
                     }
+
+                    return SearchLineage.traverseScopes({
+                        ...data,
+                        intersectElements: null,
+                        scopeElements: filteredElements,
+                        elements: filteredElements,
+                        target: scopes[target.scopeIndex + 1]
+                    }, resultHandler);
                 });
             });
         });
