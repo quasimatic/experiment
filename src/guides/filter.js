@@ -1,8 +1,23 @@
 import Extensions from "../utils/extensions";
-import {reduce} from "../utils/array-utils";
 import log from "../log";
+import {reduce, unique} from "../utils/array-utils";
+import emptyOnError from '../empty-on-error';
 
 export default class Filter {
+    static process(locatedTargets, data, handler) {
+        var targetInfo = locatedTargets.reduce((result, info) => {
+            result.elements = result.elements.concat(info.elements);
+            result.scopeElements.push(info.scopeElement);
+            return result;
+        }, {elements: [], scopeElements: []});
+
+        return unique(targetInfo.elements, emptyOnError((err, uniqueTargets) => {
+            targetInfo.elements = uniqueTargets;
+
+            return Filter.filter({...data, ...targetInfo}, handler);
+        }));
+    }
+
     static filter(data, callback) {
         let {target, elements:unfilteredElements, extensions, config} = data;
         let filters = Filter.getFilters(target, extensions, config.defaultOptions) || Filter.getDefaultFilters(extensions, config.defaultOptions);
@@ -11,8 +26,8 @@ export default class Filter {
         let afterFilters = Filter.afterFilters(callback, extensions, data);
 
         return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
-            return filter({...data, elements: filteredElements}, function(err, results){
-                if(typeof(results) == 'undefined')
+            return filter({...data, elements: filteredElements}, function (err, results) {
+                if (typeof(results) == 'undefined')
                     results = [];
 
                 log.debug("Filtered count:", results.length);

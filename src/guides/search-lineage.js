@@ -1,7 +1,7 @@
 import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
-import {reduce, unique} from "../utils/array-utils";
+import {reduce} from "../utils/array-utils";
 import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
 
@@ -14,56 +14,54 @@ export default class SearchLineage {
             intersectElements
         } = data;
 
-        let processLevel = (result, scopeElement, reduceeCallback) => {
-            Extensions.beforeScopeEvent({...data, scopeElement});
-            function resultHandler(err, located) {
-                result.push({scopeElement, elements: located});
-                return reduceeCallback(err, result);
-            }
+        return reduce(elements, [], (result, scopeElement, levelHandler) => SearchLineage.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
+            return Filter.process(locatedTargets, data, (err, filteredElements) => {
+                Extensions.afterScopeEvent({...data, elements: filteredElements});
 
-            if (intersectElements) {
-                return locateIntersections(data, intersectElements, scopeElement, result, emptyOnError(resultHandler));
-            }
-            else {
-                return Locator.locate({...data, scopeElement}, emptyOnError(resultHandler))
-            }
-        };
-
-        return reduce(elements, [], processLevel, emptyOnError((err, locatedTargets) => {
-            if (err) {
-                return resultHandler(err, []);
-            }
-
-            var targetInfo = locatedTargets.reduce((result, info) => {
-                result.elements = result.elements.concat(info.elements);
-                result.scopeElements.push(info.scopeElement);
-                return result;
-            }, {elements: [], scopeElements: []});
-
-            return unique(targetInfo.elements, (err, uniqueTargets) => {
-                targetInfo.elements = uniqueTargets;
-
-                return Filter.filter({...data, ...targetInfo}, (err, filteredElements) => {
-                    if (err) {
-                        return resultHandler(err, []);
-                    }
-
-                    Extensions.afterScopeEvent({...data, elements: filteredElements});
-
-                    if (target.type == "target") {
+                switch (target.type) {
+                    case "target":
                         return resultHandler(err, filteredElements);
-                    }
 
-                    return SearchLineage.traverseScopes({
-                        ...data,
-                        intersectElements: target.type == "intersect" ? filteredElements : null,
-                        scopeElements: target.type != "intersect"? filteredElements : data.scopeElements,
-                        elements: filteredElements,
-                        target: scopes[target.scopeIndex + 1]
-                    }, resultHandler);
-                });
-            });
+                    case "intersect":
+                        return SearchLineage.traverseIntersect(filteredElements, data, resultHandler);
+
+                    case "scope":
+                        return SearchLineage.traverseScopes({
+                            ...data,
+                            intersectElements: null,
+                            scopeElements: filteredElements,
+                            elements: filteredElements,
+                            target: scopes[target.scopeIndex + 1]
+                        }, resultHandler);
+                }
+            })
         }));
     }
-}
 
+    static traverseIntersect(filteredElements, data, resultHandler) {
+        let {scopes, target} = data;
+
+        return SearchLineage.traverseScopes({
+            ...data,
+            intersectElements: filteredElements,
+            elements: filteredElements,
+            target: scopes[target.scopeIndex + 1]
+        }, resultHandler);
+    }
+
+    static processLevel(result, scopeElement, intersectElements, data, resultHandler) {
+        Extensions.beforeScopeEvent({...data, scopeElement});
+
+        return Locator.locate({...data, scopeElement}, emptyOnError((err, located) => {
+            if (intersectElements) {
+                return locateIntersections(data, located, intersectElements, result, emptyOnError((err, located) => {
+                    result.push({scopeElement, elements: located});
+                    return resultHandler(err, result);
+                }));
+            }
+
+            result.push({scopeElement, elements: located});
+            return resultHandler(err, result)
+        }))
+    }
+}
