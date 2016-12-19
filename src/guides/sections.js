@@ -6,7 +6,7 @@ import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
 
 export default class SearchLineage {
-    static traverseScopes(data, resultHandler) {
+    static traverse(data, resultHandler) {
         let {
             elements,
             scopes,
@@ -26,7 +26,7 @@ export default class SearchLineage {
                         return SearchLineage.traverseIntersect(filteredElements, data, resultHandler);
 
                     case "scope":
-                        return SearchLineage.traverseScopes({
+                        return SearchLineage.traverse({
                             ...data,
                             intersectElements: null,
                             scopeElements: filteredElements,
@@ -41,7 +41,7 @@ export default class SearchLineage {
     static traverseIntersect(filteredElements, data, resultHandler) {
         let {scopes, target} = data;
 
-        return SearchLineage.traverseScopes({
+        return SearchLineage.traverse({
             ...data,
             intersectElements: filteredElements,
             elements: filteredElements,

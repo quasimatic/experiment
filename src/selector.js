@@ -1,4 +1,4 @@
-import domQuery from "./dom-query"
+import guide from "./guide"
 import Parser from "./parser";
 import log from "./log";
 import DefaultExtensions from './extensions/default';
@@ -47,20 +47,9 @@ function GlanceSelector(options) {
             browserExecute.configure(config.browserExecute);
 
         selector.find = function(reference, resultHandler) {
-            let scopes = Parser.parse(reference);
-
-            log.debug("Selector:", reference);
-
             _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
-            return _selector.guideFactory().search({
-                glance: config.glance,
-                glanceSelector: config.glanceSelector,
-                scopeElement: config.rootElement,
-                scopes,
-                config,
-                extensions: config.extensions
-            }, function (err, elements) {
+            return _selector.guideFactory().search({reference, config}, function (err, elements) {
                 _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
                 if (elements.length === 1)
@@ -85,4 +74,4 @@ function GlanceSelector(options) {
 }
 
 export {Parser, DefaultExtensions, DefaultOptions};
-export default GlanceSelector({guideFactory: () => new domQuery()});
+export default GlanceSelector({guideFactory: () => new guide()});
