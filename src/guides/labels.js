@@ -5,7 +5,7 @@ import {reduce} from "../utils/array-utils";
 import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
 
-export default class SearchLineage {
+export default class Labels {
     static traverse(data, resultHandler) {
         let {
             elements,
@@ -14,7 +14,7 @@ export default class SearchLineage {
             intersectElements
         } = data;
 
-        return reduce(elements, [], (result, scopeElement, levelHandler) => SearchLineage.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
+        return reduce(elements, [], (result, scopeElement, levelHandler) => Labels.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
             return Filter.process(locatedTargets, data, (err, filteredElements) => {
                 Extensions.afterScopeEvent({...data, elements: filteredElements});
 
@@ -23,10 +23,10 @@ export default class SearchLineage {
                         return resultHandler(err, filteredElements);
 
                     case "intersect":
-                        return SearchLineage.traverseIntersect(filteredElements, data, resultHandler);
+                        return Labels.traverseIntersect(filteredElements, data, resultHandler);
 
                     case "scope":
-                        return SearchLineage.traverse({
+                        return Labels.traverse({
                             ...data,
                             intersectElements: null,
                             scopeElements: filteredElements,
@@ -41,7 +41,7 @@ export default class SearchLineage {
     static traverseIntersect(filteredElements, data, resultHandler) {
         let {scopes, target} = data;
 
-        return SearchLineage.traverse({
+        return Labels.traverse({
             ...data,
             intersectElements: filteredElements,
             elements: filteredElements,

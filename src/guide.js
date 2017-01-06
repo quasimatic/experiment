@@ -1,4 +1,4 @@
-import Sections from './guides/sections';
+import Labels from './guides/labels';
 import Parser from "./parser";
 import log from "./log";
 
@@ -26,7 +26,7 @@ export default class Guide {
             extensions: config.extensions
         };
 
-        return Sections.traverse({
+        return Labels.traverse({
             ...data,
             elements: [scopeElement],
             target: scopes[0],
