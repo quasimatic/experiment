@@ -28,11 +28,13 @@ module.exports = function (wallaby) {
             {pattern: 'node_modules/chai/chai.js', instrument: false},
 
             {pattern: 'src/**/*.js', load: false},
+            {pattern: '!src/**/*-spec.js', load: false},
             {pattern: 'test/**/*.js', load: false},
             {pattern: '!test/**/*-specs.js', load: false}
         ],
 
         tests: [
+            {pattern: 'src/**/*-spec.js', load: false},
             {pattern: 'test/**/*-specs.js', load: false}
         ],
 
