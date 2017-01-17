@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/quasimatic/glance-dom-selector-js#readme",
   "devDependencies": {
-    "babel": "^6.5.2",
     "babel-cli": "^6.18.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.8",
@@ -50,6 +49,9 @@
     "webpack": "^1.13.3"
   },
   "babel": {
+    "ignore": [
+      "src/**/*-spec.js"
+    ],
     "presets": [
       "es2015",
       "stage-0"
