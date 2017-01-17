@@ -1,31 +1,26 @@
 import {reduce} from "../../utils/array-utils"
 import log from "../../log"
+import defaultResultHandler from "../../utils/default-result-handler"
 
 export default {
     filter: {
         useDefaultFiltersIfFirst: true,
-        apply: function ({elements, target}, resultHandler = (err, result) => result) {
+        apply: function ({elements, target}, resultHandler = defaultResultHandler) {
             log.debug("Filtering by index");
 
-            let attributes = target.options.filter(p => !isNaN(p));
+            let attributes = target.options.filter(p => p != null && !isNaN(p));
 
             if (attributes.length > 0) {
                 return reduce(attributes, [], (result, attribute, callback) => {
                     let position = attribute;
                     log.debug("Selecting the", position, "element out of", elements.length);
 
-                    if (position == null) {
-                        return callback(null, result.concat(elements));
-                    }
-
                     if (position <= 0) {
-                        console.log("Positions start at 1")
-                        return callback("Positions start at 1", result.concat([]));
+                        return callback("Positions start at 1", []);
                     }
 
                     if (elements.length < position) {
-                        console.log(`Position ${position} out of range`);
-                        return callback(`Position ${position} out of range`, result.concat([]));
+                        return callback(`Position ${position} out of range`, []);
                     }
 
                     let i = position - 1;
