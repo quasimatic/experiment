@@ -1,79 +1,75 @@
 import log from "../../log"
 import browserExecute from '../../browser-execute'
+import defaultHandler from '../../utils/default-result-handler'
 
 export default {
     options: {
         "shortest-path": {
-            filter: function closestdom({elements, scopeElements, target}, resultHandler) {
+            filter: function closestdom({elements, scopeElements, target}, resultHandler = defaultHandler) {
                 log.debug("Filtering for shortest scope and target");
 
                 return browserExecute(function (elements, scopeElements, scopeIndex, handler) {
-                    try {
-                        var elementsForDistance = [];
-                        var distanceToScopeLookup = {};
+                    var elementsForDistance = [];
+                    var distanceToScopeLookup = {};
 
-                        function addToLookup(element, distance) {
-                            elementsForDistance.push(element);
-                            var i = elementsForDistance.indexOf(element);
-                            distanceToScopeLookup[i] = distance;
+                    function addToLookup(element, distance) {
+                        elementsForDistance.push(element);
+                        var i = elementsForDistance.indexOf(element);
+                        distanceToScopeLookup[i] = distance;
+                    }
+
+                    function lookup(element) {
+                        var i = elementsForDistance.indexOf(element);
+                        if (i == -1) return null;
+
+                        return distanceToScopeLookup[i];
+                    }
+
+
+                    if (scopeIndex == 0) return handler(null, elements);
+
+                    scopeElements.forEach(function (v) {
+                        var p = v;
+                        var i = 0;
+
+                        while (p != null && p.outerHTML != null) {
+                            var distanceToScope = lookup(p);
+
+                            if (!distanceToScope || i < distanceToScope) {
+                                addToLookup(p, i);
+                            }
+
+                            ++i;
+
+                            p = p.parentNode;
                         }
+                    });
 
-                        function lookup(element) {
-                            var i = elementsForDistance.indexOf(element);
-                            if(i == -1) return null;
+                    var closestLevel = -1;
+                    var closestElements = [];
 
-                            return distanceToScopeLookup[i];
-                        }
+                    elements.forEach(function (element) {
+                        var parent = element;
 
+                        var distanceToScope = lookup(parent);
 
-                        if (scopeIndex == 0) return handler(null, elements);
-
-                        scopeElements.forEach(function (v) {
-                            var p = v;
-                            var i = 0;
-
-                            while (p != null && p.outerHTML != null) {
-                                var distanceToScope = lookup(p);
-
-                                if (!distanceToScope || i < distanceToScope) {
-                                    addToLookup(p, i);
+                        while ((closestLevel == -1 || !distanceToScope || distanceToScope <= closestLevel) && parent != null && parent.outerHTML != null) {
+                            if (distanceToScope || distanceToScope === 0) {
+                                if (distanceToScope < closestLevel) {
+                                    closestElements = [];
                                 }
 
-                                ++i;
-
-                                p = p.parentNode;
+                                closestLevel = distanceToScope;
+                                closestElements.push(element);
+                                break;
                             }
-                        });
 
-                        var closestLevel = -1;
-                        var closestElements = [];
+                            parent = parent.parentNode;
+                            distanceToScope = lookup(parent);
+                        }
+                    });
 
-                        elements.forEach(function (element) {
-                            var parent = element;
-
-                            var distanceToScope = lookup(parent);
-
-                            while ((closestLevel == -1 || !distanceToScope || distanceToScope <= closestLevel) && parent != null && parent.outerHTML != null) {
-                                if (distanceToScope || distanceToScope === 0) {
-                                    if (distanceToScope < closestLevel) {
-                                        closestElements = [];
-                                    }
-
-                                    closestLevel = distanceToScope;
-                                    closestElements.push(element);
-                                    break;
-                                }
-
-                                parent = parent.parentNode;
-                                distanceToScope = lookup(parent);
-                            }
-                        });
-
-                        return handler(null, closestElements);
-                    }
-                    catch (err) {
-                        return handler(err, []);
-                    }
+                    return handler(null, closestElements);
                 }, elements, scopeElements, target.scopeIndex, resultHandler);
             }
         }

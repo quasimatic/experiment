@@ -152,6 +152,25 @@ describe("Glance", function () {
 
         return glance("select-1>text1").should.deep.equal(dom.get("target-1"));
     });
+
+    it("should not return the item that is the scope", function () {
+        dom.render(
+            <div>
+                <div>
+                    <div id="item-1" className="item-class">item</div>
+                </div>
+
+                <div>
+                    <div id="item-2" className="item-class"></div>
+                    <div>
+                        <div id="target">item</div>
+                    </div>
+                </div>
+            </div>
+        );
+
+        return glance("item-class > item").should.deep.equal(dom.get("target"));
+    });
 });
 
 describe('Selector filter', function () {
