@@ -8,7 +8,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label',
                 type: 'target'
             }]
@@ -22,7 +21,6 @@ describe("Parsing", function () {
                     options: [10],
                     transforms: [],
                     scope: '',
-                    scopeIndex: 0,
                     path: 'label#10',
                     type: 'target'
                 }
@@ -37,7 +35,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'scope',
                 type: 'scope'
             },
@@ -46,7 +43,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: 'scope',
-                scopeIndex: 1,
                 path: 'scope>label',
                 type: 'target'
             }
@@ -60,7 +56,6 @@ describe("Parsing", function () {
                     options: [],
                     transforms: ['text'],
                     scope: '',
-                    scopeIndex: 0,
                     path: 'label:text',
                     type: 'target'
                 }
@@ -75,7 +70,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label\\#10',
                 type: 'target'
             }
@@ -89,7 +83,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label\\>test',
                 type: 'target'
             }
@@ -103,7 +96,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label\\:test',
                 type: 'target'
             }
@@ -117,7 +109,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label\\\\test',
                 type: 'target'
             }
@@ -131,7 +122,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label',
                 type: 'target'
             }
@@ -145,7 +135,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label',
                 type: 'scope'
             },
@@ -154,7 +143,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: 'label',
-                scopeIndex: 1,
                 path: 'label > label2',
                 type: 'target'
             }
@@ -168,7 +156,6 @@ describe("Parsing", function () {
                 options: [1],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label#1',
                 type: 'target'
             }
@@ -182,7 +169,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: ['option'],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label:option',
                 type: 'target'
             }
@@ -196,7 +182,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: '',
-                scopeIndex: 0,
                 path: 'label 1',
                 type: 'intersect'
             },
@@ -205,7 +190,6 @@ describe("Parsing", function () {
                 options: [],
                 transforms: [],
                 scope: 'label 1',
-                scopeIndex: 1,
                 path: 'label 1^label 2',
                 type: 'target'
             }

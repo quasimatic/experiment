@@ -6,6 +6,10 @@ export default class Guide {
     search({reference, config = {}}, callback = (err, result) => result) {
         let scopes = Parser.parse(reference);
 
+        scopes = scopes.map((scope,i) => {
+            return {...scope, scopeIndex: i}
+        });
+
         log.debug("Selector:", reference);
 
         let data = {

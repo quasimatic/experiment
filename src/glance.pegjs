@@ -1,6 +1,5 @@
 {
 	var scope = "";
-	var scopeIndex = 0;
 
 	function tryParseInt(str) {
       if (!isNaN(str)) {
@@ -24,19 +23,16 @@ EscapedSequence = EscapeChar c:(EscapableChars) { return c; }
 
 Reference
  = target:Target ScopeChar {
-	scopeIndex++;
  	scope += text()
     target.type = "scope";
     return target;
  }
  / target:Target IntersectChar {
-	scopeIndex++;
  	scope += text()
     target.type = "intersect";
     return target;
  }
  / target:Target {
-	scopeIndex++;
  	scope += text()
     target.type = "target";
     return target;
@@ -51,7 +47,6 @@ Label
       options: options || [],
       transforms: transforms || [],
       scope: scope.slice(0,-1).trim(),
-      scopeIndex: scopeIndex,
       path: (scope + text()).trim()
     }
   }

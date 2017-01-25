@@ -156,19 +156,16 @@ function peg$parse(input, options) {
       peg$c12 = peg$literalExpectation("\\", false),
       peg$c13 = function(c) { return c; },
       peg$c14 = function(target) {
-      	scopeIndex++;
        	scope += text()
           target.type = "scope";
           return target;
        },
       peg$c15 = function(target) {
-      	scopeIndex++;
        	scope += text()
           target.type = "intersect";
           return target;
        },
       peg$c16 = function(target) {
-      	scopeIndex++;
        	scope += text()
           target.type = "target";
           return target;
@@ -180,7 +177,6 @@ function peg$parse(input, options) {
             options: options || [],
             transforms: transforms || [],
             scope: scope.slice(0,-1).trim(),
-            scopeIndex: scopeIndex,
             path: (scope + text()).trim()
           }
         },
@@ -831,7 +827,6 @@ function peg$parse(input, options) {
 
 
   	var scope = "";
-  	var scopeIndex = 0;
 
   	function tryParseInt(str) {
         if (!isNaN(str)) {
