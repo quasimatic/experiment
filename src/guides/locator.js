@@ -3,6 +3,7 @@ import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 import browserExecute from '../browser-execute'
+import containerElements from "./container-elements";
 
 export default class Locator {
     static locate(data, resultHandler) {
@@ -36,7 +37,7 @@ export default class Locator {
 
         beforeLocate.forEach(before => before({label: target.label}));
 
-        return Locator.locateInParent(locate, [], parent, null, scopeElements, target, data, function (err, elements) {
+        return Locator.locateInParent(locate, [], parent, scopeElements, target, data, function (err, elements) {
             if (err) {
                 return resultHandler(err, []);
             }
@@ -48,7 +49,7 @@ export default class Locator {
         });
     }
 
-    static locateInParent(locate, elements, parent, previousParent, scopeElements, target, data, resultHandler) {
+    static locateInParent(locate, elements, parent, scopeElements, target, data, resultHandler) {
         if (parent && elements.length == 0) {
             return locate({...data, label: target.label, scopeElement: parent}, (err, foundElements) => {
                 if (err) {
@@ -70,10 +71,12 @@ export default class Locator {
 
                     flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
 
-                    if (result.continue && flattenedElements.length == 0) {
+                    if (result.continue && flattenedElements.length == 0 && containerElements.indexOf(parent) == -1) {
                         log.debug("Elements not found, trying parent");
-                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, result.node, scopeElements, target, data, resultHandler);
+                        return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, scopeElements, target, data, resultHandler);
                     }
+
+                    containerElements.push(parent);
 
                     return resultHandler(null, flattenedElements);
                 });
