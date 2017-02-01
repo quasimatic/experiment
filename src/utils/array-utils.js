@@ -3,8 +3,8 @@ import browserExecute from '../browser-execute'
 export function reduce(collection, memo, iteratee, resultHandler) {
     function process(i, collection, memo, iteratee, handler) {
         if (i < collection.length) {
-            return iteratee(memo, collection[i], function(err, result){
-                if(err) {
+            return iteratee(memo, collection[i], function (err, result) {
+                if (err) {
                     return handler(err, memo);
                 }
 
@@ -19,15 +19,9 @@ export function reduce(collection, memo, iteratee, resultHandler) {
 }
 
 export function unique(array, resultHandler) {
-    return browserExecute(function(array, handler){
-        try {
-            return handler(null, array.filter(function (x, i) {
-                return array.indexOf(x) === i;
-            }));
-        }
-        catch(err) {
-            return handler(err, []);
-        }
+    return browserExecute(function (array, handler) {
+        return handler(null, array.filter(function (x, i) {
+            return array.indexOf(x) === i;
+        }));
     }, array, resultHandler);
-
 }

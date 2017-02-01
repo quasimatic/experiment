@@ -1,6 +1,7 @@
-import Labels from './guides/labels';
-import Parser from "./parser";
-import log from "./log";
+import Labels from './guides/labels'
+import Parser from "./parser"
+import log from "./log"
+import state from './state'
 
 export default class Guide {
     search({reference, config = {}}, callback = (err, result) => result) {
@@ -29,6 +30,8 @@ export default class Guide {
             ...data,
             extensions: config.extensions
         };
+
+        state.reset(config);
 
         return Labels.traverse({
             ...data,

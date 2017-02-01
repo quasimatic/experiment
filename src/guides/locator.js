@@ -3,7 +3,7 @@ import Extensions from "../utils/extensions";
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 import browserExecute from '../browser-execute'
-import containerElements from "./container-elements";
+import state from "../state";
 
 export default class Locator {
     static locate(data, resultHandler) {
@@ -71,12 +71,12 @@ export default class Locator {
 
                     flattenedElements = flattenedElements.filter(e => scopeElements.indexOf(e) == -1 || scopeElements.filter(s => isDescendant(s, e)).length > 0);
 
-                    if (result.continue && flattenedElements.length == 0 && containerElements.indexOf(parent) == -1) {
+                    if (result.continue && flattenedElements.length == 0 && state.getContainerElements().indexOf(parent) == -1) {
                         log.debug("Elements not found, trying parent");
                         return Locator.locateInParent(locate, [].concat(foundElements), result.parentNode, scopeElements, target, data, resultHandler);
                     }
 
-                    containerElements.push(parent);
+                    state.addContainerElement(parent);
 
                     return resultHandler(null, flattenedElements);
                 });

@@ -5,14 +5,9 @@ export default {
     options: {
         "css": {
             locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
-                try {
-                    log.debug("Searching as css:", label);
+                log.debug("Searching as css:", label);
 
-                    return findByCSS(`${label}`, scopeElement, resultHandler);
-                }
-                catch (err) {
-                    return resultHandler(err, []);
-                }
+                return findByCSS(`${label}`, scopeElement, resultHandler);
             }
         }
     }

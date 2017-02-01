@@ -4,6 +4,7 @@ import Filter from "./filter";
 import {reduce} from "../utils/array-utils";
 import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
+import state from '../state';
 
 export default class Labels {
     static traverse(data, resultHandler) {
@@ -13,6 +14,8 @@ export default class Labels {
             target,
             intersectElements
         } = data;
+
+        state.processLabel(data);
 
         return reduce(elements, [], (result, scopeElement, levelHandler) => Labels.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
             return Filter.process(locatedTargets, data, (err, filteredElements) => {
@@ -26,6 +29,7 @@ export default class Labels {
                         return Labels.traverseIntersect(filteredElements, data, resultHandler);
 
                     case "scope":
+                        state.scopeProcessed({...data, elements:filteredElements});
                         return Labels.traverse({
                             ...data,
                             intersectElements: null,

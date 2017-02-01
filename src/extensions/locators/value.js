@@ -9,22 +9,17 @@ export default {
     options: {
         "value": {
             locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
-                try {
-                    log.debug("Searching in value:", label);
+                log.debug("Searching in value:", label);
 
-                    return browserExecute(function (scope, l, handler) {
-                        let results = scope.querySelectorAll("button,input,option,param");
+                return browserExecute(function (scope, l, handler) {
+                    let results = scope.querySelectorAll("button,input,option,param");
 
-                        var elements = Array.prototype.slice.apply(results);
+                    var elements = Array.prototype.slice.apply(results);
 
-                        return handler(null, elements.filter(function (input) {
-                            return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
-                        }));
-                    }, scopeElement, label, resultHandler);
-                }
-                catch (error) {
-                    return resultHandler(error, []);
-                }
+                    return handler(null, elements.filter(function (input) {
+                        return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
+                    }));
+                }, scopeElement, label, resultHandler);
             }
         }
     }

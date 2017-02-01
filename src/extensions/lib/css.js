@@ -16,8 +16,8 @@ export default function (label, scopeElement, resultHandler = (err, result) => r
         catch (e) {
             if (e instanceof DOMException)
                 return handler(null, []);
-            else
-                return handler(e, []);
+
+            throw e;
         }
     }, label, scopeElement, resultHandler);
 }
