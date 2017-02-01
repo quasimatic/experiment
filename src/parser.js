@@ -171,11 +171,11 @@ function peg$parse(input, options) {
           return target;
        },
       peg$c17 = function(label) { return label },
-      peg$c18 = function(label, options, transforms) {
+      peg$c18 = function(label, options, projections) {
           return {
             label: label.join('').trim(),
             options: options || [],
-            transforms: transforms || [],
+            projections: projections || [],
             scope: scope.slice(0,-1).trim(),
             path: (scope + text()).trim()
           }
@@ -184,7 +184,7 @@ function peg$parse(input, options) {
       peg$c20 = function(c) { return c },
       peg$c21 = function(options) { return options; },
       peg$c22 = function(name) { return tryParseInt(name.join("").trim()) },
-      peg$c23 = function(transforms) { return transforms; },
+      peg$c23 = function(projections) { return projections; },
       peg$c24 = function(name) { return name.join("").trim() },
       peg$c25 = /^[ \t\r\n]/,
       peg$c26 = peg$classExpectation([" ", "\t", "\r", "\n"], false, false),
@@ -400,7 +400,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseTransformChar() {
+  function peg$parseProjectionChar() {
     var s0;
 
     if (input.charCodeAt(peg$currPos) === 58) {
@@ -435,7 +435,7 @@ function peg$parse(input, options) {
     if (s0 === peg$FAILED) {
       s0 = peg$parseScopeChar();
       if (s0 === peg$FAILED) {
-        s0 = peg$parseTransformChar();
+        s0 = peg$parseProjectionChar();
         if (s0 === peg$FAILED) {
           s0 = peg$parseOptionChar();
           if (s0 === peg$FAILED) {
@@ -555,7 +555,7 @@ function peg$parse(input, options) {
         s2 = null;
       }
       if (s2 !== peg$FAILED) {
-        s3 = peg$parseTransforms();
+        s3 = peg$parseProjections();
         if (s3 === peg$FAILED) {
           s3 = null;
         }
@@ -692,17 +692,17 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseTransforms() {
+  function peg$parseProjections() {
     var s0, s1, s2, s3;
 
     s0 = peg$currPos;
-    s1 = peg$parseTransformChar();
+    s1 = peg$parseProjectionChar();
     if (s1 !== peg$FAILED) {
       s2 = [];
-      s3 = peg$parseTransform();
+      s3 = peg$parseProjection();
       while (s3 !== peg$FAILED) {
         s2.push(s3);
-        s3 = peg$parseTransform();
+        s3 = peg$parseProjection();
       }
       if (s2 !== peg$FAILED) {
         peg$savedPos = s0;
@@ -720,7 +720,7 @@ function peg$parse(input, options) {
     return s0;
   }
 
-  function peg$parseTransform() {
+  function peg$parseProjection() {
     var s0, s1, s2;
 
     s0 = peg$currPos;

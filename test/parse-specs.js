@@ -6,7 +6,7 @@ describe("Parsing", function () {
             [{
                 label: 'label',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label',
                 type: 'target'
@@ -19,7 +19,7 @@ describe("Parsing", function () {
                 {
                     label: 'label',
                     options: [10],
-                    transforms: [],
+                    projections: [],
                     scope: '',
                     path: 'label#10',
                     type: 'target'
@@ -33,7 +33,7 @@ describe("Parsing", function () {
             {
                 label: 'scope',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'scope',
                 type: 'scope'
@@ -41,7 +41,7 @@ describe("Parsing", function () {
             {
                 label: 'label',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: 'scope',
                 path: 'scope>label',
                 type: 'target'
@@ -54,7 +54,7 @@ describe("Parsing", function () {
                 {
                     label: 'label',
                     options: [],
-                    transforms: ['text'],
+                    projections: ['text'],
                     scope: '',
                     path: 'label:text',
                     type: 'target'
@@ -68,7 +68,7 @@ describe("Parsing", function () {
             {
                 label: 'label#10',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label\\#10',
                 type: 'target'
@@ -81,7 +81,7 @@ describe("Parsing", function () {
             {
                 label: 'label>test',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label\\>test',
                 type: 'target'
@@ -94,7 +94,7 @@ describe("Parsing", function () {
             {
                 label: 'label:test',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label\\:test',
                 type: 'target'
@@ -107,7 +107,7 @@ describe("Parsing", function () {
             {
                 label: 'label\\test',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label\\\\test',
                 type: 'target'
@@ -120,7 +120,7 @@ describe("Parsing", function () {
             {
                 label: 'label',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label',
                 type: 'target'
@@ -133,7 +133,7 @@ describe("Parsing", function () {
             {
                 label: 'label',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label',
                 type: 'scope'
@@ -141,7 +141,7 @@ describe("Parsing", function () {
             {
                 label: 'label2',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: 'label',
                 path: 'label > label2',
                 type: 'target'
@@ -154,7 +154,7 @@ describe("Parsing", function () {
             {
                 label: 'label',
                 options: [1],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label#1',
                 type: 'target'
@@ -167,7 +167,7 @@ describe("Parsing", function () {
             {
                 label: 'label',
                 options: [],
-                transforms: ['option'],
+                projections: ['option'],
                 scope: '',
                 path: 'label:option',
                 type: 'target'
@@ -180,7 +180,7 @@ describe("Parsing", function () {
             {
                 label: 'label 1',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: '',
                 path: 'label 1',
                 type: 'intersect'
@@ -188,7 +188,7 @@ describe("Parsing", function () {
             {
                 label: 'label 2',
                 options: [],
-                transforms: [],
+                projections: [],
                 scope: 'label 1',
                 path: 'label 1^label 2',
                 type: 'target'

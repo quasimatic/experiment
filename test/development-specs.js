@@ -58,7 +58,7 @@ describe("Glance: Development mode", function () {
         result.processed.should.deep.equal([{
             label: 'scope',
             options: [],
-            transforms: [],
+            projections: [],
             scope: '',
             path: 'scope',
             type: 'scope',

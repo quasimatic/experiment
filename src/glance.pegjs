@@ -15,10 +15,10 @@ ScopeChar = ">"
 IntersectChar = "^"
 OptionChar = "#"
 SeparatorChar = ","
-TransformChar = ":"
+ProjectionChar = ":"
 
 EscapeChar = "\\"
-EscapableChars = EscapeChar / ScopeChar / TransformChar / OptionChar / IntersectChar
+EscapableChars = EscapeChar / ScopeChar / ProjectionChar / OptionChar / IntersectChar
 EscapedSequence = EscapeChar c:(EscapableChars) { return c; }
 
 Reference
@@ -41,11 +41,11 @@ Reference
 Target = label:Label { return label }
 
 Label
-  = label:LabelCharacter+ options:Options? transforms:Transforms? Whitespace? {
+  = label:LabelCharacter+ options:Options? projections:Projections? Whitespace? {
     return {
       label: label.join('').trim(),
       options: options || [],
-      transforms: transforms || [],
+      projections: projections || [],
       scope: scope.slice(0,-1).trim(),
       path: (scope + text()).trim()
     }
@@ -59,8 +59,8 @@ Options = OptionChar options:Option* { return options; }
 
 Option = name:Character+ SeparatorChar? { return tryParseInt(name.join("").trim()) }
 
-Transforms = TransformChar transforms:Transform* { return transforms; }
-Transform = name:Character+ SeparatorChar? { return name.join("").trim() }
+Projections = ProjectionChar projections:Projection* { return projections; }
+Projection = name:Character+ SeparatorChar? { return name.join("").trim() }
 
 Character = !(EscapableChars / SeparatorChar) c:. { return c }
 
