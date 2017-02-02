@@ -1,5 +1,5 @@
-import dom from "../dom"
-import extension from '../../src/extensions/locators/exact-text';
+import dom from "../../../test/dom"
+import extension from './exact-text';
 
 describe("Locator: Exact Match", function() {
     let findExactText = extension.options["exact-text"].locate;

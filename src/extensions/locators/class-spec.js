@@ -1,5 +1,5 @@
-import dom from "../dom"
-import extension from '../../src/extensions/locators/class';
+import dom from "../../../test/dom"
+import extension from './class';
 
 describe("Locator: Class", function() {
     let findByClass = extension.options["class"].locate;

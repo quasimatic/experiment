@@ -1,5 +1,5 @@
-import dom from "../dom"
-import extension from '../../src/extensions/locators/attribute';
+import dom from "../../../test/dom"
+import extension from './attribute';
 
 describe("Locator: Search in attributes", function() {
     let locate = extension.locator.locate;
