@@ -74,7 +74,7 @@ function GlanceSelector(options) {
                 if (!config.development)
                     return resultHandler(e, []);
 
-                if (e instanceof PartialBreak) {
+                if (e.message == "Locator Break") {
                     return resultHandler(null, state.getCurrent());
                 }
             }

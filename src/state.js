@@ -1,6 +1,4 @@
 import isDescendant from './utils/is-descendant'
-import PartialBreak from './partial-break'
-import Parser from './parser'
 
 export default {
     reset(config) {
@@ -26,9 +24,17 @@ export default {
         return this.state.containerElements;
     },
 
+    targetProcessed({elements, target}) {
+        this.state.processed.push(target);
+    },
+
     scopeProcessed({elements, target}) {
         this.state.scopeElements = elements;
         this.state.processed.push(target);
+    },
+
+    labelProcessed({elements, target}){
+        this.state.locatedElements = elements;
     },
 
     getCurrent() {

@@ -18,11 +18,14 @@ export default class Labels {
         state.processLabel(data);
 
         return reduce(elements, [], (result, scopeElement, levelHandler) => Labels.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
+            state.labelProcessed({...data, elements: locatedTargets});
+
             return Filter.process(locatedTargets, data, (err, filteredElements) => {
                 Extensions.afterScopeEvent({...data, elements: filteredElements});
 
                 switch (target.type) {
                     case "target":
+                        state.targetProcessed({...data, elements: filteredElements});
                         return resultHandler(err, filteredElements);
 
                     case "intersect":

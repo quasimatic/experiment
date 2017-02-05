@@ -1,13 +1,13 @@
 import glance from '../src/selector'
 import dom from "./dom"
-import PartialBreak from '../src/partial-break'
+// import PartialBreak from '../src/partial-break'
 
-describe("Glance: Development mode", function () {
+describe("Glance: Development mode", () => {
     beforeEach(function () {
         document.body.innerHTML = "";
     });
 
-    it("should return found elements", function () {
+    it("should return found elements", () => {
         dom.render(
             <div id="target"></div>
         );
@@ -15,7 +15,7 @@ describe("Glance: Development mode", function () {
         return glance("target", {development: true}).elements.should.deep.equal(dom.get("target"));
     });
 
-    it("should return scopes", function () {
+    it("should return scopes", () => {
         dom.render(
             <div id="scope">
                 <div id="target"></div>
@@ -25,7 +25,7 @@ describe("Glance: Development mode", function () {
         return glance("scope > target", {development: true}).scopeElements.should.deep.equal([dom.get("scope")]);
     })
 
-    it("should return containers", function () {
+    it("should return containers", () => {
         dom.render(
             <div id="container">
                 <div id="scope"></div>
@@ -35,8 +35,14 @@ describe("Glance: Development mode", function () {
 
         return glance("scope > target", {development: true}).containerElements.should.deep.equal([dom.get("container")]);
     });
+});
 
-    it("should provide a partial result at a scope", function () {
+describe("Development mode: Partials", () => {
+    beforeEach(function () {
+        document.body.innerHTML = "";
+    });
+
+    it("should provide a partial result at a scope", () => {
         dom.render(
             <div id="scope">
                 <div id="target"></div>
@@ -45,24 +51,51 @@ describe("Glance: Development mode", function () {
 
         glance.addExtension({
             labels: {
-                "stoptarget": function (data, callback) {
-                    throw new PartialBreak();
+                "stop-target": function (data, callback) {
+                    // function PartialBreak() {}
+                    // PartialBreak.prototype = new Error("Locator Break");
+                    // throw new PartialBreak();
+                    throw new Error("LOCATOR_BREAK");
                 }
             }
         });
 
-        let result = glance("scope > stoptarget", {development: true});
+        let result = glance("scope > stop-target", {development: true});
 
         result.scopeElements.should.deep.equal([dom.get("scope")]);
         result.elements.should.deep.equal([]);
+        // result.next.should.deep.equal({
+        //     type: "label",
+        //     value: "stop-target"
+        // });
+    });
+
+    it.skip("should provide a partial result a filter", () => {
+        dom.render(
+            <div id="target"></div>
+        )
+
+        glance.addExtension({
+            options: {
+                "option1": function({elements}, callback){
+                   return callback(null, elements)
+                },
+                "option2": function() {
+                   throw new PartialBreak();
+                }
+            }
+        });
+
+        let result = glance("target#option1,option2", {development: true});
+
         result.processed.should.deep.equal([{
-            label: 'scope',
-            options: [],
+            label: 'target',
+            options: ["option1"],
             projections: [],
             scope: '',
             path: 'scope',
             type: 'scope',
             scopeIndex: 0
-        }])
+        }]);
     });
 });
