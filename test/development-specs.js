@@ -37,7 +37,7 @@ describe("Glance: Development mode", () => {
     });
 });
 
-describe("Development mode: Partials", () => {
+describe.skip("Development mode: Partials", () => {
     beforeEach(function () {
         document.body.innerHTML = "";
     });
