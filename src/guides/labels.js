@@ -8,9 +8,12 @@ import state from '../state';
 
 export default class Labels {
     static traverse(data, resultHandler) {
+        let scopes = state.getCurrent().scopes;
+
+        data = {...data, scopes};
+
         let {
             elements,
-            scopes,
             target,
             intersectElements
         } = data;

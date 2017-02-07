@@ -1,14 +1,26 @@
 import isDescendant from './utils/is-descendant'
+import Parser from "./parser"
 
 export default {
-    reset(config) {
+    reset(reference, config) {
+        let references = Parser.parse(reference);
+
+        let scopes = references.map((scope, i) => {
+            return {...scope, scopeIndex: i}
+        });
+
         this.state = {
+            scopes: scopes,
             config: config,
             containerElements: [],
             scopeElements: [],
-            elements:[],
+            elements: [],
             processed: [],
         };
+    },
+
+    getFirstScope() {
+        return this.state.scopes[0];
     },
 
     setElements(elements) {

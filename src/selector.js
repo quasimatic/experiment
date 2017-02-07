@@ -52,7 +52,7 @@ function GlanceSelector(options) {
             _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
             try {
-                return _selector.guideFactory().search({reference, config}, function (err, elements) {
+                return _selector.guideFactory().search(reference, config, function (err, elements) {
                     _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
                     let result;
@@ -74,7 +74,7 @@ function GlanceSelector(options) {
                 if (!config.development)
                     return resultHandler(e, []);
 
-                if (e.message == "Locator Break") {
+                if (e.message == "LOCATOR_BREAK") {
                     return resultHandler(null, state.getCurrent());
                 }
             }

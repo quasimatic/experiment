@@ -1,43 +1,27 @@
 import Labels from './guides/labels'
-import Parser from "./parser"
 import log from "./log"
 import state from './state'
+import defaultHandler from './utils/default-result-handler';
 
 export default class Guide {
-    search({reference, config = {}}, callback = (err, result) => result) {
-        let scopes = Parser.parse(reference);
-
-        scopes = scopes.map((scope,i) => {
-            return {...scope, scopeIndex: i}
-        });
-
+    search(reference, config = {}, resultHandler = defaultHandler) {
         log.debug("Selector:", reference);
+
+        config.extensions = config.extensions || [];
+
+        state.reset(reference, config);
 
         let data = {
             glance: config.glance,
             glanceSelector: config.glanceSelector,
             scopeElement: config.rootElement,
-            scopes,
             config,
-            extensions: config.extensions
-        }
-
-        let {scopeElement} = data;
-
-        config.extensions = config.extensions || [];
-
-        data = {
-            ...data,
-            extensions: config.extensions
+            extensions: config.extensions,
+            elements: [config.rootElement],
+            target: state.getFirstScope(),
+            scopeElements: []
         };
 
-        state.reset(config);
-
-        return Labels.traverse({
-            ...data,
-            elements: [scopeElement],
-            target: scopes[0],
-            scopeElements: []
-        }, callback);
+        return Labels.traverse(data, resultHandler);
     }
 }
