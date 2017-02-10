@@ -7,7 +7,8 @@ import state from "../state";
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let {target, scopeElement, scopeElements, config, extensions} = data;
+        let config = state.getConfig();
+        let {target, scopeElement, scopeElements, extensions} = data;
         let parent = scopeElement;
 
         var locators = Locator.getLocators(target, extensions) || Locator.getDefaultLocators(extensions, config.defaultOptions);

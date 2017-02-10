@@ -1,5 +1,6 @@
 import isDescendant from './utils/is-descendant'
 import Parser from "./parser"
+import Extensions from "./utils/extensions";
 
 export default {
     reset(reference, config) {
@@ -17,6 +18,10 @@ export default {
             elements: [],
             processed: [],
         };
+    },
+
+    getConfig() {
+        return this.state.config;
     },
 
     getFirstScope() {
@@ -53,7 +58,20 @@ export default {
         return this.state;
     },
 
-    processLabel(data) {
+    getScopes() {
+        return this.state.scopes;
+    },
+
+    processTarget() {
+    },
+
+    // Events
+    beforeScope(data) {
+        Extensions.beforeScopeEvent(data)
+    },
+
+    afterScope(data) {
+        Extensions.afterScopeEvent(data);
     }
 };
 

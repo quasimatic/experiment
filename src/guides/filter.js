@@ -2,6 +2,7 @@ import Extensions from "../utils/extensions";
 import log from "../log";
 import {reduce, unique} from "../utils/array-utils";
 import emptyOnError from '../empty-on-error';
+import state from '../state';
 
 export default class Filter {
     static process(locatedTargets, data, handler) {
@@ -19,7 +20,8 @@ export default class Filter {
     }
 
     static filter(data, callback) {
-        let {target, elements:unfilteredElements, extensions, config} = data;
+        let config = state.getConfig();
+        let {target, elements:unfilteredElements, extensions} = data;
         let filters = Filter.getFilters(target, extensions, config.defaultOptions) || Filter.getDefaultFilters(extensions, config.defaultOptions);
 
         let beforeFilterElements = Filter.beforeFilters(unfilteredElements, extensions, data);

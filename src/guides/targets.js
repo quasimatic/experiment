@@ -1,4 +1,3 @@
-import Extensions from "../utils/extensions";
 import Locator from "./locator";
 import Filter from "./filter";
 import {reduce} from "../utils/array-utils";
@@ -6,9 +5,9 @@ import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
 import state from '../state';
 
-export default class Labels {
+export default class Targets {
     static traverse(data, resultHandler) {
-        let scopes = state.getCurrent().scopes;
+        let scopes = state.getScopes();
 
         data = {...data, scopes};
 
@@ -18,13 +17,13 @@ export default class Labels {
             intersectElements
         } = data;
 
-        state.processLabel(data);
+        state.processTarget();
 
-        return reduce(elements, [], (result, scopeElement, levelHandler) => Labels.processLevel(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
+        return reduce(elements, [], (result, scopeElement, levelHandler) => Targets.locateTarget(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
             state.labelProcessed({...data, elements: locatedTargets});
 
             return Filter.process(locatedTargets, data, (err, filteredElements) => {
-                Extensions.afterScopeEvent({...data, elements: filteredElements});
+                state.afterScope({...data, elements: filteredElements});
 
                 switch (target.type) {
                     case "target":
@@ -32,11 +31,11 @@ export default class Labels {
                         return resultHandler(err, filteredElements);
 
                     case "intersect":
-                        return Labels.traverseIntersect(filteredElements, data, resultHandler);
+                        return Targets.traverseIntersect(filteredElements, data, resultHandler);
 
                     case "scope":
                         state.scopeProcessed({...data, elements:filteredElements});
-                        return Labels.traverse({
+                        return Targets.traverse({
                             ...data,
                             intersectElements: null,
                             scopeElements: filteredElements,
@@ -51,7 +50,7 @@ export default class Labels {
     static traverseIntersect(filteredElements, data, resultHandler) {
         let {scopes, target} = data;
 
-        return Labels.traverse({
+        return Targets.traverse({
             ...data,
             intersectElements: filteredElements,
             elements: filteredElements,
@@ -59,12 +58,12 @@ export default class Labels {
         }, resultHandler);
     }
 
-    static processLevel(result, scopeElement, intersectElements, data, resultHandler) {
-        Extensions.beforeScopeEvent({...data, scopeElement});
+    static locateTarget(result, scopeElement, intersectElements, data, resultHandler) {
+        state.beforeScope({...data, scopeElement});
 
         return Locator.locate({...data, scopeElement}, emptyOnError((err, located) => {
             if (intersectElements) {
-                return locateIntersections(data, located, intersectElements, result, emptyOnError((err, located) => {
+                return locateIntersections(located, intersectElements, result, emptyOnError((err, located) => {
                     result.push({scopeElement, elements: located});
                     return resultHandler(err, result);
                 }));
