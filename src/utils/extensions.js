@@ -1,11 +1,13 @@
+import state from '../state';
+
 export default class Extensions {
     static beforeScopeEvent(data) {
-        let {extensions} = data;
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.beforeScope).forEach(e => e.beforeScope(data));
     }
 
     static afterScopeEvent(data){
-        let {extensions} = data;
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.afterScope).forEach(e => e.afterScope(data));
     }
 

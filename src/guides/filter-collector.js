@@ -2,15 +2,17 @@ import Extensions from '../utils/extensions';
 import state from '../state';
 
 export default class FilterCollector {
-    static beforeFilters(elements, extensions, data) {
+    static beforeFilters(elements, data) {
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(Object.assign(data, {elements})), elements);
     }
 
-    static afterFilters(callback, extensions, data) {
+    static afterFilters(callback, data) {
+        let extensions = state.getExtensions();
         return (err, filteredElements) => callback(err, extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), filteredElements));
     }
 
-    static getFilters(target, extensions, defaultOptions) {
+    static getFilters(target, extensions = state.getExtensions()) {
         let filters = [];
         let labels = Extensions.labels(extensions);
         let options = Extensions.options(extensions);
@@ -27,7 +29,7 @@ export default class FilterCollector {
                 let catchAlls = extensions.filter(e => e.filter);
                 if (catchAlls.length > 0) {
                     if (filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
-                        filters = filters.concat(FilterCollector.getDefaultFilters(extensions))
+                        filters = filters.concat(FilterCollector.getDefaultFilters())
                     }
 
                     filters = filters.concat(catchAlls.map(e => e.filter.apply));
@@ -35,10 +37,10 @@ export default class FilterCollector {
             }
         });
 
-        return filters.length > 0 ? filters : FilterCollector.getDefaultFilters(extensions);
+        return filters.length > 0 ? filters : FilterCollector.getDefaultFilters();
     }
 
-    static getDefaultFilters(extensions ) {
+    static getDefaultFilters(extensions = state.getExtensions()) {
         let defaultOptions = state.getConfig().defaultOptions;
         let options = Extensions.options(extensions);
 

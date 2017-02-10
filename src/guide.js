@@ -15,7 +15,6 @@ export default class Guide {
             glance: config.glance,
             glanceSelector: config.glanceSelector,
             scopeElement: config.rootElement,
-            extensions: config.extensions,
             elements: [config.rootElement],
             target: state.getFirstScope(),
             scopeElements: []

@@ -22,7 +22,7 @@ export default class LocatorCollector {
         return [];
     }
 
-    static getLocators(target, extensions = []) {
+    static getLocators(target, extensions = state.getExtensions()) {
         let locators = [];
         let labels = Extensions.labels(extensions);
         let options = Extensions.options(extensions);
@@ -55,10 +55,10 @@ export default class LocatorCollector {
             }
         });
 
-        return locators.length > 0 ? locators : LocatorCollector.getDefaultLocators(extensions);
+        return locators.length > 0 ? locators : LocatorCollector.getDefaultLocators();
     }
 
-    static getDefaultLocators(extensions) {
+    static getDefaultLocators(extensions = state.getExtensions()) {
         let defaultOptions = state.getConfig().defaultOptions;
         let options = Extensions.options(extensions);
 
@@ -82,23 +82,28 @@ export default class LocatorCollector {
         return [];
     }
 
-    static getBeforeLocateFromLabels(label, extensions) {
+    static getBeforeLocateFromLabels(label) {
+        let extensions = state.getExtensions();
         return LocatorCollector.getExtensionLabels(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
-    static getAfterLocateFromLabels(label, extensions) {
+    static getAfterLocateFromLabels(label) {
+        let extensions = state.getExtensions();
         return LocatorCollector.getExtensionLabels(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static getBeforeLocate(extensions) {
+    static getBeforeLocate() {
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
-    static getAfterLocate(extensions) {
+    static getAfterLocate() {
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static getExtensionLabels(key, extensions) {
+    static getExtensionLabels(key) {
+        let extensions = state.getExtensions();
         return extensions.filter(e => e.labels && e.labels[key]).map(e => e.labels[key]);
     }
 }

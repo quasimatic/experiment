@@ -20,12 +20,11 @@ export default class Filter {
     }
 
     static filter(data, callback) {
-        let config = state.getConfig();
-        let {target, elements:unfilteredElements, extensions} = data;
-        let filters = FilterCollector.getFilters(target, extensions);
+        let {target, elements:unfilteredElements} = data;
+        let filters = FilterCollector.getFilters(target );
 
-        let beforeFilterElements = FilterCollector.beforeFilters(unfilteredElements, extensions, data);
-        let afterFilters = FilterCollector.afterFilters(callback, extensions, data);
+        let beforeFilterElements = FilterCollector.beforeFilters(unfilteredElements , data);
+        let afterFilters = FilterCollector.afterFilters(callback, data);
 
         return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
             return filter({...data, elements: filteredElements}, function (err, results) {

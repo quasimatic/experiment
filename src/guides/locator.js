@@ -7,10 +7,10 @@ import state from "../state";
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let {target, scopeElement, scopeElements, extensions} = data;
+        let {target, scopeElement, scopeElements} = data;
         let parent = scopeElement;
 
-        var locators = LocatorCollector.getLocators(target, extensions);
+        var locators = LocatorCollector.getLocators(target);
 
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
@@ -30,10 +30,10 @@ export default class Locator {
             }, resultHandler);
         };
 
-        let beforeLocate = LocatorCollector.getBeforeLocateFromLabels(target.label, extensions);
-        let afterLocate = LocatorCollector.getAfterLocateFromLabels(target.label, extensions);
+        let beforeLocate = LocatorCollector.getBeforeLocateFromLabels(target.label);
+        let afterLocate = LocatorCollector.getAfterLocateFromLabels(target.label);
 
-        LocatorCollector.getBeforeLocate(extensions).forEach(before => before(data));
+        LocatorCollector.getBeforeLocate().forEach(before => before(data));
 
         beforeLocate.forEach(before => before({label: target.label}));
 
@@ -43,7 +43,7 @@ export default class Locator {
             }
 
             afterLocate.forEach(after => after({label: target.label}));
-            LocatorCollector.getAfterLocate(extensions).forEach(after => after(data));
+            LocatorCollector.getAfterLocate().forEach(after => after(data));
 
             return resultHandler(err, elements);
         });
