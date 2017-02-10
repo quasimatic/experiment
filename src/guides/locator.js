@@ -1,5 +1,5 @@
 import log from '../log';
-import Extensions from "../utils/extensions";
+import LocatorCollector from './locator-collector';
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 import browserExecute from '../browser-execute'
@@ -7,11 +7,10 @@ import state from "../state";
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let config = state.getConfig();
         let {target, scopeElement, scopeElements, extensions} = data;
         let parent = scopeElement;
 
-        var locators = Locator.getLocators(target, extensions) || Locator.getDefaultLocators(extensions, config.defaultOptions);
+        var locators = LocatorCollector.getLocators(target, extensions);
 
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
@@ -31,10 +30,10 @@ export default class Locator {
             }, resultHandler);
         };
 
-        let beforeLocate = Locator.locateBeforeFromLabel(target.label, extensions);
-        let afterLocate = Locator.locateAfterFromLabel(target.label, extensions);
+        let beforeLocate = LocatorCollector.getBeforeLocateFromLabels(target.label, extensions);
+        let afterLocate = LocatorCollector.getAfterLocateFromLabels(target.label, extensions);
 
-        Locator.beforeLocate(extensions).forEach(before => before(data));
+        LocatorCollector.getBeforeLocate(extensions).forEach(before => before(data));
 
         beforeLocate.forEach(before => before({label: target.label}));
 
@@ -44,7 +43,7 @@ export default class Locator {
             }
 
             afterLocate.forEach(after => after({label: target.label}));
-            Locator.afterLocate(extensions).forEach(after => after(data));
+            LocatorCollector.getAfterLocate(extensions).forEach(after => after(data));
 
             return resultHandler(err, elements);
         });
@@ -89,104 +88,5 @@ export default class Locator {
 
             return resultHandler(null, elements);
         }
-    }
-
-    static getLocator(locator) {
-        if (Object.prototype.toString.call(locator) === '[object Array]') {
-            return locator.map(function (label) {
-                return function ({glanceSelector}, handler) {
-                    return glanceSelector(label, handler);
-                }
-            });
-        }
-        else if (typeof(locator) == 'string') {
-            return [function ({glanceSelector}, handler) {
-                return glanceSelector(locator, handler);
-            }];
-        }
-        else if (typeof(locator) == 'function') {
-            return [locator];
-        }
-
-        return [];
-    }
-
-    static getLocators(target, extensions) {
-        let locators = [];
-        let labels = Extensions.labels(extensions);
-        let options = Extensions.options(extensions);
-
-        if (labels[target.label]) {
-            if (labels[target.label].locate) {
-                locators = Locator.getLocator(labels[target.label].locate)
-            }
-            else {
-                locators = Locator.getLocator(labels[target.label])
-            }
-        }
-
-        target.options.forEach(name => {
-            if (options[name] && options[name].locate) {
-                locators = locators.concat(Locator.getLocator(options[name].locate))
-            }
-            else {
-                let catchAlls = extensions.filter(e => {
-                    if (e.locator) {
-                        return e.locator.check({label: target.label, target});
-                    }
-
-                    return false;
-                });
-
-                if (catchAlls.length > 0) {
-                    locators = locators.concat(catchAlls.map(e => e.locator.locate));
-                }
-            }
-        });
-
-        return locators.length > 0 ? locators : null;
-    }
-
-    static getDefaultLocators(extensions, defaultOptions) {
-        let options = Extensions.options(extensions);
-
-        if (defaultOptions.length > 0) {
-            let locators = extensions.filter(e => e.locator).map(e => {
-                return (data, callback) => {
-                    let target = data.target;
-                    return e.locator.locate({...data, target: {...target, options: defaultOptions}}, callback);
-                };
-            });
-
-            let optionsWithlocators = defaultOptions.filter(name => options[name] && (options[name].locate));
-
-            if (optionsWithlocators.length != 0) {
-                locators = locators.concat(optionsWithlocators.map(name => options[name].locate));
-            }
-
-            return locators;
-        }
-
-        return [];
-    }
-
-    static locatorForLabel(key, extensions) {
-        return extensions.filter(e => e.labels && e.labels[key]).map(e => e.labels[key]);
-    }
-
-    static locateBeforeFromLabel(label, extensions) {
-        return Locator.locatorForLabel(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
-    }
-
-    static locateAfterFromLabel(label, extensions) {
-        return Locator.locatorForLabel(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
-    }
-
-    static beforeLocate(extensions) {
-        return extensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
-    }
-
-    static afterLocate(extensions) {
-        return extensions.filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 }

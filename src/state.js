@@ -3,7 +3,7 @@ import Parser from "./parser"
 import Extensions from "./utils/extensions";
 
 export default {
-    reset(reference, config) {
+    reset(reference, config = {}) {
         let references = Parser.parse(reference);
 
         let scopes = references.map((scope, i) => {
