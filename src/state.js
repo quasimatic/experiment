@@ -41,7 +41,7 @@ export default class State {
         return this.state.config.extensions;
     }
 
-    getFirstScope() {
+    getFirstScopeTarget() {
         return this.state.scopeTargets[0];
     }
 

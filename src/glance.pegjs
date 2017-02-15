@@ -34,7 +34,7 @@ Reference
  }
  / target:Target {
  	scope += text()
-    target.type = "target";
+    target.type = "subject";
     return target;
  }
 

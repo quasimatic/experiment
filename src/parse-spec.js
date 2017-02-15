@@ -9,7 +9,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label',
-                type: 'target'
+                type: 'subject'
             }]
         );
     });
@@ -22,7 +22,7 @@ describe("Parsing", function () {
                     projections: [],
                     scope: '',
                     path: 'label#10',
-                    type: 'target'
+                    type: 'subject'
                 }
             ]
         );
@@ -44,7 +44,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: 'scope',
                 path: 'scope>label',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -57,7 +57,7 @@ describe("Parsing", function () {
                     projections: ['text'],
                     scope: '',
                     path: 'label:text',
-                    type: 'target'
+                    type: 'subject'
                 }
             ]
         );
@@ -71,7 +71,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label\\#10',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -84,7 +84,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label\\>test',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -97,7 +97,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label\\:test',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -110,7 +110,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label\\\\test',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -123,7 +123,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -144,7 +144,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: 'label',
                 path: 'label > label2',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -157,7 +157,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: '',
                 path: 'label#1',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -170,7 +170,7 @@ describe("Parsing", function () {
                 projections: ['option'],
                 scope: '',
                 path: 'label:option',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });
@@ -191,7 +191,7 @@ describe("Parsing", function () {
                 projections: [],
                 scope: 'label 1',
                 path: 'label 1^label 2',
-                type: 'target'
+                type: 'subject'
             }
         ]);
     });

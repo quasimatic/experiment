@@ -167,7 +167,7 @@ function peg$parse(input, options) {
        },
       peg$c16 = function(target) {
        	scope += text()
-          target.type = "target";
+          target.type = "subject";
           return target;
        },
       peg$c17 = function(label) { return label },

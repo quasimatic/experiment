@@ -22,7 +22,7 @@ export default class Targets {
                 state.afterScope({...data, elements: filteredElements});
 
                 switch (target.type) {
-                    case "target":
+                    case "subject":
                         state.targetProcessed({...data, elements: filteredElements});
                         return resultHandler(err, filteredElements);
 
