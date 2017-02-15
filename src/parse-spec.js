@@ -1,4 +1,4 @@
-var parser = require('../src/parser');
+import parser from './parser';
 
 describe("Parsing", function () {
     it("should get label", function () {
@@ -194,5 +194,15 @@ describe("Parsing", function () {
                 type: 'target'
             }
         ]);
+    });
+});
+
+describe("Glace Parser: Syntax Errors", () => {
+    it("should not throw an error for an empty string", () => {
+        parser.parse("").should.deep.equal([]);
+    });
+
+    it("should throw an error for >>", () => {
+        expect(() => parser.parse("aaa >>")).to.throw('Expected "\\\\" or end of input but ">" found.');
     });
 });
