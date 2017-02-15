@@ -1,7 +1,7 @@
-import defaultExtensions from '../../src/extensions/default';
-import defaultOptions from '../../src/default-options';
-import LineageGuide from '../../src/guide';
-import dom from "../dom";
+import defaultExtensions from './extensions/default';
+import defaultOptions from './default-options';
+import LineageGuide from './guide';
+import dom from "../test/dom";
 
 describe("Guide: Search lineage", function () {
     let lineageGuide;
