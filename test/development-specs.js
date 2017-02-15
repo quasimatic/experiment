@@ -7,15 +7,15 @@ describe("Glance: Development mode", () => {
         document.body.innerHTML = "";
     });
 
-    it("should return found elements", () => {
+    it("should return found subject elements", () => {
         dom.render(
             <div id="target"></div>
         );
 
-        return glance("target", {development: true}).elements.should.deep.equal(dom.get("target"));
+        return glance("target", {development: true}).subjectElements.should.deep.equal(dom.get("target"));
     });
 
-    it("should return scopes", () => {
+    it("should return scope elements", () => {
         dom.render(
             <div id="scope">
                 <div id="target"></div>
@@ -25,7 +25,7 @@ describe("Glance: Development mode", () => {
         return glance("scope > target", {development: true}).scopeElements.should.deep.equal([dom.get("scope")]);
     })
 
-    it("should return containers", () => {
+    it("should return container elements", () => {
         dom.render(
             <div id="container">
                 <div id="scope"></div>

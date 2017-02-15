@@ -64,7 +64,7 @@ function GlanceSelector(options) {
 
                     if (config.development) {
                         state = data.state;
-                        state.setElements(result);
+                        state.setSubjectElements(result);
                         result = state.getCurrent();
                     }
 

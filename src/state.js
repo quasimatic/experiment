@@ -13,7 +13,7 @@ export default class State {
             config: config,
             containerElements: [],
             scopeElements: [],
-            elements: [],
+            subjectElements: [],
             processed: [],
         };
     }
@@ -28,7 +28,7 @@ export default class State {
             config: config,
             containerElements: [],
             scopeElements: [],
-            elements: [],
+            subjectElements: [],
             processed: [],
         };
     }
@@ -45,8 +45,8 @@ export default class State {
         return this.state.scopeTargets[0];
     }
 
-    setElements(elements) {
-        this.state.elements = elements;
+    setSubjectElements(elements) {
+        this.state.subjectElements = elements;
     }
 
     addContainerElement(element) {
