@@ -3,14 +3,16 @@ import LocatorCollector from './locator-collector';
 import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 import browserExecute from '../browser-execute'
-import state from "../state";
+
+let locatorCollector;
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let {target, scopeElement, scopeElements} = data;
+        let {target, scopeElement, scopeElements, state} = data;
         let parent = scopeElement;
 
-        var locators = LocatorCollector.getLocators(target);
+        let locatorCollector = new LocatorCollector(state.getExtensions(), state.getConfig().defaultOptions);
+        var locators = locatorCollector.getLocators(target);
 
         let locate = (target, resultHandler) => {
             return reduce(locators, [], (elements, locator, handler) => {
@@ -30,10 +32,10 @@ export default class Locator {
             }, resultHandler);
         };
 
-        let beforeLocate = LocatorCollector.getBeforeLocateFromLabels(target.label);
-        let afterLocate = LocatorCollector.getAfterLocateFromLabels(target.label);
+        let beforeLocate = locatorCollector.getBeforeLocateFromLabels(target.label);
+        let afterLocate = locatorCollector.getAfterLocateFromLabels(target.label);
 
-        LocatorCollector.getBeforeLocate().forEach(before => before(data));
+        locatorCollector.getBeforeLocate().forEach(before => before(data));
 
         beforeLocate.forEach(before => before({label: target.label}));
 
@@ -43,13 +45,14 @@ export default class Locator {
             }
 
             afterLocate.forEach(after => after({label: target.label}));
-            LocatorCollector.getAfterLocate().forEach(after => after(data));
+            locatorCollector.getAfterLocate().forEach(after => after(data));
 
             return resultHandler(err, elements);
         });
     }
 
     static locateInParent(locate, elements, parent, scopeElements, target, data, resultHandler) {
+        let {state} = data;
         if (parent && elements.length == 0) {
             return locate({...data, label: target.label, scopeElement: parent}, (err, foundElements) => {
                 if (err) {

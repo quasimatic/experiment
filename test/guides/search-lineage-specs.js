@@ -1,7 +1,6 @@
 import defaultExtensions from '../../src/extensions/default';
 import defaultOptions from '../../src/default-options';
 import LineageGuide from '../../src/guide';
-import parser from "../../src/parser";
 import dom from "../dom";
 
 describe("Guide: Search lineage", function () {

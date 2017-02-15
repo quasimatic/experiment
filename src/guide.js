@@ -1,6 +1,6 @@
 import Targets from './guides/targets'
 import log from "./log"
-import state from './state'
+import State from './state'
 import defaultHandler from './utils/default-result-handler';
 
 export default class Guide {
@@ -9,7 +9,7 @@ export default class Guide {
 
         config.extensions = config.extensions || [];
 
-        state.reset(reference, config);
+        let state = new State(reference, config);
 
         let data = {
             glance: config.glance,
@@ -17,9 +17,18 @@ export default class Guide {
             scopeElement: config.rootElement,
             elements: [config.rootElement],
             target: state.getFirstScope(),
-            scopeElements: []
+            scopeElements: [],
+            state: state
         };
 
-        return Targets.traverse(data, resultHandler);
+        return Targets.traverse(data, (err, elements) => {
+            data.elements = elements;
+            if(config.development) {
+                return resultHandler(err, data);
+            }
+        else {
+                return resultHandler(err, elements);
+            }
+        });
     }
 }

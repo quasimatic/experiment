@@ -3,15 +3,11 @@ import Filter from "./filter";
 import {reduce} from "../utils/array-utils";
 import locateIntersections from "./locate-intersections";
 import emptyOnError from '../empty-on-error';
-import state from '../state';
 
 export default class Targets {
     static traverse(data, resultHandler) {
-        let scopes = state.getScopes();
-
-        data = {...data, scopes};
-
         let {
+            state,
             elements,
             target,
             intersectElements
@@ -35,12 +31,13 @@ export default class Targets {
 
                     case "scope":
                         state.scopeProcessed({...data, elements:filteredElements});
+
                         return Targets.traverse({
                             ...data,
                             intersectElements: null,
                             scopeElements: filteredElements,
                             elements: filteredElements,
-                            target: scopes[target.scopeIndex + 1]
+                            target: state.getNextTarget(target)
                         }, resultHandler);
                 }
             })
@@ -48,17 +45,18 @@ export default class Targets {
     }
 
     static traverseIntersect(filteredElements, data, resultHandler) {
-        let {scopes, target} = data;
+        let {state,target} = data;
 
         return Targets.traverse({
             ...data,
             intersectElements: filteredElements,
             elements: filteredElements,
-            target: scopes[target.scopeIndex + 1]
+            target: state.getNextTarget(target)
         }, resultHandler);
     }
 
     static locateTarget(result, scopeElement, intersectElements, data, resultHandler) {
+        let {state} = data;
         state.beforeScope({...data, scopeElement});
 
         return Locator.locate({...data, scopeElement}, emptyOnError((err, located) => {

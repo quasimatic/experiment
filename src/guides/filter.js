@@ -1,7 +1,6 @@
 import log from "../log";
 import {reduce, unique} from "../utils/array-utils";
 import emptyOnError from '../empty-on-error';
-import state from '../state';
 import FilterCollector from './filter-collector'
 
 export default class Filter {
@@ -20,11 +19,12 @@ export default class Filter {
     }
 
     static filter(data, callback) {
-        let {target, elements:unfilteredElements} = data;
-        let filters = FilterCollector.getFilters(target );
+        let {target, elements:unfilteredElements, state} = data;
+        let filterCollector = new FilterCollector(state.getExtensions(), state.getConfig().defaultOptions);
+        let filters = filterCollector.getFilters(target);
 
-        let beforeFilterElements = FilterCollector.beforeFilters(unfilteredElements , data);
-        let afterFilters = FilterCollector.afterFilters(callback, data);
+        let beforeFilterElements = filterCollector.beforeFilters(unfilteredElements , data);
+        let afterFilters = filterCollector.afterFilters(callback, data);
 
         return reduce(filters, beforeFilterElements, (filteredElements, filter, executeCallback) => {
             return filter({...data, elements: filteredElements}, function (err, results) {

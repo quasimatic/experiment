@@ -1,18 +1,23 @@
 import Extensions from '../utils/extensions';
-import state from '../state';
 
 export default class FilterCollector {
-    static beforeFilters(elements, data) {
-        let extensions = state.getExtensions();
+    constructor(extensions, defaultOptions) {
+       this.extensions = extensions;
+       this.defaultOptions = defaultOptions;
+    }
+
+    beforeFilters(elements, data) {
+        let extensions = this.extensions;
         return extensions.filter(e => e.beforeFilters).reduce((elements, e) => e.beforeFilters(Object.assign(data, {elements})), elements);
     }
 
-    static afterFilters(callback, data) {
-        let extensions = state.getExtensions();
+    afterFilters(callback, data) {
+        let extensions = this.extensions;
         return (err, filteredElements) => callback(err, extensions.filter(e => e.afterFilters).reduce((elements, e) => e.afterFilters(Object.assign(data, {elements})), filteredElements));
     }
 
-    static getFilters(target, extensions = state.getExtensions()) {
+    getFilters(target) {
+        let extensions = this.extensions;
         let filters = [];
         let labels = Extensions.labels(extensions);
         let options = Extensions.options(extensions);
@@ -29,7 +34,7 @@ export default class FilterCollector {
                 let catchAlls = extensions.filter(e => e.filter);
                 if (catchAlls.length > 0) {
                     if (filters.length == 0 && catchAlls[0].filter.useDefaultFiltersIfFirst) {
-                        filters = filters.concat(FilterCollector.getDefaultFilters())
+                        filters = filters.concat(this.getDefaultFilters())
                     }
 
                     filters = filters.concat(catchAlls.map(e => e.filter.apply));
@@ -37,11 +42,12 @@ export default class FilterCollector {
             }
         });
 
-        return filters.length > 0 ? filters : FilterCollector.getDefaultFilters();
+        return filters.length > 0 ? filters : this.getDefaultFilters();
     }
 
-    static getDefaultFilters(extensions = state.getExtensions()) {
-        let defaultOptions = state.getConfig().defaultOptions;
+    getDefaultFilters() {
+        let extensions = this.extensions;
+        let defaultOptions = this.defaultOptions;
         let options = Extensions.options(extensions);
 
         if (defaultOptions.length > 0) {

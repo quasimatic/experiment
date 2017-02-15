@@ -1,8 +1,12 @@
 import Extensions from "../utils/extensions";
-import state from "../state"
 
 export default class LocatorCollector {
-    static getLocator(locator) {
+    constructor(extensions = [], defaultOptions = []) {
+       this.extensions = extensions;
+       this.defaultOptions = defaultOptions
+    }
+
+    getLocator(locator) {
         if (Object.prototype.toString.call(locator) === '[object Array]') {
             return locator.map(function (label) {
                 return function ({glanceSelector}, handler) {
@@ -22,23 +26,24 @@ export default class LocatorCollector {
         return [];
     }
 
-    static getLocators(target, extensions = state.getExtensions()) {
+    getLocators(target) {
+        let extensions = this.extensions;
         let locators = [];
         let labels = Extensions.labels(extensions);
         let options = Extensions.options(extensions);
 
         if (labels[target.label]) {
             if (labels[target.label].locate) {
-                locators = LocatorCollector.getLocator(labels[target.label].locate)
+                locators = this.getLocator(labels[target.label].locate)
             }
             else {
-                locators = LocatorCollector.getLocator(labels[target.label])
+                locators = this.getLocator(labels[target.label])
             }
         }
 
         target.options.forEach(name => {
             if (options[name] && options[name].locate) {
-                locators = locators.concat(LocatorCollector.getLocator(options[name].locate))
+                locators = locators.concat(this.getLocator(options[name].locate))
             }
             else {
                 let catchAlls = extensions.filter(e => {
@@ -55,11 +60,12 @@ export default class LocatorCollector {
             }
         });
 
-        return locators.length > 0 ? locators : LocatorCollector.getDefaultLocators();
+        return locators.length > 0 ? locators : this.getDefaultLocators();
     }
 
-    static getDefaultLocators(extensions = state.getExtensions()) {
-        let defaultOptions = state.getConfig().defaultOptions;
+    getDefaultLocators() {
+        let extensions = this.extensions;
+        let defaultOptions = this.defaultOptions;
         let options = Extensions.options(extensions);
 
         if (defaultOptions.length > 0) {
@@ -82,28 +88,28 @@ export default class LocatorCollector {
         return [];
     }
 
-    static getBeforeLocateFromLabels(label) {
-        let extensions = state.getExtensions();
-        return LocatorCollector.getExtensionLabels(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
+    getBeforeLocateFromLabels(label) {
+        let extensions = this.extensions;
+        return this.getExtensionLabels(label, extensions).filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
-    static getAfterLocateFromLabels(label) {
-        let extensions = state.getExtensions();
-        return LocatorCollector.getExtensionLabels(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
+    getAfterLocateFromLabels(label) {
+        let extensions = this.extensions;
+        return this.getExtensionLabels(label, extensions).filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static getBeforeLocate() {
-        let extensions = state.getExtensions();
+    getBeforeLocate() {
+        let extensions = this.extensions;
         return extensions.filter(e => e.beforeLocate).map(e => e.beforeLocate);
     }
 
-    static getAfterLocate() {
-        let extensions = state.getExtensions();
+    getAfterLocate() {
+        let extensions = this.extensions;
         return extensions.filter(e => e.afterLocate).map(e => e.afterLocate);
     }
 
-    static getExtensionLabels(key) {
-        let extensions = state.getExtensions();
+    getExtensionLabels(key) {
+        let extensions = this.extensions;
         return extensions.filter(e => e.labels && e.labels[key]).map(e => e.labels[key]);
     }
 }

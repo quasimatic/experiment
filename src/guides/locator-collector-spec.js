@@ -1,4 +1,4 @@
-import locatorCollector from './locator-collector'
+import LocatorCollector from './locator-collector'
 
 let testTarget = (label, details = {}) => {
     return {
@@ -10,82 +10,90 @@ let testTarget = (label, details = {}) => {
 
 describe("Locator Collector: Custom Labels", () => {
     it("should support a string", () => {
-        locatorCollector.getLocators(testTarget("test"), [{
+        let locatorCollector = new LocatorCollector([{
             labels: {
                 "test": "foo"
             }
-        }]).length.should.equal(1)
+        }]);
+        locatorCollector.getLocators(testTarget("test")).length.should.equal(1)
     });
 
     it("should support a array", () => {
-        locatorCollector.getLocators(testTarget("test"), [{
+        let locatorCollector = new LocatorCollector([{
             labels: {
-                "test": ["foo","bar"]
+                "test": ["foo", "bar"]
             }
-        }]).length.should.equal(2)
+        }]);
+        locatorCollector.getLocators(testTarget("test")).length.should.equal(2)
     });
 
     it("should support a function", () => {
-        locatorCollector.getLocators(testTarget("test"), [{
+        let locatorCollector = new LocatorCollector([{
             labels: {
                 "test": () => {
                 }
             }
-        }]).length.should.equal(1)
+        }])
+        locatorCollector.getLocators(testTarget("test")).length.should.equal(1)
     });
 
     it("should support a locator property as a string", () => {
-        locatorCollector.getLocators(testTarget("test"), [{
+        let locatorCollector = new LocatorCollector([{
             labels: {
                 "test": {
                     locate: "foo"
                 }
             }
-        }]).length.should.equal(1)
+        }]);
+        locatorCollector.getLocators(testTarget("test")).length.should.equal(1)
     });
 
     it("should support a locator property as a function", () => {
-        locatorCollector.getLocators(testTarget("test"), [{
+        let locatorCollector = new LocatorCollector([{
             labels: {
                 "test": {
                     locate: () => {
                     }
                 }
             }
-        }]).length.should.equal(1)
+        }]);
+        locatorCollector.getLocators(testTarget("test")).length.should.equal(1)
     });
 });
 
 describe("Locator Collector: Custom Options", () => {
     it("should support a locator property as a string", () => {
-        locatorCollector.getLocators(testTarget("label", {options: ["test"]}), [{
+        let locatorCollector = new LocatorCollector([{
             options: {
                 "test": {
                     locate: "foo"
                 }
             }
-        }]).length.should.equal(1)
+        }]);
+        locatorCollector.getLocators(testTarget("label", {options: ["test"]})).length.should.equal(1)
     });
 
     it("should support a locator property as a string", () => {
-        locatorCollector.getLocators(testTarget("label", {options: ["test"]}), [{
+        let locatorCollector = new LocatorCollector([{
             options: {
                 "test": {
                     locate: ["foo", "bar"]
                 }
             }
-        }]).length.should.equal(2)
+        }]);
+        locatorCollector.getLocators(testTarget("label", {options: ["test"]})).length.should.equal(2)
     });
 
 
     it("should support a locator property as a function", () => {
-        locatorCollector.getLocators(testTarget("label", {options: ["test"]}), [{
+        let locatorCollector = new LocatorCollector([{
             options: {
                 "test": {
                     locate: () => {
                     }
                 }
             }
-        }]).length.should.equal(1)
+        }]);
+        locatorCollector.getLocators(testTarget("label", {options: ["test"]})).length.should.equal(1)
     });
 });

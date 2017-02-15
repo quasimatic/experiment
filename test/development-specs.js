@@ -81,7 +81,7 @@ describe.skip("Development mode: Partials", () => {
                    return callback(null, elements)
                 },
                 "option2": function() {
-                   throw new PartialBreak();
+                   throw new Error("FILTER_BREAK");
                 }
             }
         });

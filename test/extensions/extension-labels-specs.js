@@ -9,7 +9,9 @@ describe("Extensions: labels", function () {
             <div>
                 <div id="target"></div>
                 <div id="another"></div>
-                <div id="something-else"><div id="item-1"></div></div>
+                <div id="something-else">
+                    <div id="item-1"></div>
+                </div>
             </div>
         );
     });

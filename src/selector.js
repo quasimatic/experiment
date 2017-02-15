@@ -4,8 +4,6 @@ import log from "./log"
 import DefaultExtensions from './extensions/default'
 import DefaultOptions from './default-options'
 import browserExecute from './browser-execute'
-import state from './state'
-import PartialBreak from './partial-break'
 
 function GlanceSelector(options) {
     let _selector = {};
@@ -52,7 +50,9 @@ function GlanceSelector(options) {
             _selector.extensions.filter(e => e.beforeAll).forEach(e => e.beforeAll({selector: reference}));
 
             try {
-                return _selector.guideFactory().search(reference, config, function (err, elements) {
+                let state;
+                return _selector.guideFactory().search(reference, config, function (err, data) {
+                    let elements = config.development? data.elements : data;
                     _selector.extensions.filter(e => e.afterAll).forEach(e => e.afterAll({elements}));
 
                     let result;
@@ -63,6 +63,7 @@ function GlanceSelector(options) {
                         result = elements;
 
                     if (config.development) {
+                        state = data.state;
                         state.setElements(result);
                         result = state.getCurrent();
                     }
