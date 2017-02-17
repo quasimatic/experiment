@@ -23,7 +23,7 @@ describe("Extensions: beforeLocateEvent", function () {
 
     it("should have a config", function () {
         receivedData.should.have.property('target')
-        receivedData.should.have.property('scopeElement')
+        receivedData.should.have.property('containerElement')
     });
 });
 
@@ -49,6 +49,6 @@ describe("Extensions: afterLocateEvent", function () {
 
     it("should have a config", function () {
         receivedData.should.have.property('target')
-        receivedData.should.have.property('scopeElement')
+        receivedData.should.have.property('containerElement')
     });
 });

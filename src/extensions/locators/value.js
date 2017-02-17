@@ -8,7 +8,7 @@ import browserExecute from '../../browser-execute'
 export default {
     options: {
         "value": {
-            locate: function ({label, scopeElement}, resultHandler = (err, result) => result) {
+            locate: function ({label, containerElement}, resultHandler = (err, result) => result) {
                 log.debug("Searching in value:", label);
 
                 return browserExecute(function (scope, l, handler) {
@@ -19,7 +19,7 @@ export default {
                     return handler(null, elements.filter(function (input) {
                         return input.value && input.value.toLowerCase().indexOf(l.toLowerCase()) != -1;
                     }));
-                }, scopeElement, label, resultHandler);
+                }, containerElement, label, resultHandler);
             }
         }
     }

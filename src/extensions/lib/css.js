@@ -1,15 +1,15 @@
 import browserExecute from '../../browser-execute'
 
-export default function (label, scopeElement, resultHandler = (err, result) => result) {
-    return browserExecute(function (label, scopeElement, handler) {
+export default function (label, containerElement, resultHandler = (err, result) => result) {
+    return browserExecute(function (label, containerElement, handler) {
         try {
             var results = [];
 
-            var matches = (scopeElement.matches || scopeElement.matchesSelector || scopeElement.msMatchesSelector || scopeElement.mozMatchesSelector || scopeElement.webkitMatchesSelector || scopeElement.oMatchesSelector);
-            if (matches && matches.call(scopeElement, label))
-                results.push(scopeElement);
+            var matches = (containerElement.matches || containerElement.matchesSelector || containerElement.msMatchesSelector || containerElement.mozMatchesSelector || containerElement.webkitMatchesSelector || containerElement.oMatchesSelector);
+            if (matches && matches.call(containerElement, label))
+                results.push(containerElement);
 
-            results = results.concat(Array.prototype.slice.apply(scopeElement.querySelectorAll(label)));
+            results = results.concat(Array.prototype.slice.apply(containerElement.querySelectorAll(label)));
 
             return handler(null, results);
         }
@@ -19,5 +19,5 @@ export default function (label, scopeElement, resultHandler = (err, result) => r
 
             throw e;
         }
-    }, label, scopeElement, resultHandler);
+    }, label, containerElement, resultHandler);
 }

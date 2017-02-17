@@ -10,12 +10,12 @@ describe("Locator: Exact Match", function () {
     it("should find by node type", function () {
         dom.render(<p id="target"></p>);
 
-        findByNodeType({label: "p", scopeElement:document.body}).should.deep.equal([dom.get("target")]);
+        findByNodeType({label: "p", containerElement:document.body}).should.deep.equal([dom.get("target")]);
     });
 
     it("should not find by node type", function () {
         dom.render(<span></span>);
         
-        findByNodeType({label: "p", scopeElement:document.body}).should.deep.equal([]);
+        findByNodeType({label: "p", containerElement:document.body}).should.deep.equal([]);
     });
 });

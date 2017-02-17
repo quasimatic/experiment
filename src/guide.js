@@ -14,7 +14,7 @@ export default class Guide {
         let data = {
             glance: config.glance,
             glanceSelector: config.glanceSelector,
-            scopeElement: config.rootElement,
+            containerElement: config.rootElement,
             elements: [config.rootElement],
             target: state.getFirstScopeTarget(),
             scopeElements: [],

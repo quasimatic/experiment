@@ -15,7 +15,7 @@ export default class Targets {
 
         state.processTarget();
 
-        return reduce(elements, [], (result, scopeElement, levelHandler) => Targets.locateTarget(result, scopeElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
+        return reduce(elements, [], (result, containerElement, levelHandler) => Targets.locateTarget(result, containerElement, intersectElements, data, levelHandler), emptyOnError((err, locatedTargets) => {
             state.labelProcessed({...data, elements: locatedTargets});
 
             return Filter.process(locatedTargets, data, (err, filteredElements) => {
@@ -55,19 +55,19 @@ export default class Targets {
         }, resultHandler);
     }
 
-    static locateTarget(result, scopeElement, intersectElements, data, resultHandler) {
+    static locateTarget(result, containerElement, intersectElements, data, resultHandler) {
         let {state} = data;
-        state.beforeScope({...data, scopeElement});
+        state.beforeScope({...data, containerElement});
 
-        return Locator.locate({...data, scopeElement}, emptyOnError((err, located) => {
+        return Locator.locate({...data, containerElement}, emptyOnError((err, located) => {
             if (intersectElements) {
                 return locateIntersections(located, intersectElements, result, emptyOnError((err, located) => {
-                    result.push({scopeElement, elements: located});
+                    result.push({containerElement, elements: located});
                     return resultHandler(err, result);
                 }));
             }
 
-            result.push({scopeElement, elements: located});
+            result.push({containerElement, elements: located});
             return resultHandler(err, result)
         }))
     }

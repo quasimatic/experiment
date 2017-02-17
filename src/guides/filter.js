@@ -7,7 +7,7 @@ export default class Filter {
     static process(locatedTargets, data, handler) {
         var targetInfo = locatedTargets.reduce((result, info) => {
             result.elements = result.elements.concat(info.elements);
-            result.scopeElements.push(info.scopeElement);
+            result.scopeElements.push(info.containerElement);
             return result;
         }, {elements: [], scopeElements: []});
 

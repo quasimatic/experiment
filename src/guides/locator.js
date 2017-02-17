@@ -8,8 +8,8 @@ let locatorCollector;
 
 export default class Locator {
     static locate(data, resultHandler) {
-        let {target, scopeElement, scopeElements, state} = data;
-        let parent = scopeElement;
+        let {target, containerElement, scopeElements, state} = data;
+        let parent = containerElement;
 
         let locatorCollector = new LocatorCollector(state.getExtensions(), state.getConfig().defaultOptions);
         var locators = locatorCollector.getLocators(target);
@@ -54,7 +54,7 @@ export default class Locator {
     static locateInParent(locate, elements, parent, scopeElements, target, data, resultHandler) {
         let {state} = data;
         if (parent && elements.length == 0) {
-            return locate({...data, label: target.label, scopeElement: parent}, (err, foundElements) => {
+            return locate({...data, label: target.label, containerElement: parent}, (err, foundElements) => {
                 if (err) {
                     return resultHandler(err, []);
                 }

@@ -329,8 +329,8 @@ describe('Selector should apply option', function () {
         glance.addExtension({
             options: {
                 "exact-match": {
-                    locate: function ({label, scopeElement}, callback) {
-                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", scopeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+                    locate: function ({label, containerElement}, callback) {
+                        var xpathResult = document.evaluate(".//*[not(self::script) and text()='" + label + "']", containerElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
                         var results = [];
                         for (var i = 0; i < xpathResult.snapshotLength; i++) {
                             results.push(xpathResult.snapshotItem(i));

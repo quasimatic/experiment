@@ -5,7 +5,7 @@ import dom from "../test/dom";
 
 describe("Guide: Search lineage", function () {
     let lineageGuide;
-    let scopeElement;
+
     let config = {
         defaultOptions: defaultOptions,
         extensions: defaultExtensions.concat({
