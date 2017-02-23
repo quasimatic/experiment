@@ -1,4 +1,4 @@
-import guide from "./guide"
+import guide from "./guides/guide"
 import Parser from "./parser"
 import log from "./log"
 import DefaultExtensions from './extensions/default'

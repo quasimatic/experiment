@@ -6,22 +6,9 @@ export default class State {
     constructor(reference, config = {extensions: []}) {
         let references = Parser.parse(reference);
 
-        let scopeTargets = references.map((target, i) => ({...target, scopeIndex: i}));
-
-        this.state = {
-            scopeTargets: scopeTargets,
-            config: config,
-            containerElements: [],
-            scopeElements: [],
-            subjectElements: [],
-            processed: [],
-        };
-    }
-
-    reset(reference, config = {extensions: []}) {
-        let references = Parser.parse(reference);
-
-        let scopeTargets = references.map((target, i) => ({...target, scopeIndex: i}));
+        let scopeTargets = references.map((intersections, i) => {
+            return intersections.map(target => {return {...target, scopeIndex: i}});
+        });
 
         this.state = {
             scopeTargets: scopeTargets,
@@ -39,10 +26,6 @@ export default class State {
 
     getExtensions() {
         return this.state.config.extensions;
-    }
-
-    getFirstScopeTarget() {
-        return this.state.scopeTargets[0];
     }
 
     setSubjectElements(elements) {
@@ -80,7 +63,8 @@ export default class State {
     }
 
     getNextTarget(target) {
-        return this.state.scopeTargets[target.scopeIndex + 1]
+        let index = this.state.scopeTargets.indexOf(target);
+        return this.state.scopeTargets[index + 1];
     }
 
     processTarget() {

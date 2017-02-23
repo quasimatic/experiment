@@ -4,8 +4,6 @@ import {reduce} from "../utils/array-utils";
 import isDescendant from "../utils/is-descendant";
 import browserExecute from '../browser-execute'
 
-let locatorCollector;
-
 export default class Locator {
     static locate(data, resultHandler) {
         let {target, containerElement, scopeElements, state} = data;

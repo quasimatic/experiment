@@ -3,7 +3,7 @@ import browserExecute from '../browser-execute'
 import Locator from "./locator";
 import emptyOnError from '../empty-on-error';
 
-export default function (located, intersectElements, result, resultHandler) {
+export default function (located, intersectElements, resultHandler) {
     log.debug("Finding intersections");
 
     return browserExecute(function (located, previous, handler) {

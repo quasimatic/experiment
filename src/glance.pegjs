@@ -1,66 +1,47 @@
 {
-	var scope = "";
-
 	function tryParseInt(str) {
-      if (!isNaN(str)) {
-        return parseInt(str);
-      }
-      return str;
+      return !isNaN(str)? parseInt(str) : str;
     }
 }
 
-Start = references:Reference* { return references }
+GlanceReference = scopes:Scope+ subject:Subject {return scopes.concat([subject])}
+  / subject:Subject {return [subject]}
+  / .* {return []}
 
 ScopeChar = ">"
 IntersectChar = "^"
 OptionChar = "#"
 SeparatorChar = ","
-ProjectionChar = ":"
 
-EscapeChar = "\\"
-EscapableChars = EscapeChar / ScopeChar / ProjectionChar / OptionChar / IntersectChar
-EscapedSequence = EscapeChar c:(EscapableChars) { return c; }
+Scope = intersections:Intersection+ ScopeChar {return intersections}
+Subject = intersections:Intersection+ {return intersections}
+Intersection = target:Target IntersectChar? {return target}
 
-Reference
- = target:Target ScopeChar {
- 	scope += text()
-    target.type = "scope";
-    return target;
- }
- / target:Target IntersectChar {
- 	scope += text()
-    target.type = "intersect";
-    return target;
- }
- / target:Target {
- 	scope += text()
-    target.type = "subject";
-    return target;
- }
-
-Target = label:Label { return label }
-
-Label
-  = label:LabelCharacter+ options:Options? projections:Projections? Whitespace? {
-    return {
-      label: label.join('').trim(),
-      options: options || [],
-      projections: projections || [],
-      scope: scope.slice(0,-1).trim(),
-      path: (scope + text()).trim()
-    }
+Target = label:LabelCharacter+ options:Options? Whitespace? {
+  return {
+    label: label.join('').trim(),
+    options: options || []
   }
+}
+/
+options:Options Whitespace? {
+  return {
+    options: options || []
+  }
+}
 
 LabelCharacter
- = !(EscapableChars) c:. { return c }
- / EscapedSequence
+  = !(EscapableChars) c:. { return c }
+  / EscapedSequence
 
 Options = OptionChar options:Option* { return options; }
 
 Option = name:Character+ SeparatorChar? { return tryParseInt(name.join("").trim()) }
 
-Projections = ProjectionChar projections:Projection* { return projections; }
-Projection = name:Character+ SeparatorChar? { return name.join("").trim() }
+EscapeChar = "\\"
+EscapableChars = EscapeChar / ScopeChar / OptionChar / IntersectChar
+
+EscapedSequence = EscapeChar c:(EscapableChars) { return c }
 
 Character = !(EscapableChars / SeparatorChar) c:. { return c }
 

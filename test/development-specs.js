@@ -2,7 +2,7 @@ import glance from '../src/selector'
 import dom from "./dom"
 // import PartialBreak from '../src/partial-break'
 
-describe("Glance: Development mode", () => {
+describe.skip("Glance: Development mode", () => {
     beforeEach(function () {
         document.body.innerHTML = "";
     });

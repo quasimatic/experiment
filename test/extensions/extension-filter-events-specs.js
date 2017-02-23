@@ -16,7 +16,7 @@ describe("Extensions: beforeFilters event", function () {
         glance.addExtension({
             options: {
                 "one": {
-                    filter: function({elements}, resultHandler) {
+                    filter: function ({elements}, resultHandler) {
                         return resultHandler(null, [elements[0]]);
                     }
                 }
@@ -27,17 +27,17 @@ describe("Extensions: beforeFilters event", function () {
             }
         });
 
-        glance("item:one");
+        glance("item#one");
     });
 
     it("should happen before filters", function () {
-        elementsInEvent.should.deep.equal(dom.get("target-1","target-2"));
+        elementsInEvent.should.deep.equal(dom.get("target-1", "target-2"));
     });
 });
 
 describe("Extensions: afterFilters event", function () {
     let elementsInEvent;
-    
+
     before(function () {
         document.body.innerHTML = "";
         dom.render(

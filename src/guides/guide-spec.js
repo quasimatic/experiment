@@ -1,7 +1,7 @@
-import defaultExtensions from './extensions/default';
-import defaultOptions from './default-options';
+import defaultExtensions from '../extensions/default';
+import defaultOptions from '../default-options';
 import LineageGuide from './guide';
-import dom from "../test/dom";
+import dom from "../../test/dom";
 
 describe("Guide: Search lineage", function () {
     let lineageGuide;
@@ -56,7 +56,8 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search("parent>div", config).should.deep.equal(dom.get('target-1', 'target-2'));
+        console.log(lineageGuide.search("parent > div", config).map(e => e.outerHTML));
+        lineageGuide.search("parent > div", config).should.deep.equal(dom.get('target-1', 'target-2'));
     });
 
     it("should traverse the dom looking for items in multiple containers", function () {
@@ -69,7 +70,7 @@ describe("Guide: Search lineage", function () {
             </div>
         );
 
-        lineageGuide.search("Item 1 in box 3>Item 2", config).should.deep.equal([dom.get('target')]);
+        lineageGuide.search("Item 1 in box 3 > Item 2", config).should.deep.equal([dom.get('target')]);
     });
 
     it("should find duplicates at different levels", function () {
