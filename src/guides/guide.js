@@ -21,67 +21,59 @@ export default class Guide {
             state: state
         };
 
-        let scopeTargets = state.getScopeTargets();
-
-        return reduce(scopeTargets, [state.getConfig().rootElement], (scopeElements, targets, scopeTargetHandler) => {
-                return Guide.processIntersections({
-                    ...data,
-                    targets,
-                    scopeElements: scopeElements
-                }, (err, elements) => scopeTargetHandler(err, elements));
-            },
-            (err, locatedElements) => {
-                data.elements = locatedElements;
-                if (config.development) {
-                    return resultHandler(err, data);
-                }
-                else {
-                    return resultHandler(err, locatedElements);
-                }
-
-            }
-        )
+        return Guide.processTargets(data, resultHandler)
     }
 
-    static filterElements(locatedElements, data, filterResultHandler) {
+    static processTargets(data, resultHandler) {
+        let {state} = data;
+        let config = state.getConfig();
+
+        return reduce(
+            state.getScopeTargets(),
+            [config.rootElement],
+            (scopeElements, targets, scopeTargetHandler) => Guide.processIntersections({...data, targets, scopeElements}, (err, elements) => scopeTargetHandler(err, elements)),
+            (err, locatedElements) => config.development ? resultHandler(err, {...data, elements: locatedElements}) : resultHandler(err, locatedElements));
+    }
+
+    static filterElements(locatedElements, data, resultHandler) {
         let {state} = data;
         state.labelProcessed({...data, elements: locatedElements});
-        return Filter.process(locatedElements, data, (err, filteredElements) => {
-            return filterResultHandler(err, filteredElements)
-        });
+        return Filter.process(locatedElements, data, resultHandler);
     }
 
     static processIntersections(data, resultHandler) {
         let {targets, state, scopeElements} = data;
 
-        return reduce(targets, [], (intersectElements, target, intersectionHandler) => {
-            return reduce(scopeElements, [], (scopeElementsResult, containerElement, scopeHandler) => {
-                    state.beforeScope({...data, containerElement});
-                    return Locator.locate({
-                        ...data,
-                        containerElement,
-                        target
-                    }, (err, locatedElements) => {
-                        scopeElementsResult.push({elements: locatedElements, containerElement});
-                        return scopeHandler(err, scopeElementsResult)
-                    });
-                },
-                (err, locatedElementInfo) => {
-                    return Guide.filterElements(locatedElementInfo, {
-                        ...data,
-                        target
-                    }, (err, locatedAndFilteredElements) => {
-                        if (intersectElements.length > 0) {
-                            return locateIntersections(locatedAndFilteredElements, intersectElements, intersectionHandler);
-                        }
+        return reduce(
+            targets,
+            [],
+            (intersectElements, target, intersectionHandler) => this.processScopeElements(scopeElements, data, target, intersectElements, intersectionHandler),
+            (err, elements) => {
+                state.afterScope({...data, elements: elements});
+                return resultHandler(err, elements)
+            });
+    }
 
-                        return intersectionHandler(err, locatedAndFilteredElements);
-                    });
+    static processScopeElements(scopeElements, data, target, intersectElements, resultHandler) {
+        let {state} = data;
+        return reduce(
+            scopeElements,
+            [],
+            (scopeElementsResult, containerElement, scopeHandler) => {
+                state.beforeScope({...data, containerElement});
+                return Locator.locate({
+                    ...data,
+                    containerElement,
+                    target
+                }, (err, locatedElements) => {
+                    scopeElementsResult.push({elements: locatedElements, containerElement});
+                    return scopeHandler(err, scopeElementsResult)
                 });
-        }, (err, elements) => {
-            state.afterScope({...data, elements: elements});
-
-            return resultHandler(err, elements)
-        })
+            },
+            (err, locatedElementInfo) => {
+                return Guide.filterElements(locatedElementInfo,
+                    {...data, target},
+                    (err, locatedAndFilteredElements) => intersectElements.length > 0 ? locateIntersections(locatedAndFilteredElements, intersectElements, resultHandler) : resultHandler(err, locatedAndFilteredElements));
+            });
     }
 }
